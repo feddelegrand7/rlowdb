@@ -4,7 +4,10 @@
 #' for storing and managing structured data in R.
 #' It supports CRUD operations (Create, Read, Update, Delete)
 #' and enables querying with custom functions.
-#'
+#' @importFrom jsonlite fromJSON write_json
+#' @importFrom purrr keep
+#' @importFrom R6 R6Class
+#' @importFrom rlang eval_tidy parse_expr
 #' @export
 rlowdb <- R6::R6Class(
   "rlowdb",
@@ -133,7 +136,6 @@ rlowdb <- R6::R6Class(
 
       filtered_records <- purrr::keep(records, function(record) {
         tryCatch({
-          # Evaluate the condition within the record's environment
           rlang::eval_tidy(rlang::parse_expr(condition), data = record)
         }, error = function(e) {
           stop(sprintf("Error in evaluating condition: '%s'", condition))
@@ -142,8 +144,6 @@ rlowdb <- R6::R6Class(
 
       return(filtered_records)
     }
-
-
   ),
 
   private = list(
