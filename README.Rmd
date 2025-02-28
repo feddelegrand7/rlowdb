@@ -42,10 +42,6 @@ devtools::install_github("feddelegrand7/rlowdb")
 To start using `rlowdb``, create a new database instance by specifying a JSON file:
 
 ```{r, eval=FALSE}
-devtools::install_github("feddelegrand7/rlowdb")
-```
-
-```{r, eval=FALSE}
 library(rlowdb)
 db <- rlowdb$new("database.json")
 ```

@@ -38,10 +38,6 @@ To start using \`rlowdb\`\`, create a new database instance by
 specifying a JSON file:
 
 ``` r
-devtools::install_github("feddelegrand7/rlowdb")
-```
-
-``` r
 library(rlowdb)
 db <- rlowdb$new("database.json")
 ```

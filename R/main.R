@@ -35,7 +35,10 @@ rlowdb <- R6::R6Class(
     #' @param collection The collection name (a string).
     #' @param record A named list representing the record to insert.
     #' @examples
+    #' \dontrun{
     #' db$insert("users", list(id = 1, name = "Alice"))
+    #' }
+    #'
     insert = function(collection, record) {
       private$.ensure_key(collection)
       private$.data[[collection]] <- append(private$.data[[collection]], list(record))
@@ -48,7 +51,10 @@ rlowdb <- R6::R6Class(
     #' @param value The value to match.
     #' @return A list of matching records. Returns an empty list if no match is found.
     #' @examples
+    #' \dontrun{
     #' db$find("users", "id", 1)
+    #' }
+    #'
     find = function(collection, key, value) {
       index <- private$.find_index_by_key(collection, key, value)
       if (length(index) > 0) {
@@ -65,7 +71,10 @@ rlowdb <- R6::R6Class(
     #' @param value The value to match.
     #' @param new_data A named list containing the updated data.
     #' @examples
+    #' \dontrun{
     #' db$update("users", "id", 1, list(name = "Alice Updated"))
+    #' }
+    #'
     update = function(collection, key, value, new_data) {
       index <- private$.find_index_by_key(collection, key, value)
       if (length(index) > 0) {
@@ -83,7 +92,10 @@ rlowdb <- R6::R6Class(
     #' @param key The field name to search for.
     #' @param value The value to match.
     #' @examples
+    #' \dontrun{
     #' db$delete("users", "id", 1)
+    #' }
+    #'
     delete = function(collection, key, value) {
       index <- private$.find_index_by_key(collection, key, value)
       if (length(index) > 0) {
@@ -110,6 +122,8 @@ rlowdb <- R6::R6Class(
     #' @return A list of records that satisfy the condition. If no records match, returns an empty list.
     #'
     #' @examples
+    #'
+    #' \dontrun{
     #' db <- rlowdb$new("db.json")
     #' db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
     #' db$insert("posts", list(id = 2, title = "Data Management", views = 250))
@@ -123,6 +137,8 @@ rlowdb <- R6::R6Class(
     #'
     #' # Query all posts (no condition)
     #' db$query("posts", "")
+    #' }
+    #'
     query = function(collection, condition = NULL) {
       if (!collection %in% names(private$.data)) {
         stop(sprintf("Error: Collection '%s' does not exist.", collection))

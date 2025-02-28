@@ -32,30 +32,44 @@ db$get_data()
 ## Method `rlowdb$insert`
 ## ------------------------------------------------
 
+\dontrun{
 db$insert("users", list(id = 1, name = "Alice"))
+}
+
 
 ## ------------------------------------------------
 ## Method `rlowdb$find`
 ## ------------------------------------------------
 
+\dontrun{
 db$find("users", "id", 1)
+}
+
 
 ## ------------------------------------------------
 ## Method `rlowdb$update`
 ## ------------------------------------------------
 
+\dontrun{
 db$update("users", "id", 1, list(name = "Alice Updated"))
+}
+
 
 ## ------------------------------------------------
 ## Method `rlowdb$delete`
 ## ------------------------------------------------
 
+\dontrun{
 db$delete("users", "id", 1)
+}
+
 
 ## ------------------------------------------------
 ## Method `rlowdb$query`
 ## ------------------------------------------------
 
+
+\dontrun{
 db <- rlowdb$new("db.json")
 db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
 db$insert("posts", list(id = 2, title = "Data Management", views = 250))
@@ -69,6 +83,8 @@ db$query("posts", "views > 100 | id == 1")
 
 # Query all posts (no condition)
 db$query("posts", "")
+}
+
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -150,7 +166,10 @@ Insert a new record into a specified collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db$insert("users", list(id = 1, name = "Alice"))
+\preformatted{\dontrun{
+db$insert("users", list(id = 1, name = "Alice"))
+}
+
 }
 \if{html}{\out{</div>}}
 
@@ -182,7 +201,10 @@ A list of matching records. Returns an empty list if no match is found.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db$find("users", "id", 1)
+\preformatted{\dontrun{
+db$find("users", "id", 1)
+}
+
 }
 \if{html}{\out{</div>}}
 
@@ -213,7 +235,10 @@ Update existing records in a collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db$update("users", "id", 1, list(name = "Alice Updated"))
+\preformatted{\dontrun{
+db$update("users", "id", 1, list(name = "Alice Updated"))
+}
+
 }
 \if{html}{\out{</div>}}
 
@@ -242,7 +267,10 @@ Delete records from a collection that match a given key-value pair.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db$delete("users", "id", 1)
+\preformatted{\dontrun{
+db$delete("users", "id", 1)
+}
+
 }
 \if{html}{\out{</div>}}
 
@@ -280,7 +308,9 @@ A list of records that satisfy the condition. If no records match, returns an em
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db <- rlowdb$new("db.json")
+\preformatted{
+\dontrun{
+db <- rlowdb$new("db.json")
 db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
 db$insert("posts", list(id = 2, title = "Data Management", views = 250))
 db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
@@ -293,6 +323,8 @@ db$query("posts", "views > 100 | id == 1")
 
 # Query all posts (no condition)
 db$query("posts", "")
+}
+
 }
 \if{html}{\out{</div>}}
 
