@@ -97,4 +97,66 @@ test_that("Error handling works correctly", {
                "Error: Key 'author' does not exist")
 })
 
+test_that("exists methods work as expected", {
+
+  expect_true(db$exists_collection("posts"))
+  expect_false(db$exists_collection("nonexistant"))
+
+  expect_true(db$exists_key("posts", "title"))
+  expect_true(db$exists_key("posts", "views"))
+  expect_false(db$exists_key("posts", "nonexistant"))
+  expect_error(db$exists_key("nonexistant", "key"))
+
+  expect_true(db$exists_value("posts", "title", "LowDB in R"))
+  expect_false(db$exists_value("posts", "title", "LowDB in nonexistant"))
+  expect_error(db$exists_value("posts", "nonexistant", "LowDB in R"))
+
+})
+
+test_that("count method works as expected", {
+
+  expect_error(db$count("nonexistant"))
+
+  expect_equal(db$count("posts"), 2)
+
+  db$insert("posts", list(id = 4, title = "R Advanced", views = 1100))
+  db$insert("posts", list(id = 5, title = "Shiny for R", views = 2000))
+
+  expect_equal(db$count("posts"), 4)
+
+  db$delete("posts", "id", 5)
+
+  expect_equal(db$count("posts"), 3)
+
+
+})
+
+test_that("clear works as expected", {
+
+  db$insert("readers", list(name = "Fodil", city = "Hamburg"))
+  db$insert("readers", list(name = "Sun Goku", city = "Tokyo"))
+
+  expect_equal(db$count("readers"), 2)
+
+  db$clear("readers")
+
+  expect_equal(db$count("readers"), 0)
+
+})
+
+
+test_that("drop works as expected", {
+
+  db$insert("readers", list(name = "Fodil", city = "Hamburg"))
+  db$insert("readers", list(name = "Sun Goku", city = "Tokyo"))
+
+  expect_equal(db$count("readers"), 2)
+
+  db$drop("readers")
+
+  expect_error(db$count("readers"), regexp = "Collection 'readers' does not exist")
+
+})
+
+
 unlink(test_db_file)

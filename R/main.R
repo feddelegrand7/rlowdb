@@ -194,6 +194,116 @@ rlowdb <- R6::R6Class(
 
       private$.write_data()
 
+    },
+
+    #' @description Removes all records from a collection without deleting the collection itself
+    #' @param collection the collection name
+    #' @examples
+    #' \dontrun{
+    #'   db$clear("users")
+    #' }
+    #'
+
+    clear = function(collection) {
+      if (!collection %in% names(private$.data)) {
+        stop(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+      private$.data[[collection]] <- list()
+      private$.write_data()
+    },
+
+    count = function(collection) {
+
+      if (!collection %in% names(private$.data)) {
+        stop(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      count_collection <- length(private$.data[[collection]])
+
+      count_collection
+
+    },
+
+    #' @description List the available collections
+    #' @return character
+    #' @examples
+    #' \dontrun{
+    #'   db$list_collections()
+    #' }
+    #'
+    list_collections = function() {
+
+      collection_names <- names(private$.data)
+
+      collection_names
+
+    },
+
+    #' @description Check if a collection exists.
+    #' @param collection The collection name
+    #' @return TRUE if the collection exists, FALSE otherwise
+    #' @examples
+    #' \dontrun{
+    #'   db$exists_collection("users")
+    #' }
+    #'
+    exists_collection = function(collection) {
+
+      exists_collection <- FALSE
+
+      if (collection %in% names(private$.data)) {
+        exists_collection <- TRUE
+      }
+
+      exists_collection
+
+    },
+
+    #' @description Check if a key exists within a specific collection.
+    #' @param collection The collection name
+    #' @param key The key name
+    #' @return TRUE if the key exists, FALSE otherwise
+    #' @examples
+    #' \dontrun{
+    #'   db$exists_key("users", "name")
+    #' }
+    #'
+    exists_key = function(collection, key) {
+
+      if (!collection %in% names(private$.data)) {
+        stop(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      exists_key <- any(
+        sapply(private$.data[[collection]], function(item) {
+          key %in% names(item)
+        })
+      )
+
+      exists_key
+
+    },
+
+    #' @description Check if a value exists within a specific collection/key combination.
+    #' @param collection The collection name
+    #' @param key The key name
+    #' @param value The value to look for
+    #' @return TRUE if the value exists, FALSE otherwise
+    #' @examples
+    #' \dontrun{
+    #'   db$exists_value("users", "id", 1)
+    #' }
+    #'
+    exists_value = function(collection, key, value) {
+
+      exists_val <- FALSE
+      index <- private$.find_index_by_key(collection, key, value)
+
+      if (length(index) > 0) {
+        exists_val <- TRUE
+      }
+
+      exists_val
     }
   ),
 
@@ -231,5 +341,12 @@ rlowdb <- R6::R6Class(
     }
   )
 )
+
+
+
+
+
+
+
 
 
