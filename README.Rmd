@@ -41,9 +41,9 @@ devtools::install_github("feddelegrand7/rlowdb")
 ### Initializing the Database
 To start using `rlowdb``, create a new database instance by specifying a JSON file:
 
-```{r, eval=FALSE}
+```{r}
 library(rlowdb)
-db <- rlowdb$new("database.json")
+db <- rlowdb$new("DB.json")
 ```
 
 ### Inserting Data
@@ -52,7 +52,7 @@ The `insert` method takes two parameters, a `collection` and a `record`, think o
 
 Add records to a collection:
 
-```{r, eval=FALSE}
+```{r}
 db$insert(
   collection = "users", 
   record = list(id = 1, name = "Alice", age = 30)
@@ -61,6 +61,11 @@ db$insert(
   collection = "users", 
   record = list(id = 2, name = "Bob", age = 25)
 )
+
+db$insert(
+  collection = "users", 
+  record = list(id = 3, name = "Alice", age = 30)
+)
 ```
 
 
@@ -68,13 +73,13 @@ db$insert(
 
 Get all stored data:
 
-```{r, eval=FALSE}
+```{r}
 db$get_data()
 ```
 
 Find a specific record:
 
-```{r, eval=FALSE}
+```{r}
 db$find(collection = "users", key = "id", value = 1)
 ```
 
@@ -82,7 +87,7 @@ db$find(collection = "users", key = "id", value = 1)
 
 Modify existing records:
 
-```{r, eval=FALSE}
+```{r}
 db$update(
   collection = "users", 
   key = "id", 
@@ -93,7 +98,7 @@ db$update(
 
 ### Deleting Records
 
-```{r, eval=FALSE}
+```{r}
 db$delete(collection = "users", key = "id", value = 2) 
 ```
 
@@ -101,21 +106,105 @@ db$delete(collection = "users", key = "id", value = 2)
 
 Find users older than 25:
 
-```{r, eval=FALSE}
+```{r}
 db$query(collection = "users", condition = "age > 25")
 ```
 
 Query with multiple conditions:
 
-```{r, eval=FALSE}
+```{r}
 db$query(collection = "users", condition = "age > 25 & id > 1")
+```
+
+
+### Listing the collections
+
+The `list_collections` method returns the names of the collections within your DB:
+
+```{r}
+db$list_collections()
+```
+
+
+### Counting 
+
+Using the `count` method, you can get the number of records a collection has:
+
+```{r}
+db$count(collection = "users") 
+```
+
+
+### Check if exists
+
+It possible to verify if a `collection`, a `key` or a `value` exists within your `DB`:
+
+```{r}
+db$exists_collection(collection = "users")
+```
+
+```{r}
+db$exists_collection(collection = "nonexistant")
+```
+```{r}
+db$exists_key(collection = "users", key = "name")
+```
+```{r}
+db$exists_value(
+  collection = "users",
+  key = "name",
+  value = "Alice"
+)
+```
+```{r}
+db$exists_value(
+  collection = "users",
+  key = "name",
+  value = "nonexistant"
+)
+```
+
+### Clear, Drop Data
+
+It is possible to `clear` a collection. This will remove all the elements belonging to the collection but not drop the collection it self: 
+
+```{r}
+db$insert(collection = "countries", record = list(id = 1, country = "Algeria", continent = "Africa"))
+
+db$insert(collection = "countries", record = list(id = 1, country = "Germany", continent = "Europe"))
+
+db$get_data()
+```
+
+Now, look what happened when we use the `clear` method on the `countries` collection: 
+
+```{r}
+db$clear("countries")
+
+db$get_data()
+```
+
+
+Using the `drop` method, one can drop a whole collection: 
+
+```{r}
+db$drop(collection = "countries")
+db$get_data()
+```
+
+Finally, `drop_all` will drop all the `collections` within your `DB`: 
+
+
+```{r}
+db$drop_all()
+db$get_data()
 ```
 
 ### Error Handling
 
 `rlowdb` provides error handling for common issues. For example, attempting to update a collection that does not exist will result in an informative error: 
 
-```{r, eval=FALSE}
+```{r, error=TRUE}
 db$update(
   collection = "nonexistant", 
   key = "id",
@@ -129,7 +218,6 @@ db$update(
 - Support for nested data structures.
 - More advanced query capabilities.
 - Compatibility with alternative file formats (e.g., CSV, SQLite).
-
 
 
 ## Code of Conduct

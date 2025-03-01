@@ -39,7 +39,7 @@ specifying a JSON file:
 
 ``` r
 library(rlowdb)
-db <- rlowdb$new("database.json")
+db <- rlowdb$new("DB.json")
 ```
 
 ### Inserting Data
@@ -60,6 +60,11 @@ db$insert(
   collection = "users", 
   record = list(id = 2, name = "Bob", age = 25)
 )
+
+db$insert(
+  collection = "users", 
+  record = list(id = 3, name = "Alice", age = 30)
+)
 ```
 
 ### Retrieving Data
@@ -68,12 +73,53 @@ Get all stored data:
 
 ``` r
 db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 30
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 2
+#> 
+#> $users[[2]]$name
+#> [1] "Bob"
+#> 
+#> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
+#> [1] 30
 ```
 
 Find a specific record:
 
 ``` r
 db$find(collection = "users", key = "id", value = 1)
+#> [[1]]
+#> [[1]]$id
+#> [1] 1
+#> 
+#> [[1]]$name
+#> [1] "Alice"
+#> 
+#> [[1]]$age
+#> [1] 30
 ```
 
 ### Updating Records
@@ -101,12 +147,229 @@ Find users older than 25:
 
 ``` r
 db$query(collection = "users", condition = "age > 25")
+#> [[1]]
+#> [[1]]$id
+#> [1] 1
+#> 
+#> [[1]]$name
+#> [1] "Alice"
+#> 
+#> [[1]]$age
+#> [1] 31
+#> 
+#> 
+#> [[2]]
+#> [[2]]$id
+#> [1] 3
+#> 
+#> [[2]]$name
+#> [1] "Alice"
+#> 
+#> [[2]]$age
+#> [1] 30
 ```
 
 Query with multiple conditions:
 
 ``` r
 db$query(collection = "users", condition = "age > 25 & id > 1")
+#> [[1]]
+#> [[1]]$id
+#> [1] 3
+#> 
+#> [[1]]$name
+#> [1] "Alice"
+#> 
+#> [[1]]$age
+#> [1] 30
+```
+
+### Listing the collections
+
+The `list_collections` method returns the names of the collections
+within your DB:
+
+``` r
+db$list_collections()
+#> [1] "users"
+```
+
+### Counting
+
+Using the `count` method, you can get the number of records a collection
+has:
+
+``` r
+db$count(collection = "users") 
+#> [1] 2
+```
+
+### Check if exists
+
+It possible to verify if a `collection`, a `key` or a `value` exists
+within your `DB`:
+
+``` r
+db$exists_collection(collection = "users")
+#> [1] TRUE
+```
+
+``` r
+db$exists_collection(collection = "nonexistant")
+#> [1] FALSE
+```
+
+``` r
+db$exists_key(collection = "users", key = "name")
+#> [1] TRUE
+```
+
+``` r
+db$exists_value(
+  collection = "users",
+  key = "name",
+  value = "Alice"
+)
+#> [1] TRUE
+```
+
+``` r
+db$exists_value(
+  collection = "users",
+  key = "name",
+  value = "nonexistant"
+)
+#> [1] FALSE
+```
+
+### Clear, Drop Data
+
+It is possible to `clear` a collection. This will remove all the
+elements belonging to the collection but not drop the collection it
+self:
+
+``` r
+db$insert(collection = "countries", record = list(id = 1, country = "Algeria", continent = "Africa"))
+
+db$insert(collection = "countries", record = list(id = 1, country = "Germany", continent = "Europe"))
+
+db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 31
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 3
+#> 
+#> $users[[2]]$name
+#> [1] "Alice"
+#> 
+#> $users[[2]]$age
+#> [1] 30
+#> 
+#> 
+#> 
+#> $countries
+#> $countries[[1]]
+#> $countries[[1]]$id
+#> [1] 1
+#> 
+#> $countries[[1]]$country
+#> [1] "Algeria"
+#> 
+#> $countries[[1]]$continent
+#> [1] "Africa"
+#> 
+#> 
+#> $countries[[2]]
+#> $countries[[2]]$id
+#> [1] 1
+#> 
+#> $countries[[2]]$country
+#> [1] "Germany"
+#> 
+#> $countries[[2]]$continent
+#> [1] "Europe"
+```
+
+Now, look what happened when we use the `clear` method on the
+`countries` collection:
+
+``` r
+db$clear("countries")
+
+db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 31
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 3
+#> 
+#> $users[[2]]$name
+#> [1] "Alice"
+#> 
+#> $users[[2]]$age
+#> [1] 30
+#> 
+#> 
+#> 
+#> $countries
+#> list()
+```
+
+Using the `drop` method, one can drop a whole collection:
+
+``` r
+db$drop(collection = "countries")
+db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 31
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 3
+#> 
+#> $users[[2]]$name
+#> [1] "Alice"
+#> 
+#> $users[[2]]$age
+#> [1] 30
+```
+
+Finally, `drop_all` will drop all the `collections` within your `DB`:
+
+``` r
+db$drop_all()
+db$get_data()
+#> named list()
 ```
 
 ### Error Handling
@@ -122,6 +385,7 @@ db$update(
   value = 1, 
   new_data = list(age = 40)
 )  
+#> Error in private$.find_index_by_key(collection, key, value): Error: Collection 'nonexistant' does not exist.
 ```
 
 ### Future Features
