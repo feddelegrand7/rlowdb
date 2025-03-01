@@ -216,6 +216,23 @@ Load a JSON backup and replace the current database.
   db$search("users", "name", "alice", ignore.case = TRUE)
 }
 
+Insert Multiple Records into a Collection
+
+This method inserts multiple records into a specified collection at once.
+Each record should be a named list representing an entry in the collection.
+
+
+## ------------------------------------------------
+## Method `rlowdb$bulk_insert`
+## ------------------------------------------------
+
+\dontrun {
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie", age = 40)
+))
+}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -241,6 +258,7 @@ Load a JSON backup and replace the current database.
 \item \href{#method-rlowdb-restore}{\code{rlowdb$restore()}}
 \item \href{#method-rlowdb-backup}{\code{rlowdb$backup()}}
 \item \href{#method-rlowdb-search}{\code{rlowdb$search()}}
+\item \href{#method-rlowdb-bulk_insert}{\code{rlowdb$bulk_insert()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -890,6 +908,43 @@ A list of matching records. Returns an empty list if no matches are found.
   db$search("users", "name", "alice", ignore.case = TRUE)
 }
 
+Insert Multiple Records into a Collection
+
+This method inserts multiple records into a specified collection at once.
+Each record should be a named list representing an entry in the collection.
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-bulk_insert"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-bulk_insert}{}}}
+\subsection{Method \code{bulk_insert()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$bulk_insert(collection, records)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{A character string specifying the name of the collection.}
+
+\item{\code{records}}{A list of named lists, where each named list represents a record to insert.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun {
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie", age = 40)
+))
+}
 }
 \if{html}{\out{</div>}}
 

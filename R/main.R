@@ -40,6 +40,9 @@ rlowdb <- R6::R6Class(
     #' }
     #'
     insert = function(collection, record) {
+      if (!is.list(record) || is.null(names(record)) || !all(nzchar(names(record)))) {
+        stop("Error: 'record' must be a named list with valid field names.")
+      }
       private$.ensure_key(collection)
       private$.data[[collection]] <- append(private$.data[[collection]], list(record))
       private$.write_data()
@@ -455,6 +458,45 @@ rlowdb <- R6::R6Class(
       })
 
       return(matching_records)
+    },
+
+    #' Insert Multiple Records into a Collection
+    #'
+    #' This method inserts multiple records into a specified collection at once.
+    #' Each record should be a named list representing an entry in the collection.
+    #'
+    #' @param collection A character string specifying the name of the collection.
+    #' @param records A list of named lists, where each named list represents a record to insert.
+    #'
+    #' @examples
+    #' \dontrun {
+    #' db$bulk_insert("users", list(
+    #'   list(id = 1, name = "Alice", age = 25),
+    #'   list(id = 2, name = "Bob", age = 32),
+    #'   list(id = 3, name = "Charlie", age = 40)
+    #' ))
+    #' }
+    bulk_insert = function(collection, records) {
+
+      if (!is.list(records) || length(records) == 0) {
+        stop("Error: 'records' must be a non-empty list of named lists.")
+      }
+
+      valid_records <- sapply(records, function(record) {
+        is.list(record) && !is.null(names(record)) && all(nzchar(names(record)))
+      })
+
+      if (!all(valid_records)) {
+        stop("Error: Each record must be a named list with valid field names.")
+      }
+
+      if (is.null(private$.data[[collection]])) {
+        private$.data[[collection]] <- list()
+      }
+
+      private$.data[[collection]] <- c(private$.data[[collection]], records)
+      private$.write_data()
+
     }
 
   ),
@@ -493,4 +535,5 @@ rlowdb <- R6::R6Class(
     }
   )
 )
+
 
