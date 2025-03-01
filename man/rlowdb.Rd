@@ -56,6 +56,15 @@ and enables querying with custom functions.
 
 
 ## ------------------------------------------------
+## Method `rlowdb$upsert`
+## ------------------------------------------------
+
+\dontrun{
+  db$upsert("users", "id", 1, list(name = "Alice Updated"))
+}
+
+
+## ------------------------------------------------
 ## Method `rlowdb$delete`
 ## ------------------------------------------------
 
@@ -83,6 +92,22 @@ and enables querying with custom functions.
 
   # Query all posts (no condition)
   db$query("posts", "")
+}
+
+Filter Records Using a Custom Function
+
+This method applies a user-defined function to filter records in a specified collection.
+The function should take a record as input and return `TRUE` for records that should be included
+in the result and `FALSE` for records that should be excluded.
+
+
+## ------------------------------------------------
+## Method `rlowdb$filter`
+## ------------------------------------------------
+
+\dontrun{
+# Find users older than 30
+  db$filter_custom("users", function(record) record$age > 30)
 }
 
 
@@ -157,6 +182,40 @@ and enables querying with custom functions.
   db$exists_value("users", "id", 1)
 }
 
+Perform a Transaction with Rollback on Failure
+
+This method executes a sequence of operations as a transaction.
+If any operation fails, it rolls back all changes to maintain data integrity.
+
+## ------------------------------------------------
+## Method `rlowdb$transaction`
+## ------------------------------------------------
+
+\dontrun{
+db$transaction(function() {
+  db$insert("users", list(id = 4, name = "Zlatan", age = 40))
+  db$insert("users", list(id = 5, name = "Neymar", age = 28))
+  stop("Simulated failure") # This will trigger a rollback
+})
+}
+Load a JSON backup and replace the current database.
+
+## ------------------------------------------------
+## Method `rlowdb$search`
+## ------------------------------------------------
+
+\dontrun{
+  db$insert("users", list(id = 1, name = "Alice"))
+  db$insert("users", list(id = 2, name = "Bob"))
+  db$insert("users", list(id = 3, name = "alice"))
+
+# Case-sensitive search
+  db$search("users", "name", "Alice", ignore.case = FALSE)
+
+# Case-insensitive search
+  db$search("users", "name", "alice", ignore.case = TRUE)
+}
+
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -166,8 +225,10 @@ and enables querying with custom functions.
 \item \href{#method-rlowdb-insert}{\code{rlowdb$insert()}}
 \item \href{#method-rlowdb-find}{\code{rlowdb$find()}}
 \item \href{#method-rlowdb-update}{\code{rlowdb$update()}}
+\item \href{#method-rlowdb-upsert}{\code{rlowdb$upsert()}}
 \item \href{#method-rlowdb-delete}{\code{rlowdb$delete()}}
 \item \href{#method-rlowdb-query}{\code{rlowdb$query()}}
+\item \href{#method-rlowdb-filter}{\code{rlowdb$filter()}}
 \item \href{#method-rlowdb-drop}{\code{rlowdb$drop()}}
 \item \href{#method-rlowdb-drop_all}{\code{rlowdb$drop_all()}}
 \item \href{#method-rlowdb-clear}{\code{rlowdb$clear()}}
@@ -176,6 +237,10 @@ and enables querying with custom functions.
 \item \href{#method-rlowdb-exists_collection}{\code{rlowdb$exists_collection()}}
 \item \href{#method-rlowdb-exists_key}{\code{rlowdb$exists_key()}}
 \item \href{#method-rlowdb-exists_value}{\code{rlowdb$exists_value()}}
+\item \href{#method-rlowdb-transaction}{\code{rlowdb$transaction()}}
+\item \href{#method-rlowdb-restore}{\code{rlowdb$restore()}}
+\item \href{#method-rlowdb-backup}{\code{rlowdb$backup()}}
+\item \href{#method-rlowdb-search}{\code{rlowdb$search()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -326,6 +391,40 @@ Update existing records in a collection.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-upsert"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-upsert}{}}}
+\subsection{Method \code{upsert()}}{
+If a record exists, update it; otherwise, insert a new record.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$upsert(collection, key, value, new_data)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name.}
+
+\item{\code{key}}{The field name to search for.}
+
+\item{\code{value}}{The value to match.}
+
+\item{\code{new_data}}{A named list containing the updated data.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$upsert("users", "id", 1, list(name = "Alice Updated"))
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-rlowdb-delete"></a>}}
 \if{latex}{\out{\hypertarget{method-rlowdb-delete}{}}}
 \subsection{Method \code{delete()}}{
@@ -403,6 +502,45 @@ A list of records that satisfy the condition. If no records match, returns an em
 
   # Query all posts (no condition)
   db$query("posts", "")
+}
+
+Filter Records Using a Custom Function
+
+This method applies a user-defined function to filter records in a specified collection.
+The function should take a record as input and return `TRUE` for records that should be included
+in the result and `FALSE` for records that should be excluded.
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-filter"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-filter}{}}}
+\subsection{Method \code{filter()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$filter(collection, filter_fn)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{A character string specifying the name of the collection.}
+
+\item{\code{filter_fn}}{A function that takes a record (a list) as input and returns `TRUE` or `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of records that satisfy the filtering condition.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+# Find users older than 30
+  db$filter_custom("users", function(record) record$age > 30)
 }
 
 }
@@ -634,6 +772,122 @@ TRUE if the value exists, FALSE otherwise
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
   db$exists_value("users", "id", 1)
+}
+
+Perform a Transaction with Rollback on Failure
+
+This method executes a sequence of operations as a transaction.
+If any operation fails, it rolls back all changes to maintain data integrity.
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-transaction"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-transaction}{}}}
+\subsection{Method \code{transaction()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$transaction(transaction_fn)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{transaction_fn}}{A function that performs operations on `self`. It should not return a value.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+db$transaction(function() {
+  db$insert("users", list(id = 4, name = "Zlatan", age = 40))
+  db$insert("users", list(id = 5, name = "Neymar", age = 28))
+  stop("Simulated failure") # This will trigger a rollback
+})
+}
+Load a JSON backup and replace the current database.
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-restore"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-restore}{}}}
+\subsection{Method \code{restore()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$restore(backup_path)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{backup_path}}{The path of the backup JSON file.
+Allow users to quickly backup their database.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-backup"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-backup}{}}}
+\subsection{Method \code{backup()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$backup(backup_path)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{backup_path}}{The path of the backup JSON file
+Search Records in a Collection
+
+This method searches for records in a collection where a specified key's value
+contains a given search term.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-search"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-search}{}}}
+\subsection{Method \code{search()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$search(collection, key, term, ignore.case = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{A character string specifying the name of the collection.}
+
+\item{\code{key}}{A character string specifying the field to search within.}
+
+\item{\code{term}}{A character string specifying the term to search for.}
+
+\item{\code{ignore.case}}{A logical value indicating whether the search should be case-insensitive (default: `FALSE`).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of matching records. Returns an empty list if no matches are found.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$insert("users", list(id = 1, name = "Alice"))
+  db$insert("users", list(id = 2, name = "Bob"))
+  db$insert("users", list(id = 3, name = "alice"))
+
+# Case-sensitive search
+  db$search("users", "name", "Alice", ignore.case = FALSE)
+
+# Case-insensitive search
+  db$search("users", "name", "alice", ignore.case = TRUE)
 }
 
 }

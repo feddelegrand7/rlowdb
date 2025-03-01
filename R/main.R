@@ -180,6 +180,36 @@ rlowdb <- R6::R6Class(
       return(filtered_records)
     },
 
+    #' Filter Records Using a Custom Function
+    #'
+    #' This method applies a user-defined function to filter records in a specified collection.
+    #' The function should take a record as input and return `TRUE` for records that should be included
+    #' in the result and `FALSE` for records that should be excluded.
+    #'
+    #' @param collection A character string specifying the name of the collection.
+    #' @param filter_fn A function that takes a record (a list) as input and returns `TRUE` or `FALSE`.
+    #'
+    #' @return A list of records that satisfy the filtering condition.
+    #' @examples
+    #' \dontrun{
+    #' # Find users older than 30
+    #'   db$filter_custom("users", function(record) record$age > 30)
+    #' }
+    #'
+
+    filter = function(collection, filter_fn) {
+
+      if (!is.function(filter_fn)) {
+        stop("Error: 'filter_fn' must be a function.")
+      }
+
+      if (!collection %in% names(private$.data)) {
+        stop(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      purrr::keep(private$.data[[collection]], filter_fn)
+    },
+
     #' @description Just like DROP TABLE in SQL, drops a complete collection.
     #' @param collection The collection name.
     #' @examples
@@ -331,7 +361,102 @@ rlowdb <- R6::R6Class(
       }
 
       exists_val
+    },
+
+    #' Perform a Transaction with Rollback on Failure
+    #'
+    #' This method executes a sequence of operations as a transaction.
+    #' If any operation fails, it rolls back all changes to maintain data integrity.
+    #' @param transaction_fn A function that performs operations on `self`. It should not return a value.
+    #' @examples
+    #' \dontrun{
+    #' db$transaction(function() {
+    #'   db$insert("users", list(id = 4, name = "Zlatan", age = 40))
+    #'   db$insert("users", list(id = 5, name = "Neymar", age = 28))
+    #'   stop("Simulated failure") # This will trigger a rollback
+    #' })
+    #' }
+
+
+    transaction = function(transaction_fn) {
+      if (!is.function(transaction_fn)) {
+        stop("Error: 'transaction_fn' must be a function.")
+      }
+      original_data <- private$.data
+      tryCatch({
+        transaction_fn()
+        private$.write_data()
+      }, error = function(e) {
+        private$.data <- original_data
+        stop(sprintf("Transaction failed: %s", e$message))
+      })
+    },
+
+    #' Load a JSON backup and replace the current database.
+    #' @param backup_path The path of the backup JSON file.
+
+    restore = function(backup_path) {
+      if (!file.exists(backup_path)) {
+        stop("Error: Backup file does not exist.")
+      }
+
+      private$.data <- jsonlite::fromJSON(backup_path, simplifyVector = FALSE)
+      private$.write_data()
+    },
+
+    #' Allow users to quickly backup their database.
+    #' @param backup_path The path of the backup JSON file
+
+    backup = function(backup_path) {
+      jsonlite::write_json(private$.data, backup_path, pretty = TRUE, auto_unbox = TRUE)
+    },
+
+    #' Search Records in a Collection
+    #'
+    #' This method searches for records in a collection where a specified key's value
+    #' contains a given search term.
+    #'
+    #' @param collection A character string specifying the name of the collection.
+    #' @param key A character string specifying the field to search within.
+    #' @param term A character string specifying the term to search for.
+    #' @param ignore.case A logical value indicating whether the search should be case-insensitive (default: `FALSE`).
+    #'
+    #' @return A list of matching records. Returns an empty list if no matches are found.
+    #'
+    #' @examples
+    #' \dontrun{
+    #'   db$insert("users", list(id = 1, name = "Alice"))
+    #'   db$insert("users", list(id = 2, name = "Bob"))
+    #'   db$insert("users", list(id = 3, name = "alice"))
+    #'
+    #' # Case-sensitive search
+    #'   db$search("users", "name", "Alice", ignore.case = FALSE)
+    #'
+    #' # Case-insensitive search
+    #'   db$search("users", "name", "alice", ignore.case = TRUE)
+    #' }
+    #'
+    search = function(collection, key, term, ignore.case = FALSE) {
+      if (!self$exists_collection(collection)) {
+        stop(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      if (!self$exists_key(collection, key)) {
+        stop(sprintf("Error: Key '%s' does not exist in collection '%s'.", key, collection))
+      }
+
+      matching_records <- purrr::keep(private$.data[[collection]], function(item) {
+
+        value <- as.character(item[[key]])
+        term <- as.character(term)
+
+        grepl(term, value, ignore.case = TRUE)
+
+      })
+
+      return(matching_records)
     }
+
   ),
 
   private = list(
@@ -368,12 +493,4 @@ rlowdb <- R6::R6Class(
     }
   )
 )
-
-
-
-
-
-
-
-
 

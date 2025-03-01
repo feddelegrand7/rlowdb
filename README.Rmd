@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-
 `rlowdb` is a lightweight, JSON-based database for R, inspired by [LowDB](https://github.com/typicode/lowdb) from JavaScript. It provides a simple and efficient way to store, retrieve, update, and delete structured data without the need for a full database system.
 
 ## Features
@@ -154,7 +153,6 @@ The `list_collections` method returns the names of the collections within your D
 db$list_collections()
 ```
 
-
 ### Counting 
 
 Using the `count` method, you can get the number of records a collection has:
@@ -185,6 +183,7 @@ db$exists_value(
   value = "Alice"
 )
 ```
+
 ```{r}
 db$exists_value(
   collection = "users",
