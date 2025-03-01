@@ -94,12 +94,41 @@ db$update(
   value = 1, 
   new_data = list(age = 31)
 )
+
+db$get_data()
 ```
+
+The `upsert` methods allows you to update a record if it exists, otherwise, it will be inserted:
+
+```{r}
+db$upsert(
+  collection = "users", 
+  key = "id", 
+  value = 1, 
+  new_data = list(age = 25)
+)
+
+db$get_data()
+```
+
+```{r}
+db$upsert(
+  collection = "users", 
+  key = "id", 
+  value = 100, 
+  new_data = list(age = 25)
+)
+
+db$get_data()
+```
+
 
 ### Deleting Records
 
 ```{r}
-db$delete(collection = "users", key = "id", value = 2) 
+db$delete(collection = "users", key = "id", value = 100) 
+
+db$get_data()
 ```
 
 ### Querying Data
@@ -113,7 +142,7 @@ db$query(collection = "users", condition = "age > 25")
 Query with multiple conditions:
 
 ```{r}
-db$query(collection = "users", condition = "age > 25 & id > 1")
+db$query(collection = "users", condition = "age > 20 & id > 1")
 ```
 
 
@@ -226,6 +255,9 @@ Please note that the ralger project is released with a [Contributor Code of Cond
 
 
 
+```{r, echo=FALSE}
+unlink("DB.json")
+```
 
 
 

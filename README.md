@@ -133,12 +133,177 @@ db$update(
   value = 1, 
   new_data = list(age = 31)
 )
+
+db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 31
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 2
+#> 
+#> $users[[2]]$name
+#> [1] "Bob"
+#> 
+#> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
+#> [1] 30
+```
+
+The `upsert` methods allows you to update a record if it exists,
+otherwise, it will be inserted:
+
+``` r
+db$upsert(
+  collection = "users", 
+  key = "id", 
+  value = 1, 
+  new_data = list(age = 25)
+)
+
+db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 2
+#> 
+#> $users[[2]]$name
+#> [1] "Bob"
+#> 
+#> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
+#> [1] 30
+```
+
+``` r
+db$upsert(
+  collection = "users", 
+  key = "id", 
+  value = 100, 
+  new_data = list(age = 25)
+)
+
+db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 2
+#> 
+#> $users[[2]]$name
+#> [1] "Bob"
+#> 
+#> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
+#> [1] 30
+#> 
+#> 
+#> $users[[4]]
+#> $users[[4]]$id
+#> [1] 100
+#> 
+#> $users[[4]]$age
+#> [1] 25
 ```
 
 ### Deleting Records
 
 ``` r
-db$delete(collection = "users", key = "id", value = 2) 
+db$delete(collection = "users", key = "id", value = 100) 
+
+db$get_data()
+#> $users
+#> $users[[1]]
+#> $users[[1]]$id
+#> [1] 1
+#> 
+#> $users[[1]]$name
+#> [1] "Alice"
+#> 
+#> $users[[1]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[2]]
+#> $users[[2]]$id
+#> [1] 2
+#> 
+#> $users[[2]]$name
+#> [1] "Bob"
+#> 
+#> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
+#> [1] 30
 ```
 
 ### Querying Data
@@ -149,13 +314,28 @@ Find users older than 25:
 db$query(collection = "users", condition = "age > 25")
 #> [[1]]
 #> [[1]]$id
-#> [1] 1
+#> [1] 3
 #> 
 #> [[1]]$name
 #> [1] "Alice"
 #> 
 #> [[1]]$age
-#> [1] 31
+#> [1] 30
+```
+
+Query with multiple conditions:
+
+``` r
+db$query(collection = "users", condition = "age > 20 & id > 1")
+#> [[1]]
+#> [[1]]$id
+#> [1] 2
+#> 
+#> [[1]]$name
+#> [1] "Bob"
+#> 
+#> [[1]]$age
+#> [1] 25
 #> 
 #> 
 #> [[2]]
@@ -166,21 +346,6 @@ db$query(collection = "users", condition = "age > 25")
 #> [1] "Alice"
 #> 
 #> [[2]]$age
-#> [1] 30
-```
-
-Query with multiple conditions:
-
-``` r
-db$query(collection = "users", condition = "age > 25 & id > 1")
-#> [[1]]
-#> [[1]]$id
-#> [1] 3
-#> 
-#> [[1]]$name
-#> [1] "Alice"
-#> 
-#> [[1]]$age
 #> [1] 30
 ```
 
@@ -201,7 +366,7 @@ has:
 
 ``` r
 db$count(collection = "users") 
-#> [1] 2
+#> [1] 3
 ```
 
 ### Check if exists
@@ -263,17 +428,28 @@ db$get_data()
 #> [1] "Alice"
 #> 
 #> $users[[1]]$age
-#> [1] 31
+#> [1] 25
 #> 
 #> 
 #> $users[[2]]
 #> $users[[2]]$id
-#> [1] 3
+#> [1] 2
 #> 
 #> $users[[2]]$name
-#> [1] "Alice"
+#> [1] "Bob"
 #> 
 #> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
 #> [1] 30
 #> 
 #> 
@@ -317,17 +493,28 @@ db$get_data()
 #> [1] "Alice"
 #> 
 #> $users[[1]]$age
-#> [1] 31
+#> [1] 25
 #> 
 #> 
 #> $users[[2]]
 #> $users[[2]]$id
-#> [1] 3
+#> [1] 2
 #> 
 #> $users[[2]]$name
-#> [1] "Alice"
+#> [1] "Bob"
 #> 
 #> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
 #> [1] 30
 #> 
 #> 
@@ -350,17 +537,28 @@ db$get_data()
 #> [1] "Alice"
 #> 
 #> $users[[1]]$age
-#> [1] 31
+#> [1] 25
 #> 
 #> 
 #> $users[[2]]
 #> $users[[2]]$id
-#> [1] 3
+#> [1] 2
 #> 
 #> $users[[2]]$name
-#> [1] "Alice"
+#> [1] "Bob"
 #> 
 #> $users[[2]]$age
+#> [1] 25
+#> 
+#> 
+#> $users[[3]]
+#> $users[[3]]$id
+#> [1] 3
+#> 
+#> $users[[3]]$name
+#> [1] "Alice"
+#> 
+#> $users[[3]]$age
 #> [1] 30
 ```
 

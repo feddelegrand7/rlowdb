@@ -87,6 +87,25 @@ rlowdb <- R6::R6Class(
       }
     },
 
+    #' @description If a record exists, update it; otherwise, insert a new record.
+    #' @param collection The collection name.
+    #' @param key The field name to search for.
+    #' @param value The value to match.
+    #' @param new_data A named list containing the updated data.
+    #' @examples
+    #' \dontrun{
+    #'   db$upsert("users", "id", 1, list(name = "Alice Updated"))
+    #' }
+    #'
+    upsert = function(collection, key, value, new_data) {
+      if (self$exists_value(collection, key, value)) {
+        self$update(collection, key, value, new_data)
+      } else {
+        record <- c(setNames(list(value), key), new_data)
+        self$insert(collection, record)
+      }
+    },
+
     #' @description Delete records from a collection that match a given key-value pair.
     #' @param collection The collection name.
     #' @param key The field name to search for.
