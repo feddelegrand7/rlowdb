@@ -212,6 +212,14 @@ rlowdb <- R6::R6Class(
       private$.write_data()
     },
 
+    #' @description Count the number of records in a collection
+    #' @param collection the collection name
+    #' @return numeric
+    #' @examples
+    #' \dontrun{
+    #'   db$count("users")
+    #' }
+    #'
     count = function(collection) {
 
       if (!collection %in% names(private$.data)) {

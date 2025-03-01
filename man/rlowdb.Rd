@@ -103,6 +103,60 @@ and enables querying with custom functions.
   db$drop_all()
 }
 
+
+## ------------------------------------------------
+## Method `rlowdb$clear`
+## ------------------------------------------------
+
+\dontrun{
+  db$clear("users")
+}
+
+
+## ------------------------------------------------
+## Method `rlowdb$count`
+## ------------------------------------------------
+
+\dontrun{
+  db$count("users")
+}
+
+
+## ------------------------------------------------
+## Method `rlowdb$list_collections`
+## ------------------------------------------------
+
+\dontrun{
+  db$list_collections()
+}
+
+
+## ------------------------------------------------
+## Method `rlowdb$exists_collection`
+## ------------------------------------------------
+
+\dontrun{
+  db$exists_collection("users")
+}
+
+
+## ------------------------------------------------
+## Method `rlowdb$exists_key`
+## ------------------------------------------------
+
+\dontrun{
+  db$exists_key("users", "name")
+}
+
+
+## ------------------------------------------------
+## Method `rlowdb$exists_value`
+## ------------------------------------------------
+
+\dontrun{
+  db$exists_value("users", "id", 1)
+}
+
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -116,6 +170,12 @@ and enables querying with custom functions.
 \item \href{#method-rlowdb-query}{\code{rlowdb$query()}}
 \item \href{#method-rlowdb-drop}{\code{rlowdb$drop()}}
 \item \href{#method-rlowdb-drop_all}{\code{rlowdb$drop_all()}}
+\item \href{#method-rlowdb-clear}{\code{rlowdb$clear()}}
+\item \href{#method-rlowdb-count}{\code{rlowdb$count()}}
+\item \href{#method-rlowdb-list_collections}{\code{rlowdb$list_collections()}}
+\item \href{#method-rlowdb-exists_collection}{\code{rlowdb$exists_collection()}}
+\item \href{#method-rlowdb-exists_key}{\code{rlowdb$exists_key()}}
+\item \href{#method-rlowdb-exists_value}{\code{rlowdb$exists_value()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -392,6 +452,188 @@ Drop all the collections available in your JSON file DB
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
   db$drop_all()
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-clear"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-clear}{}}}
+\subsection{Method \code{clear()}}{
+Removes all records from a collection without deleting the collection itself
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$clear(collection)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{the collection name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$clear("users")
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-count"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-count}{}}}
+\subsection{Method \code{count()}}{
+Count the number of records in a collection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$count(collection)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{the collection name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+numeric
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$count("users")
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-list_collections"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-list_collections}{}}}
+\subsection{Method \code{list_collections()}}{
+List the available collections
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$list_collections()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$list_collections()
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-exists_collection"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-exists_collection}{}}}
+\subsection{Method \code{exists_collection()}}{
+Check if a collection exists.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$exists_collection(collection)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+TRUE if the collection exists, FALSE otherwise
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$exists_collection("users")
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-exists_key"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-exists_key}{}}}
+\subsection{Method \code{exists_key()}}{
+Check if a key exists within a specific collection.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$exists_key(collection, key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name}
+
+\item{\code{key}}{The key name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+TRUE if the key exists, FALSE otherwise
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$exists_key("users", "name")
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-exists_value"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-exists_value}{}}}
+\subsection{Method \code{exists_value()}}{
+Check if a value exists within a specific collection/key combination.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$exists_value(collection, key, value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name}
+
+\item{\code{key}}{The key name}
+
+\item{\code{value}}{The value to look for}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+TRUE if the value exists, FALSE otherwise
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$exists_value("users", "id", 1)
 }
 
 }
