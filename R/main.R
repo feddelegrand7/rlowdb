@@ -17,7 +17,7 @@ rlowdb <- R6::R6Class(
     #' If the file does not exist, an empty database is created.
     #' @param file_path The path to the JSON file that stores the database.
     #' @examples
-    #' db <- rlowdb$new("database.json")
+    #'   db <- rlowdb$new("database.json")
     initialize = function(file_path) {
       private$.file_path <- file_path
       private$.read_data()
@@ -26,7 +26,7 @@ rlowdb <- R6::R6Class(
     #' @description Retrieve all stored data.
     #' @return A list containing all database records.
     #' @examples
-    #' db$get_data()
+    #'   db$get_data()
     get_data = function() {
       private$.data
     },
@@ -36,7 +36,7 @@ rlowdb <- R6::R6Class(
     #' @param record A named list representing the record to insert.
     #' @examples
     #' \dontrun{
-    #' db$insert("users", list(id = 1, name = "Alice"))
+    #'   db$insert("users", list(id = 1, name = "Alice"))
     #' }
     #'
     insert = function(collection, record) {
@@ -52,7 +52,7 @@ rlowdb <- R6::R6Class(
     #' @return A list of matching records. Returns an empty list if no match is found.
     #' @examples
     #' \dontrun{
-    #' db$find("users", "id", 1)
+    #'   db$find("users", "id", 1)
     #' }
     #'
     find = function(collection, key, value) {
@@ -72,7 +72,7 @@ rlowdb <- R6::R6Class(
     #' @param new_data A named list containing the updated data.
     #' @examples
     #' \dontrun{
-    #' db$update("users", "id", 1, list(name = "Alice Updated"))
+    #'   db$update("users", "id", 1, list(name = "Alice Updated"))
     #' }
     #'
     update = function(collection, key, value, new_data) {
@@ -93,7 +93,7 @@ rlowdb <- R6::R6Class(
     #' @param value The value to match.
     #' @examples
     #' \dontrun{
-    #' db$delete("users", "id", 1)
+    #'   db$delete("users", "id", 1)
     #' }
     #'
     delete = function(collection, key, value) {
@@ -124,19 +124,19 @@ rlowdb <- R6::R6Class(
     #' @examples
     #'
     #' \dontrun{
-    #' db <- rlowdb$new("db.json")
-    #' db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
-    #' db$insert("posts", list(id = 2, title = "Data Management", views = 250))
-    #' db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
+    #'   db <- rlowdb$new("db.json")
+    #'   db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
+    #'   db$insert("posts", list(id = 2, title = "Data Management", views = 250))
+    #'   db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
     #'
-    #' # Query posts with views > 200 AND id > 2
-    #' db$query("posts", "views > 200 & id > 2")
+    #'   # Query posts with views > 200 AND id > 2
+    #'   db$query("posts", "views > 200 & id > 2")
     #'
-    #' # Query posts with views > 100 OR id == 1
-    #' db$query("posts", "views > 100 | id == 1")
+    #'   # Query posts with views > 100 OR id == 1
+    #'   db$query("posts", "views > 100 | id == 1")
     #'
-    #' # Query all posts (no condition)
-    #' db$query("posts", "")
+    #'   # Query all posts (no condition)
+    #'   db$query("posts", "")
     #' }
     #'
     query = function(collection, condition = NULL) {
@@ -159,6 +159,41 @@ rlowdb <- R6::R6Class(
       })
 
       return(filtered_records)
+    },
+
+    #' @description Just like DROP TABLE in SQL, drops a complete collection.
+    #' @param collection The collection name.
+    #' @examples
+    #' \dontrun{
+    #'   db$drop("users")
+    #' }
+    #'
+    drop = function(collection) {
+
+      if (!collection %in% names(private$.data)) {
+        stop(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      private$.data[[collection]] <- NULL
+
+      private$.write_data()
+
+    },
+
+    #' @description Drop all the collections available in your JSON file DB
+    #' @examples
+    #' \dontrun{
+    #'   db$drop_all()
+    #' }
+    #'
+    drop_all = function() {
+
+      for (collection in names(private$.data)) {
+        private$.data[[collection]] <- NULL
+      }
+
+      private$.write_data()
+
     }
   ),
 

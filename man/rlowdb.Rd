@@ -20,20 +20,20 @@ and enables querying with custom functions.
 ## Method `rlowdb$new`
 ## ------------------------------------------------
 
-db <- rlowdb$new("database.json")
+  db <- rlowdb$new("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$get_data`
 ## ------------------------------------------------
 
-db$get_data()
+  db$get_data()
 
 ## ------------------------------------------------
 ## Method `rlowdb$insert`
 ## ------------------------------------------------
 
 \dontrun{
-db$insert("users", list(id = 1, name = "Alice"))
+  db$insert("users", list(id = 1, name = "Alice"))
 }
 
 
@@ -42,7 +42,7 @@ db$insert("users", list(id = 1, name = "Alice"))
 ## ------------------------------------------------
 
 \dontrun{
-db$find("users", "id", 1)
+  db$find("users", "id", 1)
 }
 
 
@@ -51,7 +51,7 @@ db$find("users", "id", 1)
 ## ------------------------------------------------
 
 \dontrun{
-db$update("users", "id", 1, list(name = "Alice Updated"))
+  db$update("users", "id", 1, list(name = "Alice Updated"))
 }
 
 
@@ -60,7 +60,7 @@ db$update("users", "id", 1, list(name = "Alice Updated"))
 ## ------------------------------------------------
 
 \dontrun{
-db$delete("users", "id", 1)
+  db$delete("users", "id", 1)
 }
 
 
@@ -70,19 +70,37 @@ db$delete("users", "id", 1)
 
 
 \dontrun{
-db <- rlowdb$new("db.json")
-db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
-db$insert("posts", list(id = 2, title = "Data Management", views = 250))
-db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
+  db <- rlowdb$new("db.json")
+  db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
+  db$insert("posts", list(id = 2, title = "Data Management", views = 250))
+  db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
 
-# Query posts with views > 200 AND id > 2
-db$query("posts", "views > 200 & id > 2")
+  # Query posts with views > 200 AND id > 2
+  db$query("posts", "views > 200 & id > 2")
 
-# Query posts with views > 100 OR id == 1
-db$query("posts", "views > 100 | id == 1")
+  # Query posts with views > 100 OR id == 1
+  db$query("posts", "views > 100 | id == 1")
 
-# Query all posts (no condition)
-db$query("posts", "")
+  # Query all posts (no condition)
+  db$query("posts", "")
+}
+
+
+## ------------------------------------------------
+## Method `rlowdb$drop`
+## ------------------------------------------------
+
+\dontrun{
+  db$drop("users")
+}
+
+
+## ------------------------------------------------
+## Method `rlowdb$drop_all`
+## ------------------------------------------------
+
+\dontrun{
+  db$drop_all()
 }
 
 }
@@ -96,6 +114,8 @@ db$query("posts", "")
 \item \href{#method-rlowdb-update}{\code{rlowdb$update()}}
 \item \href{#method-rlowdb-delete}{\code{rlowdb$delete()}}
 \item \href{#method-rlowdb-query}{\code{rlowdb$query()}}
+\item \href{#method-rlowdb-drop}{\code{rlowdb$drop()}}
+\item \href{#method-rlowdb-drop_all}{\code{rlowdb$drop_all()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -118,7 +138,7 @@ If the file does not exist, an empty database is created.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db <- rlowdb$new("database.json")
+\preformatted{  db <- rlowdb$new("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -139,7 +159,7 @@ A list containing all database records.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db$get_data()
+\preformatted{  db$get_data()
 }
 \if{html}{\out{</div>}}
 
@@ -167,7 +187,7 @@ Insert a new record into a specified collection.
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
-db$insert("users", list(id = 1, name = "Alice"))
+  db$insert("users", list(id = 1, name = "Alice"))
 }
 
 }
@@ -202,7 +222,7 @@ A list of matching records. Returns an empty list if no match is found.
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
-db$find("users", "id", 1)
+  db$find("users", "id", 1)
 }
 
 }
@@ -236,7 +256,7 @@ Update existing records in a collection.
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
-db$update("users", "id", 1, list(name = "Alice Updated"))
+  db$update("users", "id", 1, list(name = "Alice Updated"))
 }
 
 }
@@ -268,7 +288,7 @@ Delete records from a collection that match a given key-value pair.
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
-db$delete("users", "id", 1)
+  db$delete("users", "id", 1)
 }
 
 }
@@ -310,19 +330,68 @@ A list of records that satisfy the condition. If no records match, returns an em
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{
 \dontrun{
-db <- rlowdb$new("db.json")
-db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
-db$insert("posts", list(id = 2, title = "Data Management", views = 250))
-db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
+  db <- rlowdb$new("db.json")
+  db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
+  db$insert("posts", list(id = 2, title = "Data Management", views = 250))
+  db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
 
-# Query posts with views > 200 AND id > 2
-db$query("posts", "views > 200 & id > 2")
+  # Query posts with views > 200 AND id > 2
+  db$query("posts", "views > 200 & id > 2")
 
-# Query posts with views > 100 OR id == 1
-db$query("posts", "views > 100 | id == 1")
+  # Query posts with views > 100 OR id == 1
+  db$query("posts", "views > 100 | id == 1")
 
-# Query all posts (no condition)
-db$query("posts", "")
+  # Query all posts (no condition)
+  db$query("posts", "")
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-drop"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-drop}{}}}
+\subsection{Method \code{drop()}}{
+Just like DROP TABLE in SQL, drops a complete collection.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$drop(collection)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$drop("users")
+}
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-drop_all"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-drop_all}{}}}
+\subsection{Method \code{drop_all()}}{
+Drop all the collections available in your JSON file DB
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$drop_all()}\if{html}{\out{</div>}}
+}
+
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+  db$drop_all()
 }
 
 }
