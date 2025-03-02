@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # rlowdb
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main)
 <!-- badges: end -->
 
 `rlowdb` is a lightweight, JSON-based database for R, inspired by [LowDB](https://github.com/typicode/lowdb) from JavaScript. It provides a simple and efficient way to store, retrieve, update, and delete structured data without the need for a full database system.
