@@ -107,7 +107,7 @@ in the result and `FALSE` for records that should be excluded.
 
 \dontrun{
 # Find users older than 30
-  db$filter_custom("users", function(record) record$age > 30)
+  db$filter("users", function(record) record$age > 30)
 }
 
 
@@ -558,7 +558,7 @@ A list of records that satisfy the filtering condition.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 # Find users older than 30
-  db$filter_custom("users", function(record) record$age > 30)
+  db$filter("users", function(record) record$age > 30)
 }
 
 }
