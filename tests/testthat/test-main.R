@@ -128,6 +128,31 @@ test_that("count method works as expected", {
 
   expect_equal(db$count("posts"), 3)
 
+})
+
+test_that("transaction works as expected", {
+
+  db$transaction(function() {
+
+    db$insert("posts", list(id = 6, title = "Shiny for Python"))
+    db$insert("posts", list(id = 6, title = "Introduction to R"))
+
+  })
+
+  testthat::expect_equal(db$count("posts"), 5)
+
+  testthat::expect_error({
+    db$transaction(function() {
+
+      db$insert("posts", list(id = 6, title = "Shiny for Python"))
+      db$insert("posts", list(id = 6, title = "Introduction to R"))
+
+      stop("Random error. Rolling back expected")
+
+    })
+  })
+
+  testthat::expect_equal(db$count("posts"), 5)
 
 })
 
