@@ -199,6 +199,13 @@ test_that("drop works as expected", {
 
 })
 
+test_that("drop all works as expected", {
 
+  db$drop_all()
+
+  expect_equal(class(db$get_data()), "list")
+  expect_equal(length(db$get_data()), 0)
+
+})
 
 unlink(test_db_file)
