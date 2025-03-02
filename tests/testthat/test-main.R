@@ -134,7 +134,7 @@ test_that("transaction works as expected", {
 
   db$transaction(function() {
 
-    db$insert("posts", list(id = 6, title = "Shiny for Python"))
+    db$insert("posts", list(id = 6, title = "Shiny for Python", views = 1000))
     db$insert("posts", list(id = 6, title = "Introduction to R"))
 
   })
@@ -144,8 +144,8 @@ test_that("transaction works as expected", {
   testthat::expect_error({
     db$transaction(function() {
 
-      db$insert("posts", list(id = 6, title = "Shiny for Python"))
-      db$insert("posts", list(id = 6, title = "Introduction to R"))
+      db$insert("posts", list(id = 6, title = "Shiny for Python", views = 1000))
+      db$insert("posts", list(id = 6, title = "Introduction to R", views = 200))
 
       stop("Random error. Rolling back expected")
 
@@ -153,6 +153,23 @@ test_that("transaction works as expected", {
   })
 
   testthat::expect_equal(db$count("posts"), 5)
+
+})
+
+
+test_that("filter method works as expected", {
+
+  expect_error(
+    db$filter("posts", "not a function"),
+    regexp = "Error: 'filter_fn' must be a function."
+  )
+
+  res <- db$filter("posts", function(x) {
+    x$views >= 1000
+  })
+
+  expect_gte(res[[1]]$views, 1000)
+  expect_gte(res[[2]]$views, 1000)
 
 })
 
@@ -181,5 +198,7 @@ test_that("drop works as expected", {
   expect_error(db$count("readers"), regexp = "Collection 'readers' does not exist")
 
 })
+
+
 
 unlink(test_db_file)

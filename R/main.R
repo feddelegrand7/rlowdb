@@ -196,7 +196,7 @@ rlowdb <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' # Find users older than 30
-    #'   db$filter_custom("users", function(record) record$age > 30)
+    #'   db$filter("users", function(record) record$age > 30)
     #' }
     #'
 
@@ -210,7 +210,13 @@ rlowdb <- R6::R6Class(
         stop(sprintf("Error: Collection '%s' does not exist.", collection))
       }
 
-      purrr::keep(private$.data[[collection]], filter_fn)
+      safe_filter_fn <- purrr::safely(filter_fn, otherwise = FALSE)
+
+      purrr::keep(private$.data[[collection]], function(x) {
+        result <- safe_filter_fn(x)$result
+        isTRUE(result)
+      })
+
     },
 
     #' @description Just like DROP TABLE in SQL, drops a complete collection.
