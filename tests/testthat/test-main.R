@@ -169,7 +169,6 @@ test_that("clear works as expected", {
 
 })
 
-
 test_that("drop works as expected", {
 
   db$insert("readers", list(name = "Fodil", city = "Hamburg"))
@@ -182,6 +181,5 @@ test_that("drop works as expected", {
   expect_error(db$count("readers"), regexp = "Collection 'readers' does not exist")
 
 })
-
 
 unlink(test_db_file)
