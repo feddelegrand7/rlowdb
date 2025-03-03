@@ -4,11 +4,6 @@
 \alias{rlowdb}
 \title{rlowdb: A Simple JSON-Based Database in R}
 \description{
-rlowdb: A Simple JSON-Based Database in R
-
-rlowdb: A Simple JSON-Based Database in R
-}
-\details{
 The `rlowdb` class provides a lightweight, JSON-based database solution
 for storing and managing structured data in R.
 It supports CRUD operations (Create, Read, Update, Delete)
@@ -94,12 +89,6 @@ and enables querying with custom functions.
   db$query("posts", "")
 }
 
-Filter Records Using a Custom Function
-
-This method applies a user-defined function to filter records in a specified collection.
-The function should take a record as input and return `TRUE` for records that should be included
-in the result and `FALSE` for records that should be excluded.
-
 
 ## ------------------------------------------------
 ## Method `rlowdb$filter`
@@ -182,10 +171,6 @@ in the result and `FALSE` for records that should be excluded.
   db$exists_value("users", "id", 1)
 }
 
-Perform a Transaction with Rollback on Failure
-
-This method executes a sequence of operations as a transaction.
-If any operation fails, it rolls back all changes to maintain data integrity.
 
 ## ------------------------------------------------
 ## Method `rlowdb$transaction`
@@ -198,7 +183,6 @@ db$transaction(function() {
   stop("Simulated failure") # This will trigger a rollback
 })
 }
-Load a JSON backup and replace the current database.
 
 ## ------------------------------------------------
 ## Method `rlowdb$search`
@@ -216,17 +200,12 @@ Load a JSON backup and replace the current database.
   db$search("users", "name", "alice", ignore.case = TRUE)
 }
 
-Insert Multiple Records into a Collection
-
-This method inserts multiple records into a specified collection at once.
-Each record should be a named list representing an entry in the collection.
-
 
 ## ------------------------------------------------
 ## Method `rlowdb$bulk_insert`
 ## ------------------------------------------------
 
-\dontrun {
+\dontrun{
 db$bulk_insert("users", list(
   list(id = 1, name = "Alice", age = 25),
   list(id = 2, name = "Bob", age = 32),
@@ -479,7 +458,6 @@ Delete records from a collection that match a given key-value pair.
 \if{latex}{\out{\hypertarget{method-rlowdb-query}{}}}
 \subsection{Method \code{query()}}{
 Query a collection using a condition string.
-
 This function allows filtering records from a collection using a condition
 string that is evaluated dynamically. The condition supports multiple logical
 expressions using standard R operators (e.g., `>`, `<`, `==`, `&`, `|`).
@@ -522,12 +500,6 @@ A list of records that satisfy the condition. If no records match, returns an em
   db$query("posts", "")
 }
 
-Filter Records Using a Custom Function
-
-This method applies a user-defined function to filter records in a specified collection.
-The function should take a record as input and return `TRUE` for records that should be included
-in the result and `FALSE` for records that should be excluded.
-
 }
 \if{html}{\out{</div>}}
 
@@ -538,6 +510,10 @@ in the result and `FALSE` for records that should be excluded.
 \if{html}{\out{<a id="method-rlowdb-filter"></a>}}
 \if{latex}{\out{\hypertarget{method-rlowdb-filter}{}}}
 \subsection{Method \code{filter()}}{
+Filter Records Using a Custom Function
+This method applies a user-defined function to filter records in a specified collection.
+The function should take a record as input and return `TRUE` for records that should be included
+in the result and `FALSE` for records that should be excluded.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$filter(collection, filter_fn)}\if{html}{\out{</div>}}
 }
@@ -792,10 +768,6 @@ TRUE if the value exists, FALSE otherwise
   db$exists_value("users", "id", 1)
 }
 
-Perform a Transaction with Rollback on Failure
-
-This method executes a sequence of operations as a transaction.
-If any operation fails, it rolls back all changes to maintain data integrity.
 }
 \if{html}{\out{</div>}}
 
@@ -806,6 +778,10 @@ If any operation fails, it rolls back all changes to maintain data integrity.
 \if{html}{\out{<a id="method-rlowdb-transaction"></a>}}
 \if{latex}{\out{\hypertarget{method-rlowdb-transaction}{}}}
 \subsection{Method \code{transaction()}}{
+Perform a Transaction with Rollback on Failure
+
+This method executes a sequence of operations as a transaction.
+If any operation fails, it rolls back all changes to maintain data integrity.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$transaction(transaction_fn)}\if{html}{\out{</div>}}
 }
@@ -826,7 +802,6 @@ db$transaction(function() {
   stop("Simulated failure") # This will trigger a rollback
 })
 }
-Load a JSON backup and replace the current database.
 }
 \if{html}{\out{</div>}}
 
@@ -837,6 +812,7 @@ Load a JSON backup and replace the current database.
 \if{html}{\out{<a id="method-rlowdb-restore"></a>}}
 \if{latex}{\out{\hypertarget{method-rlowdb-restore}{}}}
 \subsection{Method \code{restore()}}{
+Load a JSON backup and replace the current database.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$restore(backup_path)}\if{html}{\out{</div>}}
 }
@@ -861,11 +837,7 @@ Allow users to quickly backup their database.}
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{backup_path}}{The path of the backup JSON file
-Search Records in a Collection
-
-This method searches for records in a collection where a specified key's value
-contains a given search term.}
+\item{\code{backup_path}}{The path of the backup JSON file}
 }
 \if{html}{\out{</div>}}
 }
@@ -874,6 +846,10 @@ contains a given search term.}
 \if{html}{\out{<a id="method-rlowdb-search"></a>}}
 \if{latex}{\out{\hypertarget{method-rlowdb-search}{}}}
 \subsection{Method \code{search()}}{
+Search Records in a Collection
+
+This method searches for records in a collection where a specified key's value
+contains a given search term.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$search(collection, key, term, ignore.case = FALSE)}\if{html}{\out{</div>}}
 }
@@ -908,11 +884,6 @@ A list of matching records. Returns an empty list if no matches are found.
   db$search("users", "name", "alice", ignore.case = TRUE)
 }
 
-Insert Multiple Records into a Collection
-
-This method inserts multiple records into a specified collection at once.
-Each record should be a named list representing an entry in the collection.
-
 }
 \if{html}{\out{</div>}}
 
@@ -923,6 +894,10 @@ Each record should be a named list representing an entry in the collection.
 \if{html}{\out{<a id="method-rlowdb-bulk_insert"></a>}}
 \if{latex}{\out{\hypertarget{method-rlowdb-bulk_insert}{}}}
 \subsection{Method \code{bulk_insert()}}{
+Insert Multiple Records into a Collection
+
+This method inserts multiple records into a specified collection at once.
+Each record should be a named list representing an entry in the collection.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$bulk_insert(collection, records)}\if{html}{\out{</div>}}
 }
@@ -938,7 +913,7 @@ Each record should be a named list representing an entry in the collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun {
+\preformatted{\dontrun{
 db$bulk_insert("users", list(
   list(id = 1, name = "Alice", age = 25),
   list(id = 2, name = "Bob", age = 32),

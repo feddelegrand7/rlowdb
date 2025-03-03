@@ -1,11 +1,12 @@
 #' rlowdb: A Simple JSON-Based Database in R
 #'
+#' @description
 #' The `rlowdb` class provides a lightweight, JSON-based database solution
 #' for storing and managing structured data in R.
 #' It supports CRUD operations (Create, Read, Update, Delete)
 #' and enables querying with custom functions.
 #' @importFrom jsonlite fromJSON write_json
-#' @importFrom purrr keep
+#' @importFrom purrr keep safely
 #' @importFrom R6 R6Class
 #' @importFrom rlang eval_tidy parse_expr
 #' @export
@@ -17,7 +18,10 @@ rlowdb <- R6::R6Class(
     #' If the file does not exist, an empty database is created.
     #' @param file_path The path to the JSON file that stores the database.
     #' @examples
+    #' \dontrun{
     #'   db <- rlowdb$new("database.json")
+    #' }
+    #'
     initialize = function(file_path) {
       private$.file_path <- file_path
       private$.read_data()
@@ -26,7 +30,10 @@ rlowdb <- R6::R6Class(
     #' @description Retrieve all stored data.
     #' @return A list containing all database records.
     #' @examples
+    #' \dontrun{
     #'   db$get_data()
+    #' }
+    #
     get_data = function() {
       private$.data
     },
@@ -128,8 +135,8 @@ rlowdb <- R6::R6Class(
       }
     },
 
-    #' @description Query a collection using a condition string.
-    #'
+    #' @description
+    #' Query a collection using a condition string.
     #' This function allows filtering records from a collection using a condition
     #' string that is evaluated dynamically. The condition supports multiple logical
     #' expressions using standard R operators (e.g., `>`, `<`, `==`, `&`, `|`).
@@ -183,8 +190,8 @@ rlowdb <- R6::R6Class(
       return(filtered_records)
     },
 
+    #' @description
     #' Filter Records Using a Custom Function
-    #'
     #' This method applies a user-defined function to filter records in a specified collection.
     #' The function should take a record as input and return `TRUE` for records that should be included
     #' in the result and `FALSE` for records that should be excluded.
@@ -372,6 +379,7 @@ rlowdb <- R6::R6Class(
       exists_val
     },
 
+    #' @description
     #' Perform a Transaction with Rollback on Failure
     #'
     #' This method executes a sequence of operations as a transaction.
@@ -401,7 +409,7 @@ rlowdb <- R6::R6Class(
       })
     },
 
-    #' Load a JSON backup and replace the current database.
+    #' @description Load a JSON backup and replace the current database.
     #' @param backup_path The path of the backup JSON file.
 
     restore = function(backup_path) {
@@ -420,6 +428,7 @@ rlowdb <- R6::R6Class(
       jsonlite::write_json(private$.data, backup_path, pretty = TRUE, auto_unbox = TRUE)
     },
 
+    #' @description
     #' Search Records in a Collection
     #'
     #' This method searches for records in a collection where a specified key's value
@@ -466,6 +475,7 @@ rlowdb <- R6::R6Class(
       return(matching_records)
     },
 
+    #' @description
     #' Insert Multiple Records into a Collection
     #'
     #' This method inserts multiple records into a specified collection at once.
@@ -475,7 +485,7 @@ rlowdb <- R6::R6Class(
     #' @param records A list of named lists, where each named list represents a record to insert.
     #'
     #' @examples
-    #' \dontrun {
+    #' \dontrun{
     #' db$bulk_insert("users", list(
     #'   list(id = 1, name = "Alice", age = 25),
     #'   list(id = 2, name = "Bob", age = 32),
