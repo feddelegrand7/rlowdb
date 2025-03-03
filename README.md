@@ -7,6 +7,7 @@
 
 [![Codecov test
 coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main)
+[![R-CMD-check](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `rlowdb` is a lightweight, JSON-based database for R, inspired by
