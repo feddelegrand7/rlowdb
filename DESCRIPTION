@@ -2,15 +2,18 @@ Package: rlowdb
 Type: Package
 Title: Lightweight JSON-Based Database for R
 Version: 0.1.0
-Authors@R: 
+Authors@R: c(
     person(given = "Mohamed El Fodil",
            family = "Ihaddaden",
            role = c("aut", "cre"),
-           email = "ihaddaden.fodeil@gmail.com")
-Description: This package is a lightweight, file-based JSON database for R, inspired by 'LowDB' in JavaScript. 
-    It provides an intuitive interface for storing, retrieving, updating, and querying structured 
-    data without requiring a full-fledged database system. Ideal for prototyping, small-scale applications, 
-    and lightweight data management needs.
+           email = "ihaddaden.fodeil@gmail.com"), 
+     person(given = "lowdb developers", 
+            role = c("ctb", "cph"), 
+            comment = "developers of the lowdb package"))
+Description: The goal of 'rlowdb' is to provide a lightweight, file-based JSON database for R. 
+    Inspired by 'LowDB' in JavaScript, it generates an intuitive interface for
+    storing, retrieving, updating, and querying structured data without requiring a full-fledged database system. 
+    Ideal for prototyping, small-scale applications, and lightweight data management needs.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -15,13 +15,18 @@ and enables querying with custom functions.
 ## Method `rlowdb$new`
 ## ------------------------------------------------
 
+\dontrun{
   db <- rlowdb$new("database.json")
+}
+
 
 ## ------------------------------------------------
 ## Method `rlowdb$get_data`
 ## ------------------------------------------------
 
+\dontrun{
   db$get_data()
+}
 
 ## ------------------------------------------------
 ## Method `rlowdb$insert`
@@ -260,7 +265,10 @@ If the file does not exist, an empty database is created.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{  db <- rlowdb$new("database.json")
+\preformatted{\dontrun{
+  db <- rlowdb$new("database.json")
+}
+
 }
 \if{html}{\out{</div>}}
 
@@ -281,7 +289,9 @@ A list containing all database records.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{  db$get_data()
+\preformatted{\dontrun{
+  db$get_data()
+}
 }
 \if{html}{\out{</div>}}
 
