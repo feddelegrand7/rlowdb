@@ -56,7 +56,7 @@ Add records to a collection:
 ```{r}
 db$insert(
   collection = "users", 
-  record = list(id = 1, name = "Alice", age = 30)
+  record = list(id = 1, name = "Ali", age = 30)
 )
 db$insert(
   collection = "users", 
@@ -69,6 +69,27 @@ db$insert(
 )
 ```
 
+# Transaction
+
+Using the `transaction` method, you can insert a set of records and if an error occurs in the process, a `rollback` will be triggered to restore the initial state of the database. Note that the insertion has to be operated using a function: 
+
+```{r}
+db$count("users")
+```
+
+
+```{r, error=TRUE}
+db$transaction(function() {
+    db$insert("users", list(name = "Zlatan", age = 40))
+    db$insert("users", list(name = "Neymar", age = 28))
+    stop("some errors")
+    db$insert("users", list(name = "Ronaldo", age = 30))
+})
+```
+
+```{r}
+db$count("users")
+```
 
 ### Retrieving Data
 
@@ -99,7 +120,7 @@ db$update(
 db$get_data()
 ```
 
-The `upsert` methods allows you to update a record if it exists, otherwise, it will be inserted:
+The `upsert` methods allows you to update a record if it exists, otherwise, it will be inserted. Note that the collection and the key need to exist:
 
 ```{r}
 db$upsert(
@@ -132,6 +153,18 @@ db$delete(collection = "users", key = "id", value = 100)
 db$get_data()
 ```
 
+# Bulk Inserting
+
+You can insert many records at once using the `buld_insert` method: 
+
+```{r}
+db$bulk_insert("users", list(
+    list(id = 1, name = "Antoine", age = 52),
+    list(id = 2, name = "Omar", age = 23),
+    list(id = 3, name = "Nabil", age = 41)
+))
+```
+
 ### Querying Data
 
 Find users older than 25:
@@ -146,6 +179,29 @@ Query with multiple conditions:
 db$query(collection = "users", condition = "age > 20 & id > 1")
 ```
 
+### Filter Data
+
+The `filter` method allows you to apply a predicate function (a function that returns `TRUE` or `FALSE`) in order to get a specific set of records:
+
+```{r}
+db$filter("users", function(x) {
+  x$age > 30
+})
+```
+
+
+### Searching Data
+
+The `search` method allows you to search within `character` fields a specific record. You can also use `regex`:
+
+
+```{r}
+db$search("users", "name", "^Ali", ignore.case = FALSE)
+```
+
+```{r}
+db$search("users", "name", "alice", ignore.case = TRUE)
+```
 
 ### Listing the collections
 
@@ -214,7 +270,6 @@ db$clear("countries")
 db$get_data()
 ```
 
-
 Using the `drop` method, one can drop a whole collection: 
 
 ```{r}
@@ -228,6 +283,22 @@ Finally, `drop_all` will drop all the `collections` within your `DB`:
 ```{r}
 db$drop_all()
 db$get_data()
+```
+
+### Creating a Backup 
+
+You can create at any time a backup for your database using the `backup` method: 
+
+```{r}
+db$backup("DB_backup.json")
+```
+
+### Restoring a database
+
+You can restore a backup database or any preexisting DB using the `restore` method:
+
+```{r}
+db$restore("DB_backup.json")
 ```
 
 ### Error Handling
@@ -258,6 +329,7 @@ Please note that the ralger project is released with a [Contributor Code of Cond
 
 ```{r, echo=FALSE}
 unlink("DB.json")
+unlink("DB_backup.json")
 ```
 
 

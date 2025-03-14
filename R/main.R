@@ -17,7 +17,7 @@ rlowdb <- R6::R6Class(
     #' @description Initialize the database, loading data from a JSON file.
     #' If the file does not exist, an empty database is created.
     #' @param file_path The path to the JSON file that stores the database.
-    initialize = function(file_path) {
+    initialize = function(file_path, auto_save) {
       private$.file_path <- file_path
       private$.read_data()
     },
@@ -409,7 +409,6 @@ rlowdb <- R6::R6Class(
     #' })
     #' db$count("users")
     #' unlink("database.json")
-
 
     transaction = function(transaction_fn) {
       if (!is.function(transaction_fn)) {
