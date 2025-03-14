@@ -12,211 +12,221 @@ and enables querying with custom functions.
 \examples{
 
 ## ------------------------------------------------
-## Method `rlowdb$new`
-## ------------------------------------------------
-
-\dontrun{
-  db <- rlowdb$new("database.json")
-}
-
-
-## ------------------------------------------------
 ## Method `rlowdb$get_data`
 ## ------------------------------------------------
 
-\dontrun{
-  db$get_data()
-}
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$get_data()
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$insert`
 ## ------------------------------------------------
 
-\dontrun{
-  db$insert("users", list(id = 1, name = "Alice"))
-}
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+unlink("database.json")
 
 
 ## ------------------------------------------------
 ## Method `rlowdb$find`
 ## ------------------------------------------------
 
-\dontrun{
-  db$find("users", "id", 1)
-}
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$find("users", "id", 1)
+unlink("database.json")
 
 
 ## ------------------------------------------------
 ## Method `rlowdb$update`
 ## ------------------------------------------------
 
-\dontrun{
-  db$update("users", "id", 1, list(name = "Alice Updated"))
-}
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$update("users", "id", 1, list(name = "Alice Updated"))
+unlink("database.json")
 
 
 ## ------------------------------------------------
 ## Method `rlowdb$upsert`
 ## ------------------------------------------------
 
-\dontrun{
-  db$upsert("users", "id", 1, list(name = "Alice Updated"))
-}
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 100, name = "Coconut"))
+db$upsert("users", "id", 1, list(name = "Alice Updated"))
+unlink("database.json")
 
 
 ## ------------------------------------------------
 ## Method `rlowdb$delete`
 ## ------------------------------------------------
 
-\dontrun{
-  db$delete("users", "id", 1)
-}
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$delete("users", "id", 1)
+db$get_data()
+unlink("database.json")
 
 
 ## ------------------------------------------------
 ## Method `rlowdb$query`
 ## ------------------------------------------------
 
+db <- rlowdb$new("database.json")
+db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
+db$insert("posts", list(id = 2, title = "Data Management", views = 250))
+db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
 
-\dontrun{
-  db <- rlowdb$new("db.json")
-  db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
-  db$insert("posts", list(id = 2, title = "Data Management", views = 250))
-  db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
+# Query posts with views > 200 AND id > 2
+db$query("posts", "views > 200 & id > 2")
 
-  # Query posts with views > 200 AND id > 2
-  db$query("posts", "views > 200 & id > 2")
+# Query posts with views > 100 OR id == 1
+db$query("posts", "views > 100 | id == 1")
 
-  # Query posts with views > 100 OR id == 1
-  db$query("posts", "views > 100 | id == 1")
+# Query all posts (no condition)
+db$query("posts", "")
 
-  # Query all posts (no condition)
-  db$query("posts", "")
-}
-
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$filter`
 ## ------------------------------------------------
 
-\dontrun{
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("users", list(name = "Gamma", age = 36))
 # Find users older than 30
-  db$filter("users", function(record) record$age > 30)
-}
-
+db$filter("users", function(record) record$age > 30)
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$drop`
 ## ------------------------------------------------
 
-\dontrun{
-  db$drop("users")
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$drop("users")
+db$get_data()
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$drop_all`
 ## ------------------------------------------------
 
-\dontrun{
-  db$drop_all()
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$drop_all()
+db$get_data()
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$clear`
 ## ------------------------------------------------
 
-\dontrun{
-  db$clear("users")
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$clear("users")
+db$get_data()
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$count`
 ## ------------------------------------------------
 
-\dontrun{
-  db$count("users")
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("users", list(name = "Gamma", age = 36))
+db$count("users")
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$list_collections`
 ## ------------------------------------------------
 
-\dontrun{
-  db$list_collections()
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$list_collections()
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$exists_collection`
 ## ------------------------------------------------
 
-\dontrun{
-  db$exists_collection("users")
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$exists_collection("users")
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$exists_key`
 ## ------------------------------------------------
 
-\dontrun{
-  db$exists_key("users", "name")
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$exists_key("users", "name")
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$exists_value`
 ## ------------------------------------------------
 
-\dontrun{
-  db$exists_value("users", "id", 1)
-}
-
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$exists_value("users", "name", "Delta")
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$transaction`
 ## ------------------------------------------------
 
-\dontrun{
+db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$count("users")
 db$transaction(function() {
-  db$insert("users", list(id = 4, name = "Zlatan", age = 40))
-  db$insert("users", list(id = 5, name = "Neymar", age = 28))
-  stop("Simulated failure") # This will trigger a rollback
+  db$insert("users", list(name = "Zlatan", age = 40))
+  db$insert("users", list(name = "Neymar", age = 28))
+  # if an error is raised, a rollback will happen and
+  # the records won't be inserted
 })
-}
+db$count("users")
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$search`
 ## ------------------------------------------------
 
-\dontrun{
-  db$insert("users", list(id = 1, name = "Alice"))
-  db$insert("users", list(id = 2, name = "Bob"))
-  db$insert("users", list(id = 3, name = "alice"))
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$insert("users", list(id = 2, name = "Bob"))
+db$insert("users", list(id = 3, name = "alice"))
 
 # Case-sensitive search
-  db$search("users", "name", "Alice", ignore.case = FALSE)
+db$search("users", "name", "Alice", ignore.case = FALSE)
 
 # Case-insensitive search
-  db$search("users", "name", "alice", ignore.case = TRUE)
-}
-
+db$search("users", "name", "alice", ignore.case = TRUE)
+unlink("database.json")
 
 ## ------------------------------------------------
 ## Method `rlowdb$bulk_insert`
 ## ------------------------------------------------
 
-\dontrun{
+db <- rlowdb$new("database.json")
 db$bulk_insert("users", list(
   list(id = 1, name = "Alice", age = 25),
   list(id = 2, name = "Bob", age = 32),
   list(id = 3, name = "Charlie", age = 40)
 ))
-}
+db$count("users")
+unlink("database.json")
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -263,17 +273,6 @@ If the file does not exist, an empty database is created.
 }
 \if{html}{\out{</div>}}
 }
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db <- rlowdb$new("database.json")
-}
-
-}
-\if{html}{\out{</div>}}
-
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-rlowdb-get_data"></a>}}
@@ -289,9 +288,10 @@ A list containing all database records.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$get_data()
-}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$get_data()
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -318,9 +318,9 @@ Insert a new record into a specified collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$insert("users", list(id = 1, name = "Alice"))
-}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+unlink("database.json")
 
 }
 \if{html}{\out{</div>}}
@@ -353,9 +353,10 @@ A list of matching records. Returns an empty list if no match is found.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$find("users", "id", 1)
-}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$find("users", "id", 1)
+unlink("database.json")
 
 }
 \if{html}{\out{</div>}}
@@ -387,9 +388,10 @@ Update existing records in a collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$update("users", "id", 1, list(name = "Alice Updated"))
-}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$update("users", "id", 1, list(name = "Alice Updated"))
+unlink("database.json")
 
 }
 \if{html}{\out{</div>}}
@@ -402,6 +404,8 @@ Update existing records in a collection.
 \if{latex}{\out{\hypertarget{method-rlowdb-upsert}{}}}
 \subsection{Method \code{upsert()}}{
 If a record exists, update it; otherwise, insert a new record.
+Note that in order to use the method, the 'collection' has to
+exist
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$upsert(collection, key, value, new_data)}\if{html}{\out{</div>}}
 }
@@ -421,9 +425,10 @@ If a record exists, update it; otherwise, insert a new record.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$upsert("users", "id", 1, list(name = "Alice Updated"))
-}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 100, name = "Coconut"))
+db$upsert("users", "id", 1, list(name = "Alice Updated"))
+unlink("database.json")
 
 }
 \if{html}{\out{</div>}}
@@ -453,9 +458,11 @@ Delete records from a collection that match a given key-value pair.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$delete("users", "id", 1)
-}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$delete("users", "id", 1)
+db$get_data()
+unlink("database.json")
 
 }
 \if{html}{\out{</div>}}
@@ -493,23 +500,21 @@ A list of records that satisfy the condition. If no records match, returns an em
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{
-\dontrun{
-  db <- rlowdb$new("db.json")
-  db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
-  db$insert("posts", list(id = 2, title = "Data Management", views = 250))
-  db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
+db$insert("posts", list(id = 2, title = "Data Management", views = 250))
+db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
 
-  # Query posts with views > 200 AND id > 2
-  db$query("posts", "views > 200 & id > 2")
+# Query posts with views > 200 AND id > 2
+db$query("posts", "views > 200 & id > 2")
 
-  # Query posts with views > 100 OR id == 1
-  db$query("posts", "views > 100 | id == 1")
+# Query posts with views > 100 OR id == 1
+db$query("posts", "views > 100 | id == 1")
 
-  # Query all posts (no condition)
-  db$query("posts", "")
-}
+# Query all posts (no condition)
+db$query("posts", "")
 
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -542,11 +547,12 @@ A list of records that satisfy the filtering condition.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("users", list(name = "Gamma", age = 36))
 # Find users older than 30
-  db$filter("users", function(record) record$age > 30)
-}
-
+db$filter("users", function(record) record$age > 30)
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -571,10 +577,11 @@ Just like DROP TABLE in SQL, drops a complete collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$drop("users")
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$drop("users")
+db$get_data()
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -592,10 +599,12 @@ Drop all the collections available in your JSON file DB
 
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$drop_all()
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$drop_all()
+db$get_data()
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -620,10 +629,12 @@ Removes all records from a collection without deleting the collection itself
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$clear("users")
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$clear("users")
+db$get_data()
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -651,10 +662,11 @@ numeric
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$count("users")
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("users", list(name = "Gamma", age = 36))
+db$count("users")
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -675,10 +687,11 @@ character
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$list_collections()
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$list_collections()
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -706,10 +719,11 @@ TRUE if the collection exists, FALSE otherwise
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$exists_collection("users")
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$exists_collection("users")
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -739,10 +753,11 @@ TRUE if the key exists, FALSE otherwise
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$exists_key("users", "name")
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$exists_key("users", "name")
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -774,10 +789,11 @@ TRUE if the value exists, FALSE otherwise
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$exists_value("users", "id", 1)
-}
-
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$insert("consumers", list(name = "Teta", age = 22))
+db$exists_value("users", "name", "Delta")
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -805,13 +821,17 @@ If any operation fails, it rolls back all changes to maintain data integrity.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(name = "Delta", age = 25))
+db$count("users")
 db$transaction(function() {
-  db$insert("users", list(id = 4, name = "Zlatan", age = 40))
-  db$insert("users", list(id = 5, name = "Neymar", age = 28))
-  stop("Simulated failure") # This will trigger a rollback
+  db$insert("users", list(name = "Zlatan", age = 40))
+  db$insert("users", list(name = "Neymar", age = 28))
+  # if an error is raised, a rollback will happen and
+  # the records won't be inserted
 })
-}
+db$count("users")
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -882,18 +902,17 @@ A list of matching records. Returns an empty list if no matches are found.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-  db$insert("users", list(id = 1, name = "Alice"))
-  db$insert("users", list(id = 2, name = "Bob"))
-  db$insert("users", list(id = 3, name = "alice"))
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$insert("users", list(id = 2, name = "Bob"))
+db$insert("users", list(id = 3, name = "alice"))
 
 # Case-sensitive search
-  db$search("users", "name", "Alice", ignore.case = FALSE)
+db$search("users", "name", "Alice", ignore.case = FALSE)
 
 # Case-insensitive search
-  db$search("users", "name", "alice", ignore.case = TRUE)
-}
-
+db$search("users", "name", "alice", ignore.case = TRUE)
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
@@ -923,13 +942,14 @@ Each record should be a named list representing an entry in the collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
+\preformatted{db <- rlowdb$new("database.json")
 db$bulk_insert("users", list(
   list(id = 1, name = "Alice", age = 25),
   list(id = 2, name = "Bob", age = 32),
   list(id = 3, name = "Charlie", age = 40)
 ))
-}
+db$count("users")
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 

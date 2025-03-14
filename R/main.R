@@ -17,11 +17,6 @@ rlowdb <- R6::R6Class(
     #' @description Initialize the database, loading data from a JSON file.
     #' If the file does not exist, an empty database is created.
     #' @param file_path The path to the JSON file that stores the database.
-    #' @examples
-    #' \dontrun{
-    #'   db <- rlowdb$new("database.json")
-    #' }
-    #'
     initialize = function(file_path) {
       private$.file_path <- file_path
       private$.read_data()
@@ -30,9 +25,10 @@ rlowdb <- R6::R6Class(
     #' @description Retrieve all stored data.
     #' @return A list containing all database records.
     #' @examples
-    #' \dontrun{
-    #'   db$get_data()
-    #' }
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$get_data()
+    #' unlink("database.json")
     #
     get_data = function() {
       private$.data
@@ -42,9 +38,9 @@ rlowdb <- R6::R6Class(
     #' @param collection The collection name (a string).
     #' @param record A named list representing the record to insert.
     #' @examples
-    #' \dontrun{
-    #'   db$insert("users", list(id = 1, name = "Alice"))
-    #' }
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' unlink("database.json")
     #'
     insert = function(collection, record) {
       if (!is.list(record) || is.null(names(record)) || !all(nzchar(names(record)))) {
@@ -61,9 +57,10 @@ rlowdb <- R6::R6Class(
     #' @param value The value to match.
     #' @return A list of matching records. Returns an empty list if no match is found.
     #' @examples
-    #' \dontrun{
-    #'   db$find("users", "id", 1)
-    #' }
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$find("users", "id", 1)
+    #' unlink("database.json")
     #'
     find = function(collection, key, value) {
       index <- private$.find_index_by_key(collection, key, value)
@@ -81,9 +78,10 @@ rlowdb <- R6::R6Class(
     #' @param value The value to match.
     #' @param new_data A named list containing the updated data.
     #' @examples
-    #' \dontrun{
-    #'   db$update("users", "id", 1, list(name = "Alice Updated"))
-    #' }
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$update("users", "id", 1, list(name = "Alice Updated"))
+    #' unlink("database.json")
     #'
     update = function(collection, key, value, new_data) {
       index <- private$.find_index_by_key(collection, key, value)
@@ -98,14 +96,17 @@ rlowdb <- R6::R6Class(
     },
 
     #' @description If a record exists, update it; otherwise, insert a new record.
+    #' Note that in order to use the method, the 'collection' has to
+    #' exist
     #' @param collection The collection name.
     #' @param key The field name to search for.
     #' @param value The value to match.
     #' @param new_data A named list containing the updated data.
     #' @examples
-    #' \dontrun{
-    #'   db$upsert("users", "id", 1, list(name = "Alice Updated"))
-    #' }
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 100, name = "Coconut"))
+    #' db$upsert("users", "id", 1, list(name = "Alice Updated"))
+    #' unlink("database.json")
     #'
     upsert = function(collection, key, value, new_data) {
       if (self$exists_value(collection, key, value)) {
@@ -121,9 +122,11 @@ rlowdb <- R6::R6Class(
     #' @param key The field name to search for.
     #' @param value The value to match.
     #' @examples
-    #' \dontrun{
-    #'   db$delete("users", "id", 1)
-    #' }
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$delete("users", "id", 1)
+    #' db$get_data()
+    #' unlink("database.json")
     #'
     delete = function(collection, key, value) {
       index <- private$.find_index_by_key(collection, key, value)
@@ -151,23 +154,21 @@ rlowdb <- R6::R6Class(
     #' @return A list of records that satisfy the condition. If no records match, returns an empty list.
     #'
     #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
+    #' db$insert("posts", list(id = 2, title = "Data Management", views = 250))
+    #' db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
     #'
-    #' \dontrun{
-    #'   db <- rlowdb$new("db.json")
-    #'   db$insert("posts", list(id = 1, title = "LowDB in R", views = 100))
-    #'   db$insert("posts", list(id = 2, title = "Data Management", views = 250))
-    #'   db$insert("posts", list(id = 3, title = "Advanced R", views = 300))
+    #' # Query posts with views > 200 AND id > 2
+    #' db$query("posts", "views > 200 & id > 2")
     #'
-    #'   # Query posts with views > 200 AND id > 2
-    #'   db$query("posts", "views > 200 & id > 2")
+    #' # Query posts with views > 100 OR id == 1
+    #' db$query("posts", "views > 100 | id == 1")
     #'
-    #'   # Query posts with views > 100 OR id == 1
-    #'   db$query("posts", "views > 100 | id == 1")
+    #' # Query all posts (no condition)
+    #' db$query("posts", "")
     #'
-    #'   # Query all posts (no condition)
-    #'   db$query("posts", "")
-    #' }
-    #'
+    #' unlink("database.json")
     query = function(collection, condition = NULL) {
       if (!collection %in% names(private$.data)) {
         stop(sprintf("Error: Collection '%s' does not exist.", collection))
@@ -201,11 +202,12 @@ rlowdb <- R6::R6Class(
     #'
     #' @return A list of records that satisfy the filtering condition.
     #' @examples
-    #' \dontrun{
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("users", list(name = "Gamma", age = 36))
     #' # Find users older than 30
-    #'   db$filter("users", function(record) record$age > 30)
-    #' }
-    #'
+    #' db$filter("users", function(record) record$age > 30)
+    #' unlink("database.json")
 
     filter = function(collection, filter_fn) {
 
@@ -229,10 +231,11 @@ rlowdb <- R6::R6Class(
     #' @description Just like DROP TABLE in SQL, drops a complete collection.
     #' @param collection The collection name.
     #' @examples
-    #' \dontrun{
-    #'   db$drop("users")
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$drop("users")
+    #' db$get_data()
+    #' unlink("database.json")
     drop = function(collection) {
 
       if (!collection %in% names(private$.data)) {
@@ -247,10 +250,12 @@ rlowdb <- R6::R6Class(
 
     #' @description Drop all the collections available in your JSON file DB
     #' @examples
-    #' \dontrun{
-    #'   db$drop_all()
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("consumers", list(name = "Teta", age = 22))
+    #' db$drop_all()
+    #' db$get_data()
+    #' unlink("database.json")
     drop_all = function() {
 
       for (collection in names(private$.data)) {
@@ -264,10 +269,12 @@ rlowdb <- R6::R6Class(
     #' @description Removes all records from a collection without deleting the collection itself
     #' @param collection the collection name
     #' @examples
-    #' \dontrun{
-    #'   db$clear("users")
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("consumers", list(name = "Teta", age = 22))
+    #' db$clear("users")
+    #' db$get_data()
+    #' unlink("database.json")
 
     clear = function(collection) {
       if (!collection %in% names(private$.data)) {
@@ -281,10 +288,11 @@ rlowdb <- R6::R6Class(
     #' @param collection the collection name
     #' @return numeric
     #' @examples
-    #' \dontrun{
-    #'   db$count("users")
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("users", list(name = "Gamma", age = 36))
+    #' db$count("users")
+    #' unlink("database.json")
     count = function(collection) {
 
       if (!collection %in% names(private$.data)) {
@@ -300,10 +308,11 @@ rlowdb <- R6::R6Class(
     #' @description List the available collections
     #' @return character
     #' @examples
-    #' \dontrun{
-    #'   db$list_collections()
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("consumers", list(name = "Teta", age = 22))
+    #' db$list_collections()
+    #' unlink("database.json")
     list_collections = function() {
 
       collection_names <- names(private$.data)
@@ -316,10 +325,11 @@ rlowdb <- R6::R6Class(
     #' @param collection The collection name
     #' @return TRUE if the collection exists, FALSE otherwise
     #' @examples
-    #' \dontrun{
-    #'   db$exists_collection("users")
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("consumers", list(name = "Teta", age = 22))
+    #' db$exists_collection("users")
+    #' unlink("database.json")
     exists_collection = function(collection) {
 
       exists_collection <- FALSE
@@ -337,10 +347,11 @@ rlowdb <- R6::R6Class(
     #' @param key The key name
     #' @return TRUE if the key exists, FALSE otherwise
     #' @examples
-    #' \dontrun{
-    #'   db$exists_key("users", "name")
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("consumers", list(name = "Teta", age = 22))
+    #' db$exists_key("users", "name")
+    #' unlink("database.json")
     exists_key = function(collection, key) {
 
       if (!collection %in% names(private$.data)) {
@@ -363,10 +374,11 @@ rlowdb <- R6::R6Class(
     #' @param value The value to look for
     #' @return TRUE if the value exists, FALSE otherwise
     #' @examples
-    #' \dontrun{
-    #'   db$exists_value("users", "id", 1)
-    #' }
-    #'
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$insert("consumers", list(name = "Teta", age = 22))
+    #' db$exists_value("users", "name", "Delta")
+    #' unlink("database.json")
     exists_value = function(collection, key, value) {
 
       exists_val <- FALSE
@@ -386,13 +398,17 @@ rlowdb <- R6::R6Class(
     #' If any operation fails, it rolls back all changes to maintain data integrity.
     #' @param transaction_fn A function that performs operations on `self`. It should not return a value.
     #' @examples
-    #' \dontrun{
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(name = "Delta", age = 25))
+    #' db$count("users")
     #' db$transaction(function() {
-    #'   db$insert("users", list(id = 4, name = "Zlatan", age = 40))
-    #'   db$insert("users", list(id = 5, name = "Neymar", age = 28))
-    #'   stop("Simulated failure") # This will trigger a rollback
+    #'   db$insert("users", list(name = "Zlatan", age = 40))
+    #'   db$insert("users", list(name = "Neymar", age = 28))
+    #'   # if an error is raised, a rollback will happen and
+    #'   # the records won't be inserted
     #' })
-    #' }
+    #' db$count("users")
+    #' unlink("database.json")
 
 
     transaction = function(transaction_fn) {
@@ -442,18 +458,17 @@ rlowdb <- R6::R6Class(
     #' @return A list of matching records. Returns an empty list if no matches are found.
     #'
     #' @examples
-    #' \dontrun{
-    #'   db$insert("users", list(id = 1, name = "Alice"))
-    #'   db$insert("users", list(id = 2, name = "Bob"))
-    #'   db$insert("users", list(id = 3, name = "alice"))
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$insert("users", list(id = 2, name = "Bob"))
+    #' db$insert("users", list(id = 3, name = "alice"))
     #'
     #' # Case-sensitive search
-    #'   db$search("users", "name", "Alice", ignore.case = FALSE)
+    #' db$search("users", "name", "Alice", ignore.case = FALSE)
     #'
     #' # Case-insensitive search
-    #'   db$search("users", "name", "alice", ignore.case = TRUE)
-    #' }
-    #'
+    #' db$search("users", "name", "alice", ignore.case = TRUE)
+    #' unlink("database.json")
     search = function(collection, key, term, ignore.case = FALSE) {
       if (!self$exists_collection(collection)) {
         stop(sprintf("Error: Collection '%s' does not exist.", collection))
@@ -485,13 +500,14 @@ rlowdb <- R6::R6Class(
     #' @param records A list of named lists, where each named list represents a record to insert.
     #'
     #' @examples
-    #' \dontrun{
+    #' db <- rlowdb$new("database.json")
     #' db$bulk_insert("users", list(
     #'   list(id = 1, name = "Alice", age = 25),
     #'   list(id = 2, name = "Bob", age = 32),
     #'   list(id = 3, name = "Charlie", age = 40)
     #' ))
-    #' }
+    #' db$count("users")
+    #' unlink("database.json")
     bulk_insert = function(collection, records) {
 
       if (!is.list(records) || length(records) == 0) {
