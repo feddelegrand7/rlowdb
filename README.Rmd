@@ -69,7 +69,7 @@ db$insert(
 )
 ```
 
-# Transaction
+### Transaction
 
 Using the `transaction` method, you can insert a set of records and if an error occurs in the process, a `rollback` will be triggered to restore the initial state of the database. Note that the insertion has to be operated using a function: 
 
