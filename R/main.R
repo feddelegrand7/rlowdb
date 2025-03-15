@@ -734,8 +734,8 @@ rlowdb <- R6::R6Class(
     #' db$bulk_insert("users", list(
     #'   list(id = 1, name = "Alice", age = 25),
     #'   list(id = 2, name = "Bob", age = 32),
-    #'   list(id = 3, name = "Charlie"),
-    #'   list(id = 4, name = "Alice")
+    #'   list(id = 3, name = NA),
+    #'   list(id = 4, name = NA)
     #' ))
     #' db$count_values("users", "name")
     #' unlink("database.json")
@@ -749,8 +749,15 @@ rlowdb <- R6::R6Class(
         rlang::abort(sprintf("Error: Key '%s' does not exist in any record of the collection '%s'.", key, collection))
       }
 
-      count <- sapply(private$.data[[collection]], function(x) x[[key]])
-      table(count)
+      count <- sapply(private$.data[[collection]], function(x) {
+        if (is.null(x[[key]]) || is.na(x[[key]])) {
+          return(NA)
+        } else {
+          return(x[[key]])
+        }
+      })
+
+      table(count, useNA = "ifany")
     }
 
   ),
