@@ -652,6 +652,72 @@ rlowdb <- R6::R6Class(
     #' to the console.
     set_verbose = function(verbose) {
       private$.verbose = verbose
+    },
+
+    #' @description
+    #' Allows you to rename an existing collection in the database.
+    #' It checks if the specified collection exists before attempting to rename it.
+    #' @param collection_name A character string representing the current name of the collection to be renamed.
+    #' @param new_collection_name A character string representing the new name for the collection.
+    #'
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$bulk_insert("users", list(
+    #'   list(id = 1, name = "Alice", age = 25),
+    #'   list(id = 2, name = "Bob", age = 32),
+    #'   list(id = 3, name = "Charlie", age = 40)
+    #' ))
+    #' db$list_collections()
+    #' db$rename_collection("users", "customers")
+    #' db$list_collections()
+    #' unlink("database.json")
+    #'
+    rename_collection = function(collection_name, new_collection_name) {
+      if (!collection_name %in% names(private$.data)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection_name))
+      }
+
+      if (new_collection_name %in% names(private$.data)) {
+        rlang::abort(sprintf("Error: Collection '%s' already exists.", new_collection_name))
+      }
+
+      private$.data[[new_collection_name]] <- private$.data[[collection_name]]
+      private$.data[[collection_name]] <- NULL
+
+      if (private$.verbose) {
+        cli::cli_alert_success("collection '{collection_name}' successfully renamed to '{new_collection_name}'")
+      }
+
+      if (private$.auto_commit) {
+        private$.write_data()
+      }
+    },
+
+    #' @description
+    #' Retrieves the names (keys) of all keys within a given collection.
+    #'
+    #' @param collection The collection name
+    #'
+    #' @return A character vector containing the unique keys (field names) present across all records in the collection.
+    #'
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$bulk_insert("users", list(
+    #'   list(id = 1, name = "Alice", age = 25),
+    #'   list(id = 2, name = "Bob", age = 32),
+    #'   list(id = 3, name = "Charlie")
+    #' ))
+    #' db$list_keys("users")
+    #' unlink("database.json")
+    #'
+    list_keys = function(collection) {
+      if (!collection %in% names(private$.data)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      keys <- unique(unlist(purrr::map(private$.data[[collection]], names)))
+
+      return(keys)
     }
 
   ),

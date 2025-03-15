@@ -227,6 +227,36 @@ db$bulk_insert("users", list(
 ))
 db$count("users")
 unlink("database.json")
+
+## ------------------------------------------------
+## Method `rlowdb$rename_collection`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie", age = 40)
+))
+db$list_collections()
+db$rename_collection("users", "customers")
+db$list_collections()
+unlink("database.json")
+
+
+## ------------------------------------------------
+## Method `rlowdb$list_keys`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie")
+))
+db$list_keys("users")
+unlink("database.json")
+
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -257,6 +287,8 @@ unlink("database.json")
 \item \href{#method-rlowdb-status}{\code{rlowdb$status()}}
 \item \href{#method-rlowdb-set_auto_commit}{\code{rlowdb$set_auto_commit()}}
 \item \href{#method-rlowdb-set_verbose}{\code{rlowdb$set_verbose()}}
+\item \href{#method-rlowdb-rename_collection}{\code{rlowdb$rename_collection()}}
+\item \href{#method-rlowdb-list_keys}{\code{rlowdb$list_keys()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -1024,6 +1056,80 @@ to the console.}
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-rename_collection"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-rename_collection}{}}}
+\subsection{Method \code{rename_collection()}}{
+Allows you to rename an existing collection in the database.
+It checks if the specified collection exists before attempting to rename it.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$rename_collection(collection_name, new_collection_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection_name}}{A character string representing the current name of the collection to be renamed.}
+
+\item{\code{new_collection_name}}{A character string representing the new name for the collection.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie", age = 40)
+))
+db$list_collections()
+db$rename_collection("users", "customers")
+db$list_collections()
+unlink("database.json")
+
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-list_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-list_keys}{}}}
+\subsection{Method \code{list_keys()}}{
+Retrieves the names (keys) of all keys within a given collection.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$list_keys(collection)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character vector containing the unique keys (field names) present across all records in the collection.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie")
+))
+db$list_keys("users")
+unlink("database.json")
+
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-rlowdb-clone"></a>}}
