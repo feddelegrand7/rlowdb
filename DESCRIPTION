@@ -18,6 +18,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    cli (>= 3.6.4),
     jsonlite (>= 1.8.8),
     purrr (>= 1.0.2),
     R6 (>= 2.5.1),

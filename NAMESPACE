@@ -2,9 +2,13 @@
 
 export(rlowdb)
 importFrom(R6,R6Class)
+importFrom(cli,cli_alert_info)
+importFrom(cli,cli_alert_success)
+importFrom(cli,cli_text)
 importFrom(jsonlite,fromJSON)
 importFrom(jsonlite,write_json)
 importFrom(purrr,keep)
 importFrom(purrr,safely)
+importFrom(rlang,abort)
 importFrom(rlang,eval_tidy)
 importFrom(rlang,parse_expr)
