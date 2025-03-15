@@ -6,7 +6,7 @@
 #' It supports CRUD operations (Create, Read, Update, Delete)
 #' and enables querying with custom functions.
 #' @importFrom jsonlite fromJSON write_json
-#' @importFrom purrr keep safely
+#' @importFrom purrr keep safely map
 #' @importFrom R6 R6Class
 #' @importFrom rlang eval_tidy parse_expr abort
 #' @importFrom cli cli_alert_success cli_text cli_alert_info
