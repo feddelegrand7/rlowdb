@@ -718,6 +718,39 @@ rlowdb <- R6::R6Class(
       keys <- unique(unlist(purrr::map(private$.data[[collection]], names)))
 
       return(keys)
+    },
+
+    #' @description
+    #' Count Occurrences of a Key's Values in a Collection
+    #'
+    #' @param collection The collection name
+    #' @param key The key name
+    #' @return A table (a frequency count) of the values associated with the specified key,
+    #'   showing the number of occurrences of each unique value. If the key does not exist,
+    #'   an error is thrown.
+    #'
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$bulk_insert("users", list(
+    #'   list(id = 1, name = "Alice", age = 25),
+    #'   list(id = 2, name = "Bob", age = 32),
+    #'   list(id = 3, name = "Charlie"),
+    #'   list(id = 4, name = "Alice")
+    #' ))
+    #' db$count_values("users", "name")
+    #' unlink("database.json")
+    count_values = function(collection, key) {
+
+      if (!self$exists_collection(collection)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      if (!self$exists_key(collection, key)) {
+        rlang::abort(sprintf("Error: Key '%s' does not exist in any record of the collection '%s'.", key, collection))
+      }
+
+      count <- sapply(private$.data[[collection]], function(x) x[[key]])
+      table(count)
     }
 
   ),

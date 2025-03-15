@@ -257,6 +257,20 @@ db$bulk_insert("users", list(
 db$list_keys("users")
 unlink("database.json")
 
+
+## ------------------------------------------------
+## Method `rlowdb$count_values`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie"),
+  list(id = 4, name = "Alice")
+))
+db$count_values("users", "name")
+unlink("database.json")
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -289,6 +303,7 @@ unlink("database.json")
 \item \href{#method-rlowdb-set_verbose}{\code{rlowdb$set_verbose()}}
 \item \href{#method-rlowdb-rename_collection}{\code{rlowdb$rename_collection()}}
 \item \href{#method-rlowdb-list_keys}{\code{rlowdb$list_keys()}}
+\item \href{#method-rlowdb-count_values}{\code{rlowdb$count_values()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -1125,6 +1140,46 @@ db$bulk_insert("users", list(
 db$list_keys("users")
 unlink("database.json")
 
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-count_values"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-count_values}{}}}
+\subsection{Method \code{count_values()}}{
+Count Occurrences of a Key's Values in a Collection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$count_values(collection, key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name}
+
+\item{\code{key}}{The key name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A table (a frequency count) of the values associated with the specified key,
+  showing the number of occurrences of each unique value. If the key does not exist,
+  an error is thrown.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(id = 1, name = "Alice", age = 25),
+  list(id = 2, name = "Bob", age = 32),
+  list(id = 3, name = "Charlie"),
+  list(id = 4, name = "Alice")
+))
+db$count_values("users", "name")
+unlink("database.json")
 }
 \if{html}{\out{</div>}}
 
