@@ -266,8 +266,8 @@ db <- rlowdb$new("database.json")
 db$bulk_insert("users", list(
   list(id = 1, name = "Alice", age = 25),
   list(id = 2, name = "Bob", age = 32),
-  list(id = 3, name = "Charlie"),
-  list(id = 4, name = "Alice")
+  list(id = 3, name = NA),
+  list(id = 4, name = NA)
 ))
 db$count_values("users", "name")
 unlink("database.json")
@@ -1175,8 +1175,8 @@ A table (a frequency count) of the values associated with the specified key,
 db$bulk_insert("users", list(
   list(id = 1, name = "Alice", age = 25),
   list(id = 2, name = "Bob", age = 32),
-  list(id = 3, name = "Charlie"),
-  list(id = 4, name = "Alice")
+  list(id = 3, name = NA),
+  list(id = 4, name = NA)
 ))
 db$count_values("users", "name")
 unlink("database.json")
