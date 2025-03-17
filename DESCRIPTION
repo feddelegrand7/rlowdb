@@ -17,6 +17,8 @@ Description: The goal of 'rlowdb' is to provide a lightweight, file-based JSON d
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/feddelegrand7/rlowdb
+BugReports: https://github.com/feddelegrand7/rlowdb/issues
 Imports: 
     cli (>= 3.6.4),
     jsonlite (>= 1.8.8),
