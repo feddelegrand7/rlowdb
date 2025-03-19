@@ -248,6 +248,30 @@ test_that("list and rename collection work as expected", {
 
 })
 
+test_that("list_keys works as expected", {
+
+  keys <- db$list_keys("books")
+
+  expect_equal(
+    keys,
+    c("id", "title", "views")
+  )
+
+  db$insert("books", list(
+    id = 32,
+    title = "Introduction to R",
+    views = 200,
+    license = "MIT"
+  ))
+
+  keys <- db$list_keys("books")
+
+  expect_equal(
+    keys,
+    c("id", "title", "views", "license")
+  )
+
+})
 
 test_that("clear works as expected", {
 
