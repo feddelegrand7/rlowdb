@@ -2,6 +2,7 @@
 
 export(rlowdb)
 importFrom(R6,R6Class)
+importFrom(cli,cli_abort)
 importFrom(cli,cli_alert_info)
 importFrom(cli,cli_alert_success)
 importFrom(cli,cli_text)

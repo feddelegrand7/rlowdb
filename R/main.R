@@ -9,7 +9,7 @@
 #' @importFrom purrr keep safely map
 #' @importFrom R6 R6Class
 #' @importFrom rlang eval_tidy parse_expr abort
-#' @importFrom cli cli_alert_success cli_text cli_alert_info
+#' @importFrom cli cli_alert_success cli_text cli_alert_info cli_abort
 #' @export
 rlowdb <- R6::R6Class(
   "rlowdb",
@@ -28,10 +28,8 @@ rlowdb <- R6::R6Class(
       file_extension <- tolower(tools::file_ext(file_path))
 
       if (!file_extension == "json") {
-        rlang::abort(
-          glue::glue(
-            "{file_path} is not of JSON format"
-          )
+        cli::cli_abort(
+          "{file_path} is not of JSON format"
         )
       }
 
