@@ -18,6 +18,11 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main)
 [![R-CMD-check](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/rlowdb)](https://CRAN.R-project.org/package=rlowdb)
+[![R badge](https://img.shields.io/badge/Build%20with-♥%20and%20R-blue)](https://github.com/feddelegrand7/rlowdb)
+[![metacran downloads](https://cranlogs.r-pkg.org/badges/rlowdb)](https://cran.r-project.org/package=rlowdb)
+[![metacran downloads](https://cranlogs.r-pkg.org/badges/grand-total/rlowdb)](https://cran.r-project.org/package=rlowdb)
+
 <!-- badges: end -->
 
 `rlowdb` is a lightweight, JSON-based database for R, inspired by [LowDB](https://github.com/typicode/lowdb) from JavaScript. It provides a simple and efficient way to store, retrieve, update, and delete structured data without the need for a full database system.
@@ -31,12 +36,16 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-`rlowdb` is not yet available on CRAN, but you can install it from GitHub:
+You can install `rlowdb` from `CRAN` with:
 
+```{r, eval=FALSE}
+install.packages("rlowdb")
+```
+
+You can also install the development version from `Github` with:
 ```{r, eval=FALSE}
 devtools::install_github("feddelegrand7/rlowdb")
 ```
-
 
 ## Usage
 ### Initializing the Database
@@ -153,7 +162,7 @@ db$delete(collection = "users", key = "id", value = 100)
 db$get_data()
 ```
 
-# Bulk Inserting
+### Bulk Inserting
 
 You can insert many records at once using the `buld_insert` method: 
 

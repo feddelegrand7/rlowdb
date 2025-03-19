@@ -8,6 +8,15 @@
 [![Codecov test
 coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main)
 [![R-CMD-check](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rlowdb)](https://CRAN.R-project.org/package=rlowdb)
+[![R
+badge](https://img.shields.io/badge/Build%20with-♥%20and%20R-blue)](https://github.com/feddelegrand7/rlowdb)
+[![metacran
+downloads](https://cranlogs.r-pkg.org/badges/rlowdb)](https://cran.r-project.org/package=rlowdb)
+[![metacran
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/rlowdb)](https://cran.r-project.org/package=rlowdb)
+
 <!-- badges: end -->
 
 `rlowdb` is a lightweight, JSON-based database for R, inspired by
@@ -26,8 +35,13 @@ structured data without the need for a full database system.
 
 ## Installation
 
-`rlowdb` is not yet available on CRAN, but you can install it from
-GitHub:
+You can install `rlowdb` from `CRAN` with:
+
+``` r
+install.packages("rlowdb")
+```
+
+You can also install the development version from `Github` with:
 
 ``` r
 devtools::install_github("feddelegrand7/rlowdb")
@@ -70,7 +84,7 @@ db$insert(
 )
 ```
 
-# Transaction
+### Transaction
 
 Using the `transaction` method, you can insert a set of records and if
 an error occurs in the process, a `rollback` will be triggered to
@@ -337,7 +351,7 @@ db$get_data()
 #> [1] 30
 ```
 
-# Bulk Inserting
+### Bulk Inserting
 
 You can insert many records at once using the `buld_insert` method:
 
