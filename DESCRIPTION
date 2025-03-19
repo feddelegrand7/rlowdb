@@ -1,7 +1,7 @@
 Package: rlowdb
 Type: Package
 Title: Lightweight JSON-Based Database
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person(given = "Mohamed El Fodil",
            family = "Ihaddaden",
@@ -17,7 +17,10 @@ Description: The goal of 'rlowdb' is to provide a lightweight, file-based JSON d
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/feddelegrand7/rlowdb
+BugReports: https://github.com/feddelegrand7/rlowdb/issues
 Imports: 
+    cli (>= 3.6.4),
     jsonlite (>= 1.8.8),
     purrr (>= 1.0.2),
     R6 (>= 2.5.1),
@@ -26,4 +29,3 @@ Suggests:
     testthat (>= 3.2.3)
 Config/testthat/edition: 3
 RoxygenNote: 7.3.1
-URL: https://feddelegrand7.github.io/rlowdb/

@@ -1,6 +1,14 @@
 library(testthat)
 library(jsonlite)
 
+test_that("Object is not created without a json file", {
+  test_db_file <- tempfile(fileext = ".csv")
+  expect_error({
+    db <- rlowdb$new(test_db_file)
+  },
+  regexp = "is not of JSON format")
+})
+
 test_db_file <- tempfile(fileext = ".json")
 db <- rlowdb$new(test_db_file)
 
@@ -16,6 +24,31 @@ test_that("Inserting records works correctly", {
   expect_true("posts" %in% names(data))
   expect_equal(length(data$posts), 2)
   expect_equal(data$posts[[1]]$id, 1)
+})
+
+test_that("auto_commit works as expected", {
+
+  db$set_auto_commit(auto_commit = FALSE)
+  db$insert("posts", list(id = 55, title = "LowDB in R", views = 100))
+
+  expect_equal(db$count("posts"), 3)
+
+  db$restore(test_db_file)
+
+  expect_equal(db$count("posts"), 2)
+
+  db$insert("posts", list(id = 55, title = "LowDB in R", views = 100))
+
+  db$commit()
+
+  db$restore(test_db_file)
+
+  expect_equal(db$count("posts"), 3)
+
+  db$set_auto_commit(auto_commit = TRUE)
+
+  db$delete("posts", "id", 55)
+
 })
 
 test_that("Finding records works correctly", {
@@ -173,6 +206,73 @@ test_that("filter method works as expected", {
 
 })
 
+test_that("count_value works as expected", {
+
+  db$insert("posts", list(id = 6, title = "Introduction to R", views = 200))
+  count <- db$count_values("posts", key = "title")
+
+  count_chr <- as.character(count)
+
+  expect_equal(count_chr, c("1", "2", "1", "1", "1"))
+
+  db$insert("posts", list(id = 6, title = "Introduction to R", views = 200))
+  db$insert("posts", list(id = 6, title = "Shiny for Python", views = 200))
+  count <- db$count_values("posts", key = "title")
+
+  count_chr <- as.character(count)
+
+  expect_equal(count_chr, c("1", "3", "1", "1", "2"))
+
+})
+
+test_that("list and rename collection work as expected", {
+
+  collection <- db$list_collections()
+
+  expect_equal(collection, "posts")
+
+  expect_length(collection, 1)
+
+  db$rename_collection("posts", "books")
+
+  collection <- db$list_collections()
+
+  expect_equal(collection, "books")
+
+  expect_length(collection, 1)
+
+  expect_error(
+    db$rename_collection("nonexistant", "new"),
+    regexp = "Collection 'nonexistant' does not exist"
+  )
+
+})
+
+test_that("list_keys works as expected", {
+
+  keys <- db$list_keys("books")
+
+  expect_equal(
+    keys,
+    c("id", "title", "views")
+  )
+
+  db$insert("books", list(
+    id = 32,
+    title = "Introduction to R",
+    views = 200,
+    license = "MIT"
+  ))
+
+  keys <- db$list_keys("books")
+
+  expect_equal(
+    keys,
+    c("id", "title", "views", "license")
+  )
+
+})
+
 test_that("clear works as expected", {
 
   db$insert("readers", list(name = "Fodil", city = "Hamburg"))
@@ -209,3 +309,6 @@ test_that("drop all works as expected", {
 })
 
 unlink(test_db_file)
+
+
+

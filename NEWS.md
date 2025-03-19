@@ -1,11 +1,3 @@
-── R CMD check results ─────────────── rlowdb 0.2.0 ────
-Duration: 8s
-
-❯ checking for future file timestamps ... NOTE
-  unable to verify current time
-
-0 errors ✔ | 0 warnings ✔ | 1 note ✖
-
 # rlowdb 0.2.0
 
 * Adding the `verbose` parameter which when set to `TRUE` will print informative information to the console.
@@ -19,3 +11,6 @@ Duration: 8s
 - `set_auto_commit`
 - `set_verbose`
 - `status`
+
+# rlowdb 0.1.0
+* Initial release
