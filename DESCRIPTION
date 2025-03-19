@@ -1,7 +1,7 @@
 Package: rlowdb
 Type: Package
 Title: Lightweight JSON-Based Database
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person(given = "Mohamed El Fodil",
            family = "Ihaddaden",
@@ -29,4 +29,3 @@ Suggests:
     testthat (>= 3.2.3)
 Config/testthat/edition: 3
 RoxygenNote: 7.3.1
-URL: https://feddelegrand7.github.io/rlowdb/

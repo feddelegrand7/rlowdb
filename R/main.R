@@ -24,6 +24,17 @@ rlowdb <- R6::R6Class(
     #' @param verbose If TRUE, will print informative messages to the console.
     #' Defaults to FALSE
     initialize = function(file_path, auto_commit = TRUE, verbose = FALSE) {
+
+      file_extension <- tolower(tools::file_ext(file_path))
+
+      if (!file_extension == "json") {
+        rlang::abort(
+          glue::glue(
+            "{file_path} is not of JSON format"
+          )
+        )
+      }
+
       private$.file_path <- file_path
       private$.auto_commit <- auto_commit
       private$.verbose <- verbose

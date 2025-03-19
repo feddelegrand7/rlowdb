@@ -18,6 +18,31 @@ test_that("Inserting records works correctly", {
   expect_equal(data$posts[[1]]$id, 1)
 })
 
+test_that("auto_commit works as expected", {
+
+  db$set_auto_commit(auto_commit = FALSE)
+  db$insert("posts", list(id = 55, title = "LowDB in R", views = 100))
+
+  expect_equal(db$count("posts"), 3)
+
+  db$restore(test_db_file)
+
+  expect_equal(db$count("posts"), 2)
+
+  db$insert("posts", list(id = 55, title = "LowDB in R", views = 100))
+
+  db$commit()
+
+  db$restore(test_db_file)
+
+  expect_equal(db$count("posts"), 3)
+
+  db$set_auto_commit(auto_commit = TRUE)
+
+  db$delete("posts", "id", 55)
+
+})
+
 test_that("Finding records works correctly", {
   result <- db$find("posts", "id", 1)
   expect_equal(length(result), 1)
@@ -173,6 +198,49 @@ test_that("filter method works as expected", {
 
 })
 
+test_that("count_value works as expected", {
+
+  db$insert("posts", list(id = 6, title = "Introduction to R", views = 200))
+  count <- db$count_values("posts", key = "title")
+
+  count_chr <- as.character(count)
+
+  expect_equal(count_chr, c("1", "2", "1", "1", "1"))
+
+  db$insert("posts", list(id = 6, title = "Introduction to R", views = 200))
+  db$insert("posts", list(id = 6, title = "Shiny for Python", views = 200))
+  count <- db$count_values("posts", key = "title")
+
+  count_chr <- as.character(count)
+
+  expect_equal(count_chr, c("1", "3", "1", "1", "2"))
+
+})
+
+test_that("list and rename collection work as expected", {
+
+  collection <- db$list_collections()
+
+  expect_equal(collection, "posts")
+
+  expect_length(collection, 1)
+
+  db$rename_collection("posts", "books")
+
+  collection <- db$list_collections()
+
+  expect_equal(collection, "books")
+
+  expect_length(collection, 1)
+
+  expect_error(
+    db$rename_collection("nonexistant", "new"),
+    regexp = "Collection 'nonexistant' does not exist"
+  )
+
+})
+
+
 test_that("clear works as expected", {
 
   db$insert("readers", list(name = "Fodil", city = "Hamburg"))
@@ -209,3 +277,6 @@ test_that("drop all works as expected", {
 })
 
 unlink(test_db_file)
+
+
+
