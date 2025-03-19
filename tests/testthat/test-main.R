@@ -1,6 +1,14 @@
 library(testthat)
 library(jsonlite)
 
+test_that("Object is not created without a json file", {
+  test_db_file <- tempfile(fileext = ".csv")
+  expect_error({
+    db <- rlowdb$new(test_db_file)
+  },
+  regexp = "is not of JSON format")
+})
+
 test_db_file <- tempfile(fileext = ".json")
 db <- rlowdb$new(test_db_file)
 
