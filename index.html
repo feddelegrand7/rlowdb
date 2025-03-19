@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">rlowdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,11 +32,13 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/feddelegrand7/rlowdb/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -49,6 +51,7 @@
 </h1></div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p><code>rlowdb</code> is a lightweight, JSON-based database for R, inspired by <a href="https://github.com/typicode/lowdb" class="external-link">LowDB</a> from JavaScript. It provides a simple and efficient way to store, retrieve, update, and delete structured data without the need for a full database system.</p>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
@@ -67,8 +70,11 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p><code>rlowdb</code> is not yet available on CRAN, but you can install it from GitHub:</p>
+<p>You can install <code>rlowdb</code> from <code>CRAN</code> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rlowdb"</span><span class="op">)</span></span></code></pre></div>
+<p>You can also install the development version from <code>Github</code> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"feddelegrand7/rlowdb"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -78,8 +84,8 @@
 <h3 id="initializing-the-database">Initializing the Database<a class="anchor" aria-label="anchor" href="#initializing-the-database"></a>
 </h3>
 <p>To start using `rlowdb``, create a new database instance by specifying a JSON file:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://feddelegrand7.github.io/rlowdb/">rlowdb</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/feddelegrand7/rlowdb" class="external-link">rlowdb</a></span><span class="op">)</span></span>
 <span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"DB.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -87,7 +93,7 @@
 </h3>
 <p>The <code>insert</code> method takes two parameters, a <code>collection</code> and a <code>record</code>, think of the <code>collection</code> parameter as a <code>table</code> in the <strong>SQL</strong> world. Think of the <code>record</code> parameter as a <code>list</code> of names, each name/value pair representing a specific column and it’s value.</p>
 <p>Add records to a collection:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>, </span>
 <span>  record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Ali"</span>, age <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
@@ -102,16 +108,14 @@
 <span>  record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-</div>
-</div>
-<div class="section level1">
-<h1 id="transaction">Transaction<a class="anchor" aria-label="anchor" href="#transaction"></a>
-</h1>
+<div class="section level3">
+<h3 id="transaction">Transaction<a class="anchor" aria-label="anchor" href="#transaction"></a>
+</h3>
 <p>Using the <code>transaction</code> method, you can insert a set of records and if an error occurs in the process, a <code>rollback</code> will be triggered to restore the initial state of the database. Note that the insertion has to be operated using a function:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">transaction</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Zlatan"</span>, age <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Neymar"</span>, age <span class="op">=</span> <span class="fl">28</span><span class="op">)</span><span class="op">)</span></span>
@@ -119,14 +123,15 @@
 <span>    <span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Ronaldo"</span>, age <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in value[[3L]](cond): Transaction failed: some errors</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="retrieving-data">Retrieving Data<a class="anchor" aria-label="anchor" href="#retrieving-data"></a>
 </h3>
 <p>Get all stored data:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $users</span></span>
 <span><span class="co">#&gt; $users[[1]]</span></span>
@@ -161,7 +166,7 @@
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
 <span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 <p>Find a specific record:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">find</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span>, key <span class="op">=</span> <span class="st">"id"</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [[1]]$id</span></span>
@@ -177,7 +182,7 @@
 <h3 id="updating-records">Updating Records<a class="anchor" aria-label="anchor" href="#updating-records"></a>
 </h3>
 <p>Modify existing records:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">update</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>, </span>
 <span>  key <span class="op">=</span> <span class="st">"id"</span>, </span>
@@ -219,7 +224,7 @@
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
 <span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 <p>The <code>upsert</code> methods allows you to update a record if it exists, otherwise, it will be inserted. Note that the collection and the key need to exist:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">upsert</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>, </span>
 <span>  key <span class="op">=</span> <span class="st">"id"</span>, </span>
@@ -260,7 +265,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
 <span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">upsert</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>, </span>
 <span>  key <span class="op">=</span> <span class="st">"id"</span>, </span>
@@ -313,7 +318,7 @@
 <div class="section level3">
 <h3 id="deleting-records">Deleting Records<a class="anchor" aria-label="anchor" href="#deleting-records"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">delete</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span>, key <span class="op">=</span> <span class="st">"id"</span>, value <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
@@ -350,22 +355,22 @@
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
 <span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level1">
-<h1 id="bulk-inserting">Bulk Inserting<a class="anchor" aria-label="anchor" href="#bulk-inserting"></a>
-</h1>
+<div class="section level3">
+<h3 id="bulk-inserting">Bulk Inserting<a class="anchor" aria-label="anchor" href="#bulk-inserting"></a>
+</h3>
 <p>You can insert many records at once using the <code>buld_insert</code> method:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Antoine"</span>, age <span class="op">=</span> <span class="fl">52</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Omar"</span>, age <span class="op">=</span> <span class="fl">23</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="st">"Nabil"</span>, age <span class="op">=</span> <span class="fl">41</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level3">
 <h3 id="querying-data">Querying Data<a class="anchor" aria-label="anchor" href="#querying-data"></a>
 </h3>
 <p>Find users older than 25:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span>, condition <span class="op">=</span> <span class="st">"age &gt; 25"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [[1]]$id</span></span>
@@ -399,7 +404,7 @@
 <span><span class="co">#&gt; [[3]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span></code></pre></div>
 <p>Query with multiple conditions:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span>, condition <span class="op">=</span> <span class="st">"age &gt; 20 &amp; id &gt; 1"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [[1]]$id</span></span>
@@ -448,7 +453,7 @@
 <h3 id="filter-data">Filter Data<a class="anchor" aria-label="anchor" href="#filter-data"></a>
 </h3>
 <p>The <code>filter</code> method allows you to apply a predicate function (a function that returns <code>TRUE</code> or <code>FALSE</code>) in order to get a specific set of records:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">filter</span><span class="op">(</span><span class="st">"users"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">x</span><span class="op">$</span><span class="va">age</span> <span class="op">&gt;</span> <span class="fl">30</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
@@ -477,7 +482,7 @@
 <h3 id="searching-data">Searching Data<a class="anchor" aria-label="anchor" href="#searching-data"></a>
 </h3>
 <p>The <code>search</code> method allows you to search within <code>character</code> fields a specific record. You can also use <code>regex</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span>, <span class="st">"^Ali"</span>, ignore.case <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [[1]]$id</span></span>
@@ -499,7 +504,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]$age</span></span>
 <span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span>, <span class="st">"alice"</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [[1]]$id</span></span>
@@ -515,7 +520,7 @@
 <h3 id="listing-the-collections">Listing the collections<a class="anchor" aria-label="anchor" href="#listing-the-collections"></a>
 </h3>
 <p>The <code>list_collections</code> method returns the names of the collections within your DB:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "users"</span></span></code></pre></div>
 </div>
@@ -523,7 +528,7 @@
 <h3 id="counting">Counting<a class="anchor" aria-label="anchor" href="#counting"></a>
 </h3>
 <p>Using the <code>count</code> method, you can get the number of records a collection has:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
 </div>
@@ -531,23 +536,23 @@
 <h3 id="check-if-exists">Check if exists<a class="anchor" aria-label="anchor" href="#check-if-exists"></a>
 </h3>
 <p>It possible to verify if a <code>collection</code>, a <code>key</code> or a <code>value</code> exists within your <code>DB</code>:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">exists_collection</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">exists_collection</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"nonexistant"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">exists_key</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span>, key <span class="op">=</span> <span class="st">"name"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">exists_value</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>,</span>
 <span>  key <span class="op">=</span> <span class="st">"name"</span>,</span>
 <span>  value <span class="op">=</span> <span class="st">"Alice"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">exists_value</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>,</span>
 <span>  key <span class="op">=</span> <span class="st">"name"</span>,</span>
@@ -559,7 +564,7 @@
 <h3 id="clear-drop-data">Clear, Drop Data<a class="anchor" aria-label="anchor" href="#clear-drop-data"></a>
 </h3>
 <p>It is possible to <code>clear</code> a collection. This will remove all the elements belonging to the collection but not drop the collection it self:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"countries"</span>, record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, country <span class="op">=</span> <span class="st">"Algeria"</span>, continent <span class="op">=</span> <span class="st">"Africa"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"countries"</span>, record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, country <span class="op">=</span> <span class="st">"Germany"</span>, continent <span class="op">=</span> <span class="st">"Europe"</span><span class="op">)</span><span class="op">)</span></span>
@@ -655,7 +660,7 @@
 <span><span class="co">#&gt; $countries[[2]]$continent</span></span>
 <span><span class="co">#&gt; [1] "Europe"</span></span></code></pre></div>
 <p>Now, look what happened when we use the <code>clear</code> method on the <code>countries</code> collection:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">clear</span><span class="op">(</span><span class="st">"countries"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
@@ -730,7 +735,7 @@
 <span><span class="co">#&gt; $countries</span></span>
 <span><span class="co">#&gt; list()</span></span></code></pre></div>
 <p>Using the <code>drop</code> method, one can drop a whole collection:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">drop</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"countries"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $users</span></span>
@@ -799,7 +804,7 @@
 <span><span class="co">#&gt; $users[[6]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span></code></pre></div>
 <p>Finally, <code>drop_all</code> will drop all the <code>collections</code> within your <code>DB</code>:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">drop_all</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; named list()</span></span></code></pre></div>
@@ -808,21 +813,21 @@
 <h3 id="creating-a-backup">Creating a Backup<a class="anchor" aria-label="anchor" href="#creating-a-backup"></a>
 </h3>
 <p>You can create at any time a backup for your database using the <code>backup</code> method:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">backup</span><span class="op">(</span><span class="st">"DB_backup.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="restoring-a-database">Restoring a database<a class="anchor" aria-label="anchor" href="#restoring-a-database"></a>
 </h3>
 <p>You can restore a backup database or any preexisting DB using the <code>restore</code> method:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">restore</span><span class="op">(</span><span class="st">"DB_backup.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="error-handling">Error Handling<a class="anchor" aria-label="anchor" href="#error-handling"></a>
 </h3>
 <p><code>rlowdb</code> provides error handling for common issues. For example, attempting to update a collection that does not exist will result in an informative error:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">update</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"nonexistant"</span>, </span>
 <span>  key <span class="op">=</span> <span class="st">"id"</span>,</span>
@@ -840,14 +845,23 @@
 <li>Compatibility with alternative file formats (e.g., CSV, SQLite).</li>
 </ul>
 </div>
+</div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
 </h2>
 <p>Please note that the ralger project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=rlowdb" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/feddelegrand7/rlowdb/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/feddelegrand7/rlowdb/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
 
-  </main><aside class="col-md-3"><div class="license">
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
@@ -876,6 +890,10 @@
 <ul class="list-unstyled">
 <li><a href="https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main" class="external-link"><img src="https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://CRAN.R-project.org/package=rlowdb" class="external-link"><img src="https://www.r-pkg.org/badges/version/rlowdb" alt="CRAN status"></a></li>
+<li><a href="https://github.com/feddelegrand7/rlowdb" class="external-link"><img src="https://img.shields.io/badge/Build%20with-%E2%99%A5%20and%20R-blue" alt="R badge"></a></li>
+<li><a href="https://cran.r-project.org/package=rlowdb" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/rlowdb" alt="metacran downloads"></a></li>
+<li><a href="https://cran.r-project.org/package=rlowdb" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/rlowdb" alt="metacran downloads"></a></li>
 </ul>
 </div>
 

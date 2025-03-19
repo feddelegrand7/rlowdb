@@ -13,7 +13,7 @@ and enables querying with custom functions."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">rlowdb</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,8 +22,10 @@ and enables querying with custom functions."></head><body>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/feddelegrand7/rlowdb/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -33,7 +35,7 @@ and enables querying with custom functions."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>rlowdb: A Simple JSON-Based Database in R</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/feddelegrand7/rlowdb/blob/main/R/main.R" class="external-link"><code>R/main.R</code></a></small>
       <div class="d-none name"><code>rlowdb.Rd</code></div>
     </div>
 
@@ -52,6 +54,7 @@ and enables querying with custom functions.</p>
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
 <ul><li><p><a href="#method-rlowdb-new"><code>rlowdb$new()</code></a></p></li>
+<li><p><a href="#method-rlowdb-commit"><code>rlowdb$commit()</code></a></p></li>
 <li><p><a href="#method-rlowdb-get_data"><code>rlowdb$get_data()</code></a></p></li>
 <li><p><a href="#method-rlowdb-insert"><code>rlowdb$insert()</code></a></p></li>
 <li><p><a href="#method-rlowdb-find"><code>rlowdb$find()</code></a></p></li>
@@ -73,13 +76,19 @@ and enables querying with custom functions.</p>
 <li><p><a href="#method-rlowdb-backup"><code>rlowdb$backup()</code></a></p></li>
 <li><p><a href="#method-rlowdb-search"><code>rlowdb$search()</code></a></p></li>
 <li><p><a href="#method-rlowdb-bulk_insert"><code>rlowdb$bulk_insert()</code></a></p></li>
+<li><p><a href="#method-rlowdb-status"><code>rlowdb$status()</code></a></p></li>
+<li><p><a href="#method-rlowdb-set_auto_commit"><code>rlowdb$set_auto_commit()</code></a></p></li>
+<li><p><a href="#method-rlowdb-set_verbose"><code>rlowdb$set_verbose()</code></a></p></li>
+<li><p><a href="#method-rlowdb-rename_collection"><code>rlowdb$rename_collection()</code></a></p></li>
+<li><p><a href="#method-rlowdb-list_keys"><code>rlowdb$list_keys()</code></a></p></li>
+<li><p><a href="#method-rlowdb-count_values"><code>rlowdb$count_values()</code></a></p></li>
 <li><p><a href="#method-rlowdb-clone"><code>rlowdb$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-rlowdb-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Initialize the database, loading data from a JSON file.
 If the file does not exist, an empty database is created.</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">file_path</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">file_path</span>, auto_commit <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -88,13 +97,32 @@ If the file does not exist, an empty database is created.</p><div class="section
 <dd><p>The path to the JSON file that stores the database.</p></dd>
 
 
+<dt><code>auto_commit</code></dt>
+<dd><p>whether to update the DB automatically each time
+there's an insertion, an update or a deletion. Defaults to TRUE.s
+Note that you can use the `commit` method to update the DB manually.</p></dd>
+
+
+<dt><code>verbose</code></dt>
+<dd><p>If TRUE, will print informative messages to the console.
+Defaults to FALSE</p></dd>
+
+
 </dl><p></p></div>
 </div>
+
+</div><p></p><hr><a id="method-rlowdb-commit"></a><div class="section">
+<h3 id="method-commit-">Method <code>commit()</code><a class="anchor" aria-label="anchor" href="#method-commit-"></a></h3>
+<p>Update the DB with the operated changes.</p><div class="section">
+<h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">commit</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
 
 </div><p></p><hr><a id="method-rlowdb-get_data"></a><div class="section">
 <h3 id="method-get-data-">Method <code>get_data()</code><a class="anchor" aria-label="anchor" href="#method-get-data-"></a></h3>
 <p>Retrieve all stored data.</p><div class="section">
-<h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
+<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -114,7 +142,7 @@ If the file does not exist, an empty database is created.</p><div class="section
 </div><p></p><hr><a id="method-rlowdb-insert"></a><div class="section">
 <h3 id="method-insert-">Method <code>insert()</code><a class="anchor" aria-label="anchor" href="#method-insert-"></a></h3>
 <p>Insert a new record into a specified collection.</p><div class="section">
-<h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
+<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="va">collection</span>, <span class="va">record</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -142,7 +170,7 @@ If the file does not exist, an empty database is created.</p><div class="section
 </div><p></p><hr><a id="method-rlowdb-find"></a><div class="section">
 <h3 id="method-find-">Method <code><a href="https://rdrr.io/r/utils/apropos.html" class="external-link">find()</a></code><a class="anchor" aria-label="anchor" href="#method-find-"></a></h3>
 <p>Find records in a collection that match a given key-value pair.</p><div class="section">
-<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">find</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span>, <span class="va">value</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -179,7 +207,7 @@ If the file does not exist, an empty database is created.</p><div class="section
 </div><p></p><hr><a id="method-rlowdb-update"></a><div class="section">
 <h3 id="method-update-">Method <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code><a class="anchor" aria-label="anchor" href="#method-update-"></a></h3>
 <p>Update existing records in a collection.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">update</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span>, <span class="va">value</span>, <span class="va">new_data</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -218,7 +246,7 @@ If the file does not exist, an empty database is created.</p><div class="section
 <p>If a record exists, update it; otherwise, insert a new record.
 Note that in order to use the method, the 'collection' has to
 exist</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">upsert</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span>, <span class="va">value</span>, <span class="va">new_data</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -255,7 +283,7 @@ exist</p><div class="section">
 </div><p></p><hr><a id="method-rlowdb-delete"></a><div class="section">
 <h3 id="method-delete-">Method <code>delete()</code><a class="anchor" aria-label="anchor" href="#method-delete-"></a></h3>
 <p>Delete records from a collection that match a given key-value pair.</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">delete</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span>, <span class="va">value</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -292,7 +320,7 @@ exist</p><div class="section">
 This function allows filtering records from a collection using a condition
 string that is evaluated dynamically. The condition supports multiple logical
 expressions using standard R operators (e.g., `&gt;`, `&lt;`, `==`, `&amp;`, `|`).</p><div class="section">
-<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
+<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">collection</span>, condition <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -342,7 +370,7 @@ expressions using standard R operators (e.g., `&gt;`, `&lt;`, `==`, `&amp;`, `|`
 This method applies a user-defined function to filter records in a specified collection.
 The function should take a record as input and return `TRUE` for records that should be included
 in the result and `FALSE` for records that should be excluded.</p><div class="section">
-<h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">filter</span><span class="op">(</span><span class="va">collection</span>, <span class="va">filter_fn</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -376,7 +404,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-drop"></a><div class="section">
 <h3 id="method-drop-">Method <code><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop()</a></code><a class="anchor" aria-label="anchor" href="#method-drop-"></a></h3>
 <p>Just like DROP TABLE in SQL, drops a complete collection.</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">drop</span><span class="op">(</span><span class="va">collection</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -401,7 +429,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-drop_all"></a><div class="section">
 <h3 id="method-drop-all-">Method <code>drop_all()</code><a class="anchor" aria-label="anchor" href="#method-drop-all-"></a></h3>
 <p>Drop all the collections available in your JSON file DB</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">drop_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -419,7 +447,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-clear"></a><div class="section">
 <h3 id="method-clear-">Method <code>clear()</code><a class="anchor" aria-label="anchor" href="#method-clear-"></a></h3>
 <p>Removes all records from a collection without deleting the collection itself</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clear</span><span class="op">(</span><span class="va">collection</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -445,7 +473,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-count"></a><div class="section">
 <h3 id="method-count-">Method <code>count()</code><a class="anchor" aria-label="anchor" href="#method-count-"></a></h3>
 <p>Count the number of records in a collection</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span><span class="va">collection</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -474,7 +502,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-list_collections"></a><div class="section">
 <h3 id="method-list-collections-">Method <code>list_collections()</code><a class="anchor" aria-label="anchor" href="#method-list-collections-"></a></h3>
 <p>List the available collections</p><div class="section">
-<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -495,7 +523,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-exists_collection"></a><div class="section">
 <h3 id="method-exists-collection-">Method <code>exists_collection()</code><a class="anchor" aria-label="anchor" href="#method-exists-collection-"></a></h3>
 <p>Check if a collection exists.</p><div class="section">
-<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">exists_collection</span><span class="op">(</span><span class="va">collection</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -524,7 +552,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-exists_key"></a><div class="section">
 <h3 id="method-exists-key-">Method <code>exists_key()</code><a class="anchor" aria-label="anchor" href="#method-exists-key-"></a></h3>
 <p>Check if a key exists within a specific collection.</p><div class="section">
-<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">exists_key</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -557,7 +585,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 </div><p></p><hr><a id="method-rlowdb-exists_value"></a><div class="section">
 <h3 id="method-exists-value-">Method <code>exists_value()</code><a class="anchor" aria-label="anchor" href="#method-exists-value-"></a></h3>
 <p>Check if a value exists within a specific collection/key combination.</p><div class="section">
-<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">exists_value</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span>, <span class="va">value</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -596,7 +624,7 @@ in the result and `FALSE` for records that should be excluded.</p><div class="se
 <p>Perform a Transaction with Rollback on Failure</p>
 <p>This method executes a sequence of operations as a transaction.
 If any operation fails, it rolls back all changes to maintain data integrity.</p><div class="section">
-<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">transaction</span><span class="op">(</span><span class="va">transaction_fn</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -627,7 +655,7 @@ If any operation fails, it rolls back all changes to maintain data integrity.</p
 </div><p></p><hr><a id="method-rlowdb-restore"></a><div class="section">
 <h3 id="method-restore-">Method <code>restore()</code><a class="anchor" aria-label="anchor" href="#method-restore-"></a></h3>
 <p>Load a JSON backup and replace the current database.</p><div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">restore</span><span class="op">(</span><span class="va">backup_path</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -645,7 +673,7 @@ Allow users to quickly backup their database.</p></dd>
 <h3 id="method-backup-">Method <code>backup()</code><a class="anchor" aria-label="anchor" href="#method-backup-"></a></h3>
 
 <div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">backup</span><span class="op">(</span><span class="va">backup_path</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -663,7 +691,7 @@ Allow users to quickly backup their database.</p></dd>
 <p>Search Records in a Collection</p>
 <p>This method searches for records in a collection where a specified key's value
 contains a given search term.</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span>, <span class="va">term</span>, ignore.case <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -712,7 +740,7 @@ contains a given search term.</p><div class="section">
 <p>Insert Multiple Records into a Collection</p>
 <p>This method inserts multiple records into a specified collection at once.
 Each record should be a named list representing an entry in the collection.</p><div class="section">
-<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="va">collection</span>, <span class="va">records</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -741,15 +769,167 @@ Each record should be a named list representing an entry in the collection.</p><
 </div>
 
 
-</div><p></p><hr><a id="method-rlowdb-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><hr><a id="method-rlowdb-status"></a><div class="section">
+<h3 id="method-status-">Method <code>status()</code><a class="anchor" aria-label="anchor" href="#method-status-"></a></h3>
+<p>Provides some useful information about the database</p><div class="section">
+<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-rlowdb-set_auto_commit"></a><div class="section">
+<h3 id="method-set-auto-commit-">Method <code>set_auto_commit()</code><a class="anchor" aria-label="anchor" href="#method-set-auto-commit-"></a></h3>
+<p>Set the auto_commit value</p><div class="section">
+<h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">set_auto_commit</span><span class="op">(</span><span class="va">auto_commit</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-19">Arguments<a class="anchor" aria-label="anchor" href="#arguments-19"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>auto_commit</code></dt>
+<dd><p>TRUE will update automatically the JSON
+by each insertion/update/delete. If FALSE, you'll need to
+use the commit method whenever you want to commit your changes
+to the JSON DB.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-rlowdb-set_verbose"></a><div class="section">
+<h3 id="method-set-verbose-">Method <code>set_verbose()</code><a class="anchor" aria-label="anchor" href="#method-set-verbose-"></a></h3>
+<p>Set the verbose value.</p><div class="section">
+<h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">set_verbose</span><span class="op">(</span><span class="va">verbose</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-20">Arguments<a class="anchor" aria-label="anchor" href="#arguments-20"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>verbose</code></dt>
+<dd><p>If TRUE, informative messages will be printed
+to the console.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-rlowdb-rename_collection"></a><div class="section">
+<h3 id="method-rename-collection-">Method <code>rename_collection()</code><a class="anchor" aria-label="anchor" href="#method-rename-collection-"></a></h3>
+<p>Allows you to rename an existing collection in the database.
+It checks if the specified collection exists before attempting to rename it.</p><div class="section">
+<h4 id="usage-26">Usage<a class="anchor" aria-label="anchor" href="#usage-26"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">rename_collection</span><span class="op">(</span><span class="va">collection_name</span>, <span class="va">new_collection_name</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-21">Arguments<a class="anchor" aria-label="anchor" href="#arguments-21"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>collection_name</code></dt>
+<dd><p>A character string representing the current name of the collection to be renamed.</p></dd>
+
+
+<dt><code>new_collection_name</code></dt>
+<dd><p>A character string representing the new name for the collection.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="examples-19">Examples<a class="anchor" aria-label="anchor" href="#examples-19"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Bob"</span>, age <span class="op">=</span> <span class="fl">32</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="st">"Charlie"</span>, age <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">rename_collection</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"customers"</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
+<span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-rlowdb-list_keys"></a><div class="section">
+<h3 id="method-list-keys-">Method <code>list_keys()</code><a class="anchor" aria-label="anchor" href="#method-list-keys-"></a></h3>
+<p>Retrieves the names (keys) of all keys within a given collection.</p><div class="section">
+<h4 id="usage-27">Usage<a class="anchor" aria-label="anchor" href="#usage-27"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">list_keys</span><span class="op">(</span><span class="va">collection</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-22">Arguments<a class="anchor" aria-label="anchor" href="#arguments-22"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>collection</code></dt>
+<dd><p>The collection name</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
+<p>A character vector containing the unique keys (field names) present across all records in the collection.</p>
+</div>
+<div class="section">
+<h4 id="examples-20">Examples<a class="anchor" aria-label="anchor" href="#examples-20"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Bob"</span>, age <span class="op">=</span> <span class="fl">32</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="st">"Charlie"</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">list_keys</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
+<span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-rlowdb-count_values"></a><div class="section">
+<h3 id="method-count-values-">Method <code>count_values()</code><a class="anchor" aria-label="anchor" href="#method-count-values-"></a></h3>
+<p>Count Occurrences of a Key's Values in a Collection</p><div class="section">
+<h4 id="usage-28">Usage<a class="anchor" aria-label="anchor" href="#usage-28"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">count_values</span><span class="op">(</span><span class="va">collection</span>, <span class="va">key</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-23">Arguments<a class="anchor" aria-label="anchor" href="#arguments-23"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>collection</code></dt>
+<dd><p>The collection name</p></dd>
+
+
+<dt><code>key</code></dt>
+<dd><p>The key name</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
+<p>A table (a frequency count) of the values associated with the specified key,
+  showing the number of occurrences of each unique value. If the key does not exist,
+  an error is thrown.</p>
+</div>
+<div class="section">
+<h4 id="examples-21">Examples<a class="anchor" aria-label="anchor" href="#examples-21"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Bob"</span>, age <span class="op">=</span> <span class="fl">32</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">4</span>, name <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">count_values</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-rlowdb-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-24">Arguments<a class="anchor" aria-label="anchor" href="#arguments-24"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -1140,6 +1320,56 @@ Each record should be a named list representing an entry in the collection.</p><
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `rlowdb$rename_collection`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va">rlowdb</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Bob"</span>, age <span class="op">=</span> <span class="fl">32</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="st">"Charlie"</span>, age <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "users"</span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">rename_collection</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"customers"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "customers"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `rlowdb$list_keys`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va">rlowdb</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Bob"</span>, age <span class="op">=</span> <span class="fl">32</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="st">"Charlie"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">list_keys</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "id"   "name" "age" </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `rlowdb$count_values`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va">rlowdb</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">bulk_insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Bob"</span>, age <span class="op">=</span> <span class="fl">32</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">4</span>, name <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">count_values</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alice   Bob  &lt;NA&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1     1     2 </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
