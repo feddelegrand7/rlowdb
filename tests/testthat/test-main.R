@@ -270,6 +270,96 @@ test_that("list_keys works as expected", {
     keys,
     c("id", "title", "views", "license")
   )
+})
+
+test_that("insert_default_values works correctly", {
+
+  db$bulk_insert("users", list(
+    list(name = "Alice", age = 30),
+    list(name = "Bob"),
+    list(name = "Charlie", age = 25, role = "admin")
+  ))
+
+  keys <- db$list_keys("users")
+
+  expect_equal(keys, c("name", "age", "role"))
+
+  db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = FALSE)
+
+  keys <- db$list_keys("users")
+
+  expect_equal(keys, c("role", "active", "name", "age"))
+
+  users <- db$get_data()[["users"]]
+
+  alice <- users[[1]]
+  bob <- users[[2]]
+  charlie <- users[[3]]
+
+  expect_true(alice$role == "guest")
+  expect_true(alice$active == TRUE)
+
+  expect_true(bob$role == "guest")
+  expect_true(bob$active == TRUE)
+
+  expect_true(charlie$role == "admin")
+  expect_true(charlie$active == TRUE)
+
+  db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
+
+  users <- db$get_data()[["users"]]
+
+  charlie <- users[[3]]
+
+  expect_true(charlie$role == "guest")
+
+  db$insert_default_values("users", list(active = FALSE), replace_existing = FALSE)
+
+  users <- db$get_data()[["users"]]
+
+  expect_true(users[[1]]$active == TRUE)
+  expect_true(users[[2]]$active == TRUE)
+  expect_true(users[[3]]$active == TRUE)
+
+  db$insert("users", list(name = "David"))
+
+  db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = FALSE)
+
+  users <- db$get_data()[["users"]]
+
+  expect_true(users[[4]]$role == "guest")
+  expect_true(users[[4]]$active == TRUE)
+  expect_true(users[[4]]$name == "David")
+
+})
+
+test_that("default_values works as expected", {
+
+  db_without_defaults <-  rlowdb$new("db2.json")
+
+  db_with_defaults <- rlowdb$new("db1.json", default_values = list(
+    "users" = list("active" = TRUE),
+    "readers" = list("minimal_age" = 18)
+  ))
+
+  db_without_defaults$insert("users", list(id = 1, name = "Alice"))
+
+  db_with_defaults$insert("users", list(id = 1, name = "Alice"))
+
+  expect_equal(db_without_defaults$list_keys("users"), c("id", "name"))
+
+  expect_equal(db_with_defaults$list_keys("users"), c("active", "id", "name"))
+
+  expect_false(db_with_defaults$exists_collection("readers"))
+
+  db_with_defaults$insert("readers", list(id = 1, name = "Fodil", age = 33))
+
+  expected_keys <- c("minimal_age", "id", "name", "age")
+
+  expect_equal(db_with_defaults$list_keys("readers"), expected_keys)
+
+  unlink("db1.json")
+  unlink("db2.json")
 
 })
 

@@ -18,12 +18,22 @@ rlowdb <- R6::R6Class(
     #' @description Initialize the database, loading data from a JSON file.
     #' If the file does not exist, an empty database is created.
     #' @param file_path The path to the JSON file that stores the database.
+    #' @param default_values A list of named list with the format:
+    #' list(collection_name = list(key_name_1 = value, key_name_2 = value, ..., key_name_n = value))
+    #' containing the default values that will be inserted each time the `insert` method is called.
+    #' Note that the default_values will not override the existing records.
+    #' Default is an empty list (`list()`).
     #' @param auto_commit whether to update the DB automatically each time
     #' there's an insertion, an update or a deletion. Defaults to TRUE.s
     #' Note that you can use the `commit` method to update the DB manually.
     #' @param verbose If TRUE, will print informative messages to the console.
     #' Defaults to FALSE
-    initialize = function(file_path, auto_commit = TRUE, verbose = FALSE) {
+    initialize = function(
+    file_path,
+    default_values = list(),
+    auto_commit = TRUE,
+    verbose = FALSE
+    ) {
 
       if (!auto_commit) {
         cli::cli_alert_info(
@@ -31,7 +41,6 @@ rlowdb <- R6::R6Class(
           within the JSON DB, use the 'commit' method.}"
         )
       }
-
 
       file_extension <- tolower(tools::file_ext(file_path))
 
@@ -44,6 +53,7 @@ rlowdb <- R6::R6Class(
       private$.file_path <- file_path
       private$.auto_commit <- auto_commit
       private$.verbose <- verbose
+      private$.default_values <- default_values
       private$.read_data()
     },
 
@@ -68,7 +78,10 @@ rlowdb <- R6::R6Class(
     #' @param collection The collection name (a string).
     #' @param record A named list representing the record to insert.
     #' @examples
-    #' db <- rlowdb$new("database.json")
+    #' db <- rlowdb$new("database.json", default_values = list(
+    #'   "users" = list("active" = TRUE)
+    #'  )
+    #' )
     #' db$insert("users", list(id = 1, name = "Alice"))
     #' unlink("database.json")
     #'
@@ -77,6 +90,13 @@ rlowdb <- R6::R6Class(
         rlang::abort("Error: 'record' must be a named list with valid field names.")
       }
       private$.ensure_key(collection)
+
+      default_values <- private$.default_values[[collection]]
+
+      if (!is.null(default_values)) {
+        record <- purrr::list_modify(default_values, !!!record)
+      }
+
       private$.data[[collection]] <- append(private$.data[[collection]], list(record))
 
       if (private$.verbose) {
@@ -658,10 +678,13 @@ rlowdb <- R6::R6Class(
         db_exists <- TRUE
       }
 
+      collections <- self$list_collections()
+
       cli::cli_text("{.strong - database path:} {private$.file_path}")
       cli::cli_text("{.strong - database exists:} {db_exists} ")
       cli::cli_text("{.strong - auto_commit:} {private$.auto_commit}")
       cli::cli_text("{.strong - verbose:} {private$.verbose}")
+      cli::cli_text("{.strong - collections:} {toString(collections)}")
 
     },
 
@@ -787,6 +810,61 @@ rlowdb <- R6::R6Class(
       })
 
       table(count, useNA = "ifany")
+    },
+
+    #' @description
+    #' Add Default Values to Records in a Collection
+    #'
+    #' Ensures that all records in a collection have specific default values
+    #' for certain keys. If a key is missing, the default value is added.
+    #' Optionally, existing values can be replaced with defaults.
+    #'
+    #' @param collection The collection name.
+    #' @param defaults A named list of default values to add.
+    #' @param replace_existing Logical; if `TRUE`, replaces existing values with defaults.
+    #'   If `FALSE`, only adds missing keys. Defaults to `FALSE`.
+    #'
+    #' @return Updates the collection in place, ensuring consistency of data.
+    #'
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$bulk_insert("users", list(
+    #'   list(name = "Alice", age = 30),
+    #'   list(name = "Bob"),
+    #'   list(name = "Charlie", age = 25, role = "admin")
+    #' ))
+    #'
+    #' # Add defaults without replacing existing values
+    #' db$insert_default_values("users", list(role = "guest", active = TRUE))
+    #'
+    #' # Add defaults and replace existing values
+    #' db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
+    #'
+    #' unlink("database.json")
+    insert_default_values = function(collection, defaults, replace_existing = FALSE) {
+      if (!self$exists_collection(collection)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+      if (!is.list(defaults) || is.null(names(defaults))) {
+        rlang::abort("Error: 'defaults' must be a named list.")
+      }
+
+      private$.data[[collection]] <- purrr::map(private$.data[[collection]], function(record) {
+        if (replace_existing) {
+          modifyList(record, defaults)
+        } else {
+          purrr::list_modify(defaults, !!!record)
+        }
+      })
+
+      if (private$.verbose) {
+        mode <- if (replace_existing) "overwritten" else "added (without overwriting)"
+        cli::cli_alert_success("Default values {mode} in collection '{collection}'")
+      }
+
+      if (private$.auto_commit) {
+        private$.write_data()
+      }
     }
 
   ),
@@ -795,6 +873,7 @@ rlowdb <- R6::R6Class(
     .file_path = NULL,
     .auto_commit = NULL,
     .verbose = NULL,
+    .default_values = NULL,
     .data = NULL,
 
     .read_data = function() {

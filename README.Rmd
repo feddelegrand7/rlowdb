@@ -310,6 +310,14 @@ You can restore a backup database or any preexisting DB using the `restore` meth
 db$restore("DB_backup.json")
 ```
 
+### DB status
+
+Using the `status` method, you can at each time get some valuable information about the state of your `DB`: 
+
+```{r}
+db$status()
+```
+
 ### Error Handling
 
 `rlowdb` provides error handling for common issues. For example, attempting to update a collection that does not exist will result in an informative error: 

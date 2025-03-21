@@ -103,7 +103,8 @@ db$transaction(function() {
     stop("some errors")
     db$insert("users", list(name = "Ronaldo", age = 30))
 })
-#> Error in value[[3L]](cond): Transaction failed: some errors
+#> Error in `value[[3L]]()`:
+#> ! Transaction failed: some errors
 ```
 
 ``` r
@@ -862,6 +863,20 @@ You can restore a backup database or any preexisting DB using the
 db$restore("DB_backup.json")
 ```
 
+### DB status
+
+Using the `status` method, you can at each time get some valuable
+information about the state of your `DB`:
+
+``` r
+db$status()
+#> - database path: DB.json
+#> - database exists: TRUE
+#> - auto_commit: TRUE
+#> - verbose: FALSE
+#> - collections:
+```
+
 ### Error Handling
 
 `rlowdb` provides error handling for common issues. For example,
@@ -875,7 +890,8 @@ db$update(
   value = 1, 
   new_data = list(age = 40)
 )  
-#> Error in private$.find_index_by_key(collection, key, value): Error: Collection 'nonexistant' does not exist.
+#> Error in `private$.find_index_by_key()` at rlowdb/R/main.R:135:7:
+#> ! Error: Collection 'nonexistant' does not exist.
 ```
 
 ### Future Features

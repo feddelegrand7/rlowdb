@@ -24,7 +24,10 @@ unlink("database.json")
 ## Method `rlowdb$insert`
 ## ------------------------------------------------
 
-db <- rlowdb$new("database.json")
+db <- rlowdb$new("database.json", default_values = list(
+  "users" = list("active" = TRUE)
+ )
+)
 db$insert("users", list(id = 1, name = "Alice"))
 unlink("database.json")
 
@@ -271,6 +274,25 @@ db$bulk_insert("users", list(
 ))
 db$count_values("users", "name")
 unlink("database.json")
+
+## ------------------------------------------------
+## Method `rlowdb$insert_default_values`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(name = "Alice", age = 30),
+  list(name = "Bob"),
+  list(name = "Charlie", age = 25, role = "admin")
+))
+
+# Add defaults without replacing existing values
+db$insert_default_values("users", list(role = "guest", active = TRUE))
+
+# Add defaults and replace existing values
+db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
+
+unlink("database.json")
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -304,6 +326,7 @@ unlink("database.json")
 \item \href{#method-rlowdb-rename_collection}{\code{rlowdb$rename_collection()}}
 \item \href{#method-rlowdb-list_keys}{\code{rlowdb$list_keys()}}
 \item \href{#method-rlowdb-count_values}{\code{rlowdb$count_values()}}
+\item \href{#method-rlowdb-insert_default_values}{\code{rlowdb$insert_default_values()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -314,13 +337,24 @@ unlink("database.json")
 Initialize the database, loading data from a JSON file.
 If the file does not exist, an empty database is created.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{rlowdb$new(file_path, auto_commit = TRUE, verbose = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$new(
+  file_path,
+  default_values = list(),
+  auto_commit = TRUE,
+  verbose = FALSE
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{file_path}}{The path to the JSON file that stores the database.}
+
+\item{\code{default_values}}{A list of named list with the format:
+list(collection_name = list(key_name_1 = value, key_name_2 = value, ..., key_name_n = value))
+containing the default values that will be inserted each time the `insert` method is called.
+Note that the default_values will not override the existing records.
+Default is an empty list (`list()`).}
 
 \item{\code{auto_commit}}{whether to update the DB automatically each time
 there's an insertion, an update or a deletion. Defaults to TRUE.s
@@ -386,7 +420,10 @@ Insert a new record into a specified collection.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{db <- rlowdb$new("database.json")
+\preformatted{db <- rlowdb$new("database.json", default_values = list(
+  "users" = list("active" = TRUE)
+ )
+)
 db$insert("users", list(id = 1, name = "Alice"))
 unlink("database.json")
 
@@ -1179,6 +1216,56 @@ db$bulk_insert("users", list(
   list(id = 4, name = NA)
 ))
 db$count_values("users", "name")
+unlink("database.json")
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-insert_default_values"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-insert_default_values}{}}}
+\subsection{Method \code{insert_default_values()}}{
+Add Default Values to Records in a Collection
+
+Ensures that all records in a collection have specific default values
+for certain keys. If a key is missing, the default value is added.
+Optionally, existing values can be replaced with defaults.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$insert_default_values(collection, defaults, replace_existing = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name.}
+
+\item{\code{defaults}}{A named list of default values to add.}
+
+\item{\code{replace_existing}}{Logical; if `TRUE`, replaces existing values with defaults.
+If `FALSE`, only adds missing keys. Defaults to `FALSE`.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Updates the collection in place, ensuring consistency of data.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$bulk_insert("users", list(
+  list(name = "Alice", age = 30),
+  list(name = "Bob"),
+  list(name = "Charlie", age = 25, role = "admin")
+))
+
+# Add defaults without replacing existing values
+db$insert_default_values("users", list(role = "guest", active = TRUE))
+
+# Add defaults and replace existing values
+db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
+
 unlink("database.json")
 }
 \if{html}{\out{</div>}}
