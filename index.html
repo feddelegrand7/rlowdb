@@ -122,7 +122,8 @@
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"some errors"</span><span class="op">)</span></span>
 <span>    <span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Ronaldo"</span>, age <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in value[[3L]](cond): Transaction failed: some errors</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in `value[[3L]]()`:</span></span>
+<span><span class="co">#&gt; ! Transaction failed: some errors</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
@@ -824,17 +825,30 @@
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">restore</span><span class="op">(</span><span class="st">"DB_backup.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="db-status">DB status<a class="anchor" aria-label="anchor" href="#db-status"></a>
+</h3>
+<p>Using the <code>status</code> method, you can at each time get some valuable information about the state of your <code>DB</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; - database path: DB.json</span></span>
+<span><span class="co">#&gt; - database exists: TRUE</span></span>
+<span><span class="co">#&gt; - auto_commit: TRUE</span></span>
+<span><span class="co">#&gt; - verbose: FALSE</span></span>
+<span><span class="co">#&gt; - collections:</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="error-handling">Error Handling<a class="anchor" aria-label="anchor" href="#error-handling"></a>
 </h3>
 <p><code>rlowdb</code> provides error handling for common issues. For example, attempting to update a collection that does not exist will result in an informative error:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">update</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"nonexistant"</span>, </span>
 <span>  key <span class="op">=</span> <span class="st">"id"</span>,</span>
 <span>  value <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>  new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>age <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
 <span><span class="op">)</span>  </span>
-<span><span class="co">#&gt; Error in private$.find_index_by_key(collection, key, value): Error: Collection 'nonexistant' does not exist.</span></span></code></pre></div>
+<span><span class="co">#&gt; Error in `private$.find_index_by_key()` at rlowdb/R/main.R:135:7:</span></span>
+<span><span class="co">#&gt; ! Error: Collection 'nonexistant' does not exist.</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="future-features">Future Features<a class="anchor" aria-label="anchor" href="#future-features"></a>
