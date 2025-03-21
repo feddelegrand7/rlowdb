@@ -126,6 +126,11 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     #'
     update = function(collection, key, value, new_data) {
+
+      if (!is.list(new_data) || is.null(names(new_data)) || !all(nzchar(names(new_data)))) {
+        rlang::abort("Error: 'new_data' must be a named list with valid field names.")
+      }
+
       index <- private$.find_index_by_key(collection, key, value)
       if (length(index) > 0) {
         for (i in index) {
@@ -161,6 +166,11 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     #'
     upsert = function(collection, key, value, new_data) {
+
+      if (!is.list(new_data) || is.null(names(new_data)) || !all(nzchar(names(new_data)))) {
+        rlang::abort("Error: 'new_data' must be a named list with valid field names.")
+      }
+
       if (self$exists_value(collection, key, value)) {
         self$update(collection, key, value, new_data)
       } else {
