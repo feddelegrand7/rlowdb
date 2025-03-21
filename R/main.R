@@ -25,6 +25,14 @@ rlowdb <- R6::R6Class(
     #' Defaults to FALSE
     initialize = function(file_path, auto_commit = TRUE, verbose = FALSE) {
 
+      if (!auto_commit) {
+        cli::cli_alert_info(
+          "{.strong 'auto_commit' is set to FALSE, to persist your changes,
+          within the JSON DB, use the 'commit' method.}"
+        )
+      }
+
+
       file_extension <- tolower(tools::file_ext(file_path))
 
       if (!file_extension == "json") {
