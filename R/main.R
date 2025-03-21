@@ -99,7 +99,9 @@ rlowdb <- R6::R6Class(
       if (length(index) > 0) {
         return(private$.data[[collection]][index])
       } else {
-        message(sprintf("No record found in '%s' where '%s' = '%s'.", collection, key, value))
+        cli::cli_alert_warning(
+          sprintf("No record found in '%s' where '%s' = '%s'.", collection, key, value)
+        )
         return(list())
       }
     },
