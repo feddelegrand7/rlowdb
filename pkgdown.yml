@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2025-03-21T12:25Z
+last_built: 2025-03-24T21:30Z
 urls:
   reference: https://feddelegrand7.github.io/rlowdb/reference
   article: https://feddelegrand7.github.io/rlowdb/articles

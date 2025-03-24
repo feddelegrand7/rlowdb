@@ -562,10 +562,22 @@
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="db-status">DB status<a class="anchor" aria-label="anchor" href="#db-status"></a>
+</h3>
+<p>Using the <code>status</code> method, you can at each time get some valuable information about the state of your <code>DB</code>:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; - database path: DB.json</span></span>
+<span><span class="co">#&gt; - database exists: TRUE</span></span>
+<span><span class="co">#&gt; - auto_commit: TRUE</span></span>
+<span><span class="co">#&gt; - verbose: FALSE</span></span>
+<span><span class="co">#&gt; - collections: users</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="clear-drop-data">Clear, Drop Data<a class="anchor" aria-label="anchor" href="#clear-drop-data"></a>
 </h3>
 <p>It is possible to <code>clear</code> a collection. This will remove all the elements belonging to the collection but not drop the collection it self:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"countries"</span>, record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, country <span class="op">=</span> <span class="st">"Algeria"</span>, continent <span class="op">=</span> <span class="st">"Africa"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"countries"</span>, record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, country <span class="op">=</span> <span class="st">"Germany"</span>, continent <span class="op">=</span> <span class="st">"Europe"</span><span class="op">)</span><span class="op">)</span></span>
@@ -661,7 +673,7 @@
 <span><span class="co">#&gt; $countries[[2]]$continent</span></span>
 <span><span class="co">#&gt; [1] "Europe"</span></span></code></pre></div>
 <p>Now, look what happened when we use the <code>clear</code> method on the <code>countries</code> collection:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">clear</span><span class="op">(</span><span class="st">"countries"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
@@ -736,7 +748,7 @@
 <span><span class="co">#&gt; $countries</span></span>
 <span><span class="co">#&gt; list()</span></span></code></pre></div>
 <p>Using the <code>drop</code> method, one can drop a whole collection:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">drop</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"countries"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $users</span></span>
@@ -805,7 +817,7 @@
 <span><span class="co">#&gt; $users[[6]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span></code></pre></div>
 <p>Finally, <code>drop_all</code> will drop all the <code>collections</code> within your <code>DB</code>:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">drop_all</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">get_data</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; named list()</span></span></code></pre></div>
@@ -814,27 +826,15 @@
 <h3 id="creating-a-backup">Creating a Backup<a class="anchor" aria-label="anchor" href="#creating-a-backup"></a>
 </h3>
 <p>You can create at any time a backup for your database using the <code>backup</code> method:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">backup</span><span class="op">(</span><span class="st">"DB_backup.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="restoring-a-database">Restoring a database<a class="anchor" aria-label="anchor" href="#restoring-a-database"></a>
 </h3>
 <p>You can restore a backup database or any preexisting DB using the <code>restore</code> method:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">restore</span><span class="op">(</span><span class="st">"DB_backup.json"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="db-status">DB status<a class="anchor" aria-label="anchor" href="#db-status"></a>
-</h3>
-<p>Using the <code>status</code> method, you can at each time get some valuable information about the state of your <code>DB</code>:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; - database path: DB.json</span></span>
-<span><span class="co">#&gt; - database exists: TRUE</span></span>
-<span><span class="co">#&gt; - auto_commit: TRUE</span></span>
-<span><span class="co">#&gt; - verbose: FALSE</span></span>
-<span><span class="co">#&gt; - collections:</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">restore</span><span class="op">(</span><span class="st">"DB_backup.json"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="error-handling">Error Handling<a class="anchor" aria-label="anchor" href="#error-handling"></a>
