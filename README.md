@@ -583,6 +583,20 @@ db$exists_value(
 #> [1] FALSE
 ```
 
+### DB status
+
+Using the `status` method, you can at each time get some valuable
+information about the state of your `DB`:
+
+``` r
+db$status()
+#> - database path: DB.json
+#> - database exists: TRUE
+#> - auto_commit: TRUE
+#> - verbose: FALSE
+#> - collections: users
+```
+
 ### Clear, Drop Data
 
 It is possible to `clear` a collection. This will remove all the
@@ -861,20 +875,6 @@ You can restore a backup database or any preexisting DB using the
 
 ``` r
 db$restore("DB_backup.json")
-```
-
-### DB status
-
-Using the `status` method, you can at each time get some valuable
-information about the state of your `DB`:
-
-``` r
-db$status()
-#> - database path: DB.json
-#> - database exists: TRUE
-#> - auto_commit: TRUE
-#> - verbose: FALSE
-#> - collections:
 ```
 
 ### Error Handling

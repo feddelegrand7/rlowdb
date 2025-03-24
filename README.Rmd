@@ -259,6 +259,15 @@ db$exists_value(
 )
 ```
 
+### DB status
+
+Using the `status` method, you can at each time get some valuable information about the state of your `DB`: 
+
+```{r}
+db$status()
+```
+
+
 ### Clear, Drop Data
 
 It is possible to `clear` a collection. This will remove all the elements belonging to the collection but not drop the collection it self: 
@@ -308,14 +317,6 @@ You can restore a backup database or any preexisting DB using the `restore` meth
 
 ```{r}
 db$restore("DB_backup.json")
-```
-
-### DB status
-
-Using the `status` method, you can at each time get some valuable information about the state of your `DB`: 
-
-```{r}
-db$status()
 ```
 
 ### Error Handling
