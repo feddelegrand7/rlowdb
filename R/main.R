@@ -152,6 +152,8 @@ rlowdb <- R6::R6Class(
         private$.write_data()
       }
 
+      invisible(self)
+
     },
 
     #' @description Find records in a collection that match a given key-value pair.
@@ -210,6 +212,8 @@ rlowdb <- R6::R6Class(
           private$.write_data()
         }
 
+        invisible(self)
+
       } else {
         rlang::abort(sprintf("Error: No record found in '%s' where '%s' = '%s'.", collection, key, value))
       }
@@ -240,6 +244,7 @@ rlowdb <- R6::R6Class(
         record <- c(setNames(list(value), key), new_data)
         self$insert(collection, record)
       }
+
     },
 
     #' @description Delete records from a collection that match a given key-value pair.
@@ -267,6 +272,9 @@ rlowdb <- R6::R6Class(
         if (private$.auto_commit) {
           private$.write_data()
         }
+
+        invisible(self)
+
       } else {
         rlang::abort(sprintf("Error: No record found in '%s' where '%s' = '%s'.", collection, key, value))
       }
@@ -386,6 +394,8 @@ rlowdb <- R6::R6Class(
         private$.write_data()
       }
 
+      invisible(self)
+
     },
 
     #' @description Drop all the collections available in your JSON file DB
@@ -409,6 +419,8 @@ rlowdb <- R6::R6Class(
       if (private$.auto_commit) {
         private$.write_data()
       }
+
+      invisible(self)
 
     },
 
@@ -435,6 +447,8 @@ rlowdb <- R6::R6Class(
       if (private$.auto_commit) {
         private$.write_data()
       }
+
+      invisible(self)
     },
 
     #' @description Count the number of records in a collection
@@ -578,6 +592,9 @@ rlowdb <- R6::R6Class(
         if (private$.auto_commit) {
           private$.write_data()
         }
+
+        invisible(self)
+
       }, error = function(e) {
         private$.data <- original_data
         rlang::abort(sprintf("Transaction failed: %s", e$message))
@@ -602,6 +619,8 @@ rlowdb <- R6::R6Class(
       if (private$.auto_commit) {
         private$.write_data()
       }
+
+      invisible(self)
     },
 
     #' Allow users to quickly backup their database.
@@ -657,7 +676,7 @@ rlowdb <- R6::R6Class(
 
       })
 
-      return(matching_records)
+      matching_records
     },
 
     #' @description
@@ -707,6 +726,8 @@ rlowdb <- R6::R6Class(
       if (private$.auto_commit) {
         private$.write_data()
       }
+
+      invisible(self)
 
     },
 
@@ -786,6 +807,8 @@ rlowdb <- R6::R6Class(
       if (private$.auto_commit) {
         private$.write_data()
       }
+
+      invisible(self)
     },
 
     #' @description
@@ -812,7 +835,7 @@ rlowdb <- R6::R6Class(
 
       keys <- unique(unlist(purrr::map(private$.data[[collection]], names)))
 
-      return(keys)
+      keys
     },
 
     #' @description
@@ -909,6 +932,48 @@ rlowdb <- R6::R6Class(
       if (private$.auto_commit) {
         private$.write_data()
       }
+
+      invisible(self)
+    },
+
+    #' @description
+    #' Clone an existing collection to a new collection with a different name.
+    #' This creates an exact copy of the original collection's records under the new name.
+    #'
+    #' @param from The name of the source collection to clone.
+    #' @param to The name of the new collection.
+    #' @param overwrite If FALSE (default), will abort if target collection exists.
+    #'        If TRUE, will overwrite existing target collection.
+    #'
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$clone_collection("users", "users_backup")
+    #' db$list_collections()
+    #' unlink("database.json")
+    clone_collection = function(from, to) {
+
+      if (from == to) {
+        stop("Both collection names are equal")
+      }
+
+      if (!self$exists_collection(from)) {
+        rlang::abort(sprintf("Error: Source collection '%s' does not exist.", from))
+      }
+
+      private$.data[[to]] <- private$.data[[from]]
+
+      if (private$.verbose) {
+        cli::cli_alert_success(
+          "Collection '{from}' successfully cloned to '{to}'"
+        )
+      }
+
+      if (private$.auto_commit) {
+        private$.write_data()
+      }
+
+      invisible(self)
     }
 
   ),

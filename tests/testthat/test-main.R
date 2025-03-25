@@ -391,6 +391,22 @@ test_that("default_values works as expected", {
 
 })
 
+test_that("clone_collection works as expected", {
+
+  db$clone_collection(from = "users", "users_backup")
+
+  expect_equal(
+    db$list_collections(),
+    c("books", "users", "users_backup")
+  )
+
+  expect_equal(
+    db$get_data_collection("users"),
+    db$get_data_collection("users_backup")
+  )
+
+})
+
 test_that("clear works as expected", {
 
   db$insert("readers", list(name = "Fodil", city = "Hamburg"))

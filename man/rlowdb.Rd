@@ -35,7 +35,8 @@ unlink("database.json")
 
 db <- rlowdb$new("database.json")
 db$insert("users", list(id = 1, name = "Alice"))
-db$get_data_collection("users")
+db$insert("users", list(id = 2, name = "Omar"))
+db$get_data_key("users", "name")
 unlink("database.json")
 
 ## ------------------------------------------------
@@ -311,6 +312,16 @@ db$insert_default_values("users", list(role = "guest", active = TRUE))
 db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
 
 unlink("database.json")
+
+## ------------------------------------------------
+## Method `rlowdb$clone_collection`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$clone_collection("users", "users_backup")
+db$list_collections()
+unlink("database.json")
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -347,6 +358,7 @@ unlink("database.json")
 \item \href{#method-rlowdb-list_keys}{\code{rlowdb$list_keys()}}
 \item \href{#method-rlowdb-count_values}{\code{rlowdb$count_values()}}
 \item \href{#method-rlowdb-insert_default_values}{\code{rlowdb$insert_default_values()}}
+\item \href{#method-rlowdb-clone_collection}{\code{rlowdb$clone_collection()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -437,7 +449,7 @@ Retrieve data from a specific collection.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A list containing a specific collection records.
+A list containing a specific collection's records.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -470,13 +482,14 @@ Retrieve the records of a specific key within a collection
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A list containing a specific key records.
+A vector/list containing a specific key's records.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
 db$insert("users", list(id = 1, name = "Alice"))
-db$get_data_collection("users")
+db$insert("users", list(id = 2, name = "Omar"))
+db$get_data_key("users", "name")
 unlink("database.json")
 }
 \if{html}{\out{</div>}}
@@ -1350,6 +1363,41 @@ db$insert_default_values("users", list(role = "guest", active = TRUE))
 # Add defaults and replace existing values
 db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
 
+unlink("database.json")
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-clone_collection"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-clone_collection}{}}}
+\subsection{Method \code{clone_collection()}}{
+Clone an existing collection to a new collection with a different name.
+This creates an exact copy of the original collection's records under the new name.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$clone_collection(from, to)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{from}}{The name of the source collection to clone.}
+
+\item{\code{to}}{The name of the new collection.}
+
+\item{\code{overwrite}}{If FALSE (default), will abort if target collection exists.
+If TRUE, will overwrite existing target collection.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$clone_collection("users", "users_backup")
+db$list_collections()
 unlink("database.json")
 }
 \if{html}{\out{</div>}}

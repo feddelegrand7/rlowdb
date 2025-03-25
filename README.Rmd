@@ -215,7 +215,6 @@ db$filter("users", function(x) {
 
 The `search` method allows you to search within `character` fields a specific record. You can also use `regex`:
 
-
 ```{r}
 db$search("users", "name", "^Ali", ignore.case = FALSE)
 ```
@@ -308,7 +307,6 @@ db$get_data()
 ```
 
 Finally, `drop_all` will drop all the `collections` within your `DB`: 
-
 
 ```{r}
 db$drop_all()
