@@ -85,6 +85,7 @@ and enables querying with custom functions.</p>
 <li><p><a href="#method-rlowdb-list_keys"><code>rlowdb$list_keys()</code></a></p></li>
 <li><p><a href="#method-rlowdb-count_values"><code>rlowdb$count_values()</code></a></p></li>
 <li><p><a href="#method-rlowdb-insert_default_values"><code>rlowdb$insert_default_values()</code></a></p></li>
+<li><p><a href="#method-rlowdb-clone_collection"><code>rlowdb$clone_collection()</code></a></p></li>
 <li><p><a href="#method-rlowdb-clone"><code>rlowdb$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-rlowdb-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -172,7 +173,7 @@ Defaults to FALSE</p></dd>
 </div>
 <div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
-<p>A list containing a specific collection records.</p>
+<p>A list containing a specific collection's records.</p>
 </div>
 <div class="section">
 <h4 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a></h4>
@@ -204,13 +205,14 @@ Defaults to FALSE</p></dd>
 </div>
 <div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
-<p>A list containing a specific key records.</p>
+<p>A vector/list containing a specific key's records.</p>
 </div>
 <div class="section">
 <h4 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">db</span><span class="op">$</span><span class="fu">get_data_collection</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Omar"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">get_data_key</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1050,15 +1052,50 @@ If `FALSE`, only adds missing keys. Defaults to `FALSE`.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-rlowdb-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-rlowdb-clone_collection"></a><div class="section">
+<h3 id="method-clone-collection-">Method <code>clone_collection()</code><a class="anchor" aria-label="anchor" href="#method-clone-collection-"></a></h3>
+<p>Clone an existing collection to a new collection with a different name.
+This creates an exact copy of the original collection's records under the new name.</p><div class="section">
 <h4 id="usage-32">Usage<a class="anchor" aria-label="anchor" href="#usage-32"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clone_collection</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-27">Arguments<a class="anchor" aria-label="anchor" href="#arguments-27"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>from</code></dt>
+<dd><p>The name of the source collection to clone.</p></dd>
+
+
+<dt><code>to</code></dt>
+<dd><p>The name of the new collection.</p></dd>
+
+
+<dt><code>overwrite</code></dt>
+<dd><p>If FALSE (default), will abort if target collection exists.
+If TRUE, will overwrite existing target collection.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="examples-25">Examples<a class="anchor" aria-label="anchor" href="#examples-25"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">clone_collection</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"users_backup"</span><span class="op">)</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-rlowdb-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-33">Usage<a class="anchor" aria-label="anchor" href="#usage-33"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-28">Arguments<a class="anchor" aria-label="anchor" href="#arguments-28"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -1115,15 +1152,9 @@ If `FALSE`, only adds missing keys. Defaults to `FALSE`.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va">rlowdb</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">get_data_collection</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Alice"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">2</span>, name <span class="op">=</span> <span class="st">"Omar"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">get_data_key</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Alice" "Omar" </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
@@ -1555,6 +1586,17 @@ If `FALSE`, only adds missing keys. Defaults to `FALSE`.</p></dd>
 <span class="r-in"><span><span class="co"># Add defaults and replace existing values</span></span></span>
 <span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">insert_default_values</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>role <span class="op">=</span> <span class="st">"guest"</span>, active <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, replace_existing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `rlowdb$clone_collection`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va">rlowdb</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"Alice"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">clone_collection</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"users_backup"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">list_collections</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "users"        "users_backup"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
