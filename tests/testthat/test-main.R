@@ -26,6 +26,34 @@ test_that("Inserting records works correctly", {
   expect_equal(data$posts[[1]]$id, 1)
 })
 
+test_that("get_collection_data works as expected", {
+
+  res <- db$get_data_collection("posts")
+
+  expect_equal(length(res), 2)
+  el <- res[[1]]
+  expect_equal(names(el), c("id", "title", "views"))
+
+  expect_error(
+    object = db$get_data_collection("non_existant"),
+    regexp = "Collection 'non_existant' does not exist"
+  )
+
+})
+
+test_that("get_data_key works as expected", {
+
+  res <- db$get_data_key("posts", "title")
+
+  expect_equal(length(res), 2)
+  expect_equal(res, c("LowDB in R", "Data Management"))
+
+  expect_error(
+    object = db$get_data_key("posts", "non_existant"),
+    regexp = "Key 'non_existant' does not exist in collection 'posts'"
+  )
+})
+
 test_that("auto_commit works as expected", {
 
   db$set_auto_commit(auto_commit = FALSE)

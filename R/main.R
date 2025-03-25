@@ -74,6 +74,49 @@ rlowdb <- R6::R6Class(
       private$.data
     },
 
+    #' @description Retrieve data from a specific collection.
+    #' @param collection The name of the collection
+    #' @return A list containing a specific collection's records.
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$get_data_collection("users")
+    #' unlink("database.json")
+
+    get_data_collection = function(collection) {
+      if (!collection %in% names(private$.data)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      private$.data[[collection]]
+    },
+
+    #' @description Retrieve the records of a specific key within a collection
+    #' @param collection The name of the collection
+    #' @param key The key name
+    #' @return A vector/list containing a specific key's records.
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$insert("users", list(id = 2, name = "Omar"))
+    #' db$get_data_key("users", "name")
+    #' unlink("database.json")
+
+    get_data_key = function(collection, key) {
+
+      if (!collection %in% names(private$.data)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      if (!any(sapply(private$.data[[collection]], function(item) key %in% names(item)))) {
+        rlang::abort(sprintf("Error: Key '%s' does not exist in collection '%s'.", key, collection))
+      }
+
+      sapply(private$.data[[collection]], function(x) {
+        x[[key]]
+      })
+    },
+
     #' @description Insert a new record into a specified collection.
     #' @param collection The collection name (a string).
     #' @param record A named list representing the record to insert.
@@ -811,6 +854,7 @@ rlowdb <- R6::R6Class(
 
       table(count, useNA = "ifany")
     },
+
 
     #' @description
     #' Add Default Values to Records in a Collection

@@ -21,6 +21,24 @@ db$get_data()
 unlink("database.json")
 
 ## ------------------------------------------------
+## Method `rlowdb$get_data_collection`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$get_data_collection("users")
+unlink("database.json")
+
+## ------------------------------------------------
+## Method `rlowdb$get_data_key`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$get_data_collection("users")
+unlink("database.json")
+
+## ------------------------------------------------
 ## Method `rlowdb$insert`
 ## ------------------------------------------------
 
@@ -300,6 +318,8 @@ unlink("database.json")
 \item \href{#method-rlowdb-new}{\code{rlowdb$new()}}
 \item \href{#method-rlowdb-commit}{\code{rlowdb$commit()}}
 \item \href{#method-rlowdb-get_data}{\code{rlowdb$get_data()}}
+\item \href{#method-rlowdb-get_data_collection}{\code{rlowdb$get_data_collection()}}
+\item \href{#method-rlowdb-get_data_key}{\code{rlowdb$get_data_key()}}
 \item \href{#method-rlowdb-insert}{\code{rlowdb$insert()}}
 \item \href{#method-rlowdb-find}{\code{rlowdb$find()}}
 \item \href{#method-rlowdb-update}{\code{rlowdb$update()}}
@@ -393,6 +413,70 @@ A list containing all database records.
 \preformatted{db <- rlowdb$new("database.json")
 db$insert("users", list(id = 1, name = "Alice"))
 db$get_data()
+unlink("database.json")
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-get_data_collection"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-get_data_collection}{}}}
+\subsection{Method \code{get_data_collection()}}{
+Retrieve data from a specific collection.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$get_data_collection(collection)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The name of the collection}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing a specific collection records.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$get_data_collection("users")
+unlink("database.json")
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-get_data_key"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-get_data_key}{}}}
+\subsection{Method \code{get_data_key()}}{
+Retrieve the records of a specific key within a collection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$get_data_key(collection, key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The name of the collection}
+
+\item{\code{key}}{The key name}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list containing a specific key records.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$get_data_collection("users")
 unlink("database.json")
 }
 \if{html}{\out{</div>}}

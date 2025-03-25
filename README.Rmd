@@ -108,6 +108,18 @@ Get all stored data:
 db$get_data()
 ```
 
+Get data from a specific collection: 
+
+```{r}
+db$get_data_collection("users")
+```
+
+Get data from a specific key: 
+
+```{r}
+db$get_data_key("users", "name")
+```
+
 Find a specific record:
 
 ```{r}
