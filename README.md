@@ -5,17 +5,17 @@
 
 <!-- badges: start -->
 
-<!-- [![Codecov test coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main) -->
-
-<!-- [![R-CMD-check](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml) -->
-
-<!-- [![CRAN status](https://www.r-pkg.org/badges/version/rlowdb)](https://CRAN.R-project.org/package=rlowdb) -->
-
-<!-- [![R badge](https://img.shields.io/badge/Build%20with-♥%20and%20R-blue)](https://github.com/feddelegrand7/rlowdb) -->
-
-<!-- [![metacran downloads](https://cranlogs.r-pkg.org/badges/rlowdb)](https://cran.r-project.org/package=rlowdb) -->
-
-<!-- [![metacran downloads](https://cranlogs.r-pkg.org/badges/grand-total/rlowdb)](https://cran.r-project.org/package=rlowdb) -->
+[![Codecov test
+coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main)
+[![R-CMD-check](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/rlowdb)](https://CRAN.R-project.org/package=rlowdb)
+[![R
+badge](https://img.shields.io/badge/Build%20with-♥%20and%20R-blue)](https://github.com/feddelegrand7/rlowdb)
+[![metacran
+downloads](https://cranlogs.r-pkg.org/badges/rlowdb)](https://cran.r-project.org/package=rlowdb)
+[![metacran
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/rlowdb)](https://cran.r-project.org/package=rlowdb)
 
 <!-- badges: end -->
 
@@ -82,11 +82,6 @@ db$insert(
   collection = "users", 
   record = list(id = 3, name = "Alice", age = 30)
 )
-
-db$insert(
-  collection = "users", 
-  record = list(id = 4, name = "Alice", age = 30, points = c(20, 12, 18))
-)
 ```
 
 ### Transaction
@@ -98,7 +93,7 @@ to be operated using a function:
 
 ``` r
 db$count("users")
-#> [1] 4
+#> [1] 3
 ```
 
 ``` r
@@ -114,7 +109,7 @@ db$transaction(function() {
 
 ``` r
 db$count("users")
-#> [1] 4
+#> [1] 3
 ```
 
 ### Retrieving Data
@@ -155,20 +150,6 @@ db$get_data()
 #> 
 #> $users[[3]]$age
 #> [1] 30
-#> 
-#> 
-#> $users[[4]]
-#> $users[[4]]$id
-#> [1] 4
-#> 
-#> $users[[4]]$name
-#> [1] "Alice"
-#> 
-#> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
 ```
 
 Get data from a specific collection:
@@ -206,27 +187,13 @@ db$get_data_collection("users")
 #> 
 #> [[3]]$age
 #> [1] 30
-#> 
-#> 
-#> [[4]]
-#> [[4]]$id
-#> [1] 4
-#> 
-#> [[4]]$name
-#> [1] "Alice"
-#> 
-#> [[4]]$age
-#> [1] 30
-#> 
-#> [[4]]$points
-#> [1] 20 12 18
 ```
 
 Get data from a specific key:
 
 ``` r
 db$get_data_key("users", "name")
-#> [1] "Ali"   "Bob"   "Alice" "Alice"
+#> [1] "Ali"   "Bob"   "Alice"
 ```
 
 Find a specific record:
@@ -289,20 +256,6 @@ db$get_data()
 #> 
 #> $users[[3]]$age
 #> [1] 30
-#> 
-#> 
-#> $users[[4]]
-#> $users[[4]]$id
-#> [1] 4
-#> 
-#> $users[[4]]$name
-#> [1] "Alice"
-#> 
-#> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
 ```
 
 The `upsert` methods allows you to update a record if it exists,
@@ -350,20 +303,6 @@ db$get_data()
 #> 
 #> $users[[3]]$age
 #> [1] 30
-#> 
-#> 
-#> $users[[4]]
-#> $users[[4]]$id
-#> [1] 4
-#> 
-#> $users[[4]]$name
-#> [1] "Alice"
-#> 
-#> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
 ```
 
 ``` r
@@ -411,23 +350,9 @@ db$get_data()
 #> 
 #> $users[[4]]
 #> $users[[4]]$id
-#> [1] 4
-#> 
-#> $users[[4]]$name
-#> [1] "Alice"
-#> 
-#> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
-#> 
-#> 
-#> $users[[5]]
-#> $users[[5]]$id
 #> [1] 100
 #> 
-#> $users[[5]]$age
+#> $users[[4]]$age
 #> [1] 25
 ```
 
@@ -469,20 +394,6 @@ db$get_data()
 #> 
 #> $users[[3]]$age
 #> [1] 30
-#> 
-#> 
-#> $users[[4]]
-#> $users[[4]]$id
-#> [1] 4
-#> 
-#> $users[[4]]$name
-#> [1] "Alice"
-#> 
-#> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
 ```
 
 ### Bulk Inserting
@@ -516,37 +427,23 @@ db$query(collection = "users", condition = "age > 25")
 #> 
 #> [[2]]
 #> [[2]]$id
-#> [1] 4
+#> [1] 1
 #> 
 #> [[2]]$name
-#> [1] "Alice"
+#> [1] "Antoine"
 #> 
 #> [[2]]$age
-#> [1] 30
-#> 
-#> [[2]]$points
-#> [1] 20 12 18
+#> [1] 52
 #> 
 #> 
 #> [[3]]
 #> [[3]]$id
-#> [1] 1
-#> 
-#> [[3]]$name
-#> [1] "Antoine"
-#> 
-#> [[3]]$age
-#> [1] 52
-#> 
-#> 
-#> [[4]]
-#> [[4]]$id
 #> [1] 3
 #> 
-#> [[4]]$name
+#> [[3]]$name
 #> [1] "Nabil"
 #> 
-#> [[4]]$age
+#> [[3]]$age
 #> [1] 41
 ```
 
@@ -578,37 +475,23 @@ db$query(collection = "users", condition = "age > 20 & id > 1")
 #> 
 #> [[3]]
 #> [[3]]$id
-#> [1] 4
+#> [1] 2
 #> 
 #> [[3]]$name
-#> [1] "Alice"
+#> [1] "Omar"
 #> 
 #> [[3]]$age
-#> [1] 30
-#> 
-#> [[3]]$points
-#> [1] 20 12 18
+#> [1] 23
 #> 
 #> 
 #> [[4]]
 #> [[4]]$id
-#> [1] 2
-#> 
-#> [[4]]$name
-#> [1] "Omar"
-#> 
-#> [[4]]$age
-#> [1] 23
-#> 
-#> 
-#> [[5]]
-#> [[5]]$id
 #> [1] 3
 #> 
-#> [[5]]$name
+#> [[4]]$name
 #> [1] "Nabil"
 #> 
-#> [[5]]$age
+#> [[4]]$age
 #> [1] 41
 ```
 
@@ -671,20 +554,6 @@ db$search("users", "name", "^Ali", ignore.case = FALSE)
 #> 
 #> [[2]]$age
 #> [1] 30
-#> 
-#> 
-#> [[3]]
-#> [[3]]$id
-#> [1] 4
-#> 
-#> [[3]]$name
-#> [1] "Alice"
-#> 
-#> [[3]]$age
-#> [1] 30
-#> 
-#> [[3]]$points
-#> [1] 20 12 18
 ```
 
 ``` r
@@ -698,20 +567,6 @@ db$search("users", "name", "alice", ignore.case = TRUE)
 #> 
 #> [[1]]$age
 #> [1] 30
-#> 
-#> 
-#> [[2]]
-#> [[2]]$id
-#> [1] 4
-#> 
-#> [[2]]$name
-#> [1] "Alice"
-#> 
-#> [[2]]$age
-#> [1] 30
-#> 
-#> [[2]]$points
-#> [1] 20 12 18
 ```
 
 ### Listing the collections
@@ -731,7 +586,7 @@ has:
 
 ``` r
 db$count(collection = "users") 
-#> [1] 7
+#> [1] 6
 ```
 
 ### Check if exists
@@ -834,48 +689,34 @@ db$get_data()
 #> 
 #> $users[[4]]
 #> $users[[4]]$id
-#> [1] 4
+#> [1] 1
 #> 
 #> $users[[4]]$name
-#> [1] "Alice"
+#> [1] "Antoine"
 #> 
 #> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
+#> [1] 52
 #> 
 #> 
 #> $users[[5]]
 #> $users[[5]]$id
-#> [1] 1
+#> [1] 2
 #> 
 #> $users[[5]]$name
-#> [1] "Antoine"
+#> [1] "Omar"
 #> 
 #> $users[[5]]$age
-#> [1] 52
+#> [1] 23
 #> 
 #> 
 #> $users[[6]]
 #> $users[[6]]$id
-#> [1] 2
-#> 
-#> $users[[6]]$name
-#> [1] "Omar"
-#> 
-#> $users[[6]]$age
-#> [1] 23
-#> 
-#> 
-#> $users[[7]]
-#> $users[[7]]$id
 #> [1] 3
 #> 
-#> $users[[7]]$name
+#> $users[[6]]$name
 #> [1] "Nabil"
 #> 
-#> $users[[7]]$age
+#> $users[[6]]$age
 #> [1] 41
 #> 
 #> 
@@ -946,48 +787,34 @@ db$get_data()
 #> 
 #> $users[[4]]
 #> $users[[4]]$id
-#> [1] 4
+#> [1] 1
 #> 
 #> $users[[4]]$name
-#> [1] "Alice"
+#> [1] "Antoine"
 #> 
 #> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
+#> [1] 52
 #> 
 #> 
 #> $users[[5]]
 #> $users[[5]]$id
-#> [1] 1
+#> [1] 2
 #> 
 #> $users[[5]]$name
-#> [1] "Antoine"
+#> [1] "Omar"
 #> 
 #> $users[[5]]$age
-#> [1] 52
+#> [1] 23
 #> 
 #> 
 #> $users[[6]]
 #> $users[[6]]$id
-#> [1] 2
-#> 
-#> $users[[6]]$name
-#> [1] "Omar"
-#> 
-#> $users[[6]]$age
-#> [1] 23
-#> 
-#> 
-#> $users[[7]]
-#> $users[[7]]$id
 #> [1] 3
 #> 
-#> $users[[7]]$name
+#> $users[[6]]$name
 #> [1] "Nabil"
 #> 
-#> $users[[7]]$age
+#> $users[[6]]$age
 #> [1] 41
 #> 
 #> 
@@ -1037,48 +864,34 @@ db$get_data()
 #> 
 #> $users[[4]]
 #> $users[[4]]$id
-#> [1] 4
+#> [1] 1
 #> 
 #> $users[[4]]$name
-#> [1] "Alice"
+#> [1] "Antoine"
 #> 
 #> $users[[4]]$age
-#> [1] 30
-#> 
-#> $users[[4]]$points
-#> [1] 20 12 18
+#> [1] 52
 #> 
 #> 
 #> $users[[5]]
 #> $users[[5]]$id
-#> [1] 1
+#> [1] 2
 #> 
 #> $users[[5]]$name
-#> [1] "Antoine"
+#> [1] "Omar"
 #> 
 #> $users[[5]]$age
-#> [1] 52
+#> [1] 23
 #> 
 #> 
 #> $users[[6]]
 #> $users[[6]]$id
-#> [1] 2
-#> 
-#> $users[[6]]$name
-#> [1] "Omar"
-#> 
-#> $users[[6]]$age
-#> [1] 23
-#> 
-#> 
-#> $users[[7]]
-#> $users[[7]]$id
 #> [1] 3
 #> 
-#> $users[[7]]$name
+#> $users[[6]]$name
 #> [1] "Nabil"
 #> 
-#> $users[[7]]$age
+#> $users[[6]]$age
 #> [1] 41
 ```
 
@@ -1121,7 +934,7 @@ db$update(
   value = 1, 
   new_data = list(age = 40)
 )  
-#> Error in `private$.find_index_by_key()` at rlowdb/R/main.R:197:7:
+#> Error in `private$.find_index_by_key()` at rlowdb/R/main.R:199:7:
 #> ! Error: Collection 'nonexistant' does not exist.
 ```
 
