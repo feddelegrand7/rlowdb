@@ -50,12 +50,7 @@
 <div class="page-header"><h1 id="rlowdb">rlowdb<a class="anchor" aria-label="anchor" href="#rlowdb"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- [![Codecov test coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main) -->
-<!-- [![R-CMD-check](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml) -->
-<!-- [![CRAN status](https://www.r-pkg.org/badges/version/rlowdb)](https://CRAN.R-project.org/package=rlowdb) -->
-<!-- [![R badge](https://img.shields.io/badge/Build%20with-♥%20and%20R-blue)](https://github.com/feddelegrand7/rlowdb) -->
-<!-- [![metacran downloads](https://cranlogs.r-pkg.org/badges/rlowdb)](https://cran.r-project.org/package=rlowdb) -->
-<!-- [![metacran downloads](https://cranlogs.r-pkg.org/badges/grand-total/rlowdb)](https://cran.r-project.org/package=rlowdb) -->
+
 <!-- badges: end -->
 <p><code>rlowdb</code> is a lightweight, JSON-based database for R, inspired by <a href="https://github.com/typicode/lowdb" class="external-link">LowDB</a> from JavaScript. It provides a simple and efficient way to store, retrieve, update, and delete structured data without the need for a full database system.</p>
 <div class="section level2">
@@ -111,11 +106,6 @@
 <span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>, </span>
 <span>  record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">3</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span></span>
-<span>  collection <span class="op">=</span> <span class="st">"users"</span>, </span>
-<span>  record <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">4</span>, name <span class="op">=</span> <span class="st">"Alice"</span>, age <span class="op">=</span> <span class="fl">30</span>, points <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">12</span>, <span class="fl">18</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -124,7 +114,7 @@
 <p>Using the <code>transaction</code> method, you can insert a set of records and if an error occurs in the process, a <code>rollback</code> will be triggered to restore the initial state of the database. Note that the insertion has to be operated using a function:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">transaction</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Zlatan"</span>, age <span class="op">=</span> <span class="fl">40</span><span class="op">)</span><span class="op">)</span></span>
@@ -136,7 +126,7 @@
 <span><span class="co">#&gt; ! Transaction failed: some errors</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="retrieving-data">Retrieving Data<a class="anchor" aria-label="anchor" href="#retrieving-data"></a>
@@ -175,21 +165,7 @@
 <span><span class="co">#&gt; [1] "Alice"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]</span></span>
-<span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 <p>Get data from a specific collection:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">get_data_collection</span><span class="op">(</span><span class="st">"users"</span><span class="op">)</span></span>
@@ -223,25 +199,11 @@
 <span><span class="co">#&gt; [1] "Alice"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 <p>Get data from a specific key:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">get_data_key</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Ali"   "Bob"   "Alice" "Alice"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Ali"   "Bob"   "Alice"</span></span></code></pre></div>
 <p>Find a specific record:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">find</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span>, key <span class="op">=</span> <span class="st">"id"</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -299,21 +261,7 @@
 <span><span class="co">#&gt; [1] "Alice"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]</span></span>
-<span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 <p>The <code>upsert</code> methods allows you to update a record if it exists, otherwise, it will be inserted. Note that the collection and the key need to exist:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">upsert</span><span class="op">(</span></span>
@@ -355,21 +303,7 @@
 <span><span class="co">#&gt; [1] "Alice"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]</span></span>
-<span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">upsert</span><span class="op">(</span></span>
 <span>  collection <span class="op">=</span> <span class="st">"users"</span>, </span>
@@ -415,23 +349,9 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]</span></span>
 <span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[5]]</span></span>
-<span><span class="co">#&gt; $users[[5]]$id</span></span>
 <span><span class="co">#&gt; [1] 100</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[5]]$age</span></span>
+<span><span class="co">#&gt; $users[[4]]$age</span></span>
 <span><span class="co">#&gt; [1] 25</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -472,21 +392,7 @@
 <span><span class="co">#&gt; [1] "Alice"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]</span></span>
-<span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="bulk-inserting">Bulk Inserting<a class="anchor" aria-label="anchor" href="#bulk-inserting"></a>
@@ -518,37 +424,23 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
 <span><span class="co">#&gt; [[2]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
+<span><span class="co">#&gt; [1] "Antoine"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span>
+<span><span class="co">#&gt; [1] 52</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
 <span><span class="co">#&gt; [[3]]$id</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]$name</span></span>
-<span><span class="co">#&gt; [1] "Antoine"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 52</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [[4]]$id</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]$name</span></span>
+<span><span class="co">#&gt; [[3]]$name</span></span>
 <span><span class="co">#&gt; [1] "Nabil"</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]$age</span></span>
+<span><span class="co">#&gt; [[3]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span></code></pre></div>
 <p>Query with multiple conditions:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -577,37 +469,23 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
 <span><span class="co">#&gt; [[3]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
+<span><span class="co">#&gt; [1] "Omar"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span>
+<span><span class="co">#&gt; [1] 23</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span>
 <span><span class="co">#&gt; [[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Omar"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 23</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[5]]</span></span>
-<span><span class="co">#&gt; [[5]]$id</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[5]]$name</span></span>
+<span><span class="co">#&gt; [[4]]$name</span></span>
 <span><span class="co">#&gt; [1] "Nabil"</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[5]]$age</span></span>
+<span><span class="co">#&gt; [[4]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -664,21 +542,7 @@
 <span><span class="co">#&gt; [1] "Alice"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [[3]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span><span class="st">"users"</span>, <span class="st">"name"</span>, <span class="st">"alice"</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
@@ -689,21 +553,7 @@
 <span><span class="co">#&gt; [1] "Alice"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[1]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [[2]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="listing-the-collections">Listing the collections<a class="anchor" aria-label="anchor" href="#listing-the-collections"></a>
@@ -719,7 +569,7 @@
 <p>Using the <code>count</code> method, you can get the number of records a collection has:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">db</span><span class="op">$</span><span class="fu">count</span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"users"</span><span class="op">)</span> </span>
-<span><span class="co">#&gt; [1] 7</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="check-if-exists">Check if exists<a class="anchor" aria-label="anchor" href="#check-if-exists"></a>
@@ -807,48 +657,34 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]</span></span>
 <span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
+<span><span class="co">#&gt; [1] "Antoine"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span>
+<span><span class="co">#&gt; [1] 52</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]</span></span>
 <span><span class="co">#&gt; $users[[5]]$id</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]$name</span></span>
-<span><span class="co">#&gt; [1] "Antoine"</span></span>
+<span><span class="co">#&gt; [1] "Omar"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]$age</span></span>
-<span><span class="co">#&gt; [1] 52</span></span>
+<span><span class="co">#&gt; [1] 23</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[6]]</span></span>
 <span><span class="co">#&gt; $users[[6]]$id</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[6]]$name</span></span>
-<span><span class="co">#&gt; [1] "Omar"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[6]]$age</span></span>
-<span><span class="co">#&gt; [1] 23</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]</span></span>
-<span><span class="co">#&gt; $users[[7]]$id</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]$name</span></span>
+<span><span class="co">#&gt; $users[[6]]$name</span></span>
 <span><span class="co">#&gt; [1] "Nabil"</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]$age</span></span>
+<span><span class="co">#&gt; $users[[6]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -915,48 +751,34 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]</span></span>
 <span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
+<span><span class="co">#&gt; [1] "Antoine"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span>
+<span><span class="co">#&gt; [1] 52</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]</span></span>
 <span><span class="co">#&gt; $users[[5]]$id</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]$name</span></span>
-<span><span class="co">#&gt; [1] "Antoine"</span></span>
+<span><span class="co">#&gt; [1] "Omar"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]$age</span></span>
-<span><span class="co">#&gt; [1] 52</span></span>
+<span><span class="co">#&gt; [1] 23</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[6]]</span></span>
 <span><span class="co">#&gt; $users[[6]]$id</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[6]]$name</span></span>
-<span><span class="co">#&gt; [1] "Omar"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[6]]$age</span></span>
-<span><span class="co">#&gt; [1] 23</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]</span></span>
-<span><span class="co">#&gt; $users[[7]]$id</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]$name</span></span>
+<span><span class="co">#&gt; $users[[6]]$name</span></span>
 <span><span class="co">#&gt; [1] "Nabil"</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]$age</span></span>
+<span><span class="co">#&gt; $users[[6]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1003,48 +825,34 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]</span></span>
 <span><span class="co">#&gt; $users[[4]]$id</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]$name</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span>
+<span><span class="co">#&gt; [1] "Antoine"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[4]]$age</span></span>
-<span><span class="co">#&gt; [1] 30</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[4]]$points</span></span>
-<span><span class="co">#&gt; [1] 20 12 18</span></span>
+<span><span class="co">#&gt; [1] 52</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]</span></span>
 <span><span class="co">#&gt; $users[[5]]$id</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]$name</span></span>
-<span><span class="co">#&gt; [1] "Antoine"</span></span>
+<span><span class="co">#&gt; [1] "Omar"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[5]]$age</span></span>
-<span><span class="co">#&gt; [1] 52</span></span>
+<span><span class="co">#&gt; [1] 23</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $users[[6]]</span></span>
 <span><span class="co">#&gt; $users[[6]]$id</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[6]]$name</span></span>
-<span><span class="co">#&gt; [1] "Omar"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[6]]$age</span></span>
-<span><span class="co">#&gt; [1] 23</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]</span></span>
-<span><span class="co">#&gt; $users[[7]]$id</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]$name</span></span>
+<span><span class="co">#&gt; $users[[6]]$name</span></span>
 <span><span class="co">#&gt; [1] "Nabil"</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $users[[7]]$age</span></span>
+<span><span class="co">#&gt; $users[[6]]$age</span></span>
 <span><span class="co">#&gt; [1] 41</span></span></code></pre></div>
 <p>Finally, <code>drop_all</code> will drop all the <code>collections</code> within your <code>DB</code>:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
@@ -1077,7 +885,7 @@
 <span>  value <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>  new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>age <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span>
 <span><span class="op">)</span>  </span>
-<span><span class="co">#&gt; Error in `private$.find_index_by_key()` at rlowdb/R/main.R:197:7:</span></span>
+<span><span class="co">#&gt; Error in `private$.find_index_by_key()` at rlowdb/R/main.R:199:7:</span></span>
 <span><span class="co">#&gt; ! Error: Collection 'nonexistant' does not exist.</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -1129,7 +937,17 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main" class="external-link"><img src="https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/feddelegrand7/rlowdb/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://CRAN.R-project.org/package=rlowdb" class="external-link"><img src="https://www.r-pkg.org/badges/version/rlowdb" alt="CRAN status"></a></li>
+<li><a href="https://github.com/feddelegrand7/rlowdb" class="external-link"><img src="https://img.shields.io/badge/Build%20with-%E2%99%A5%20and%20R-blue" alt="R badge"></a></li>
+<li><a href="https://cran.r-project.org/package=rlowdb" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/rlowdb" alt="metacran downloads"></a></li>
+<li><a href="https://cran.r-project.org/package=rlowdb" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/rlowdb" alt="metacran downloads"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
