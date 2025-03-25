@@ -322,6 +322,25 @@ db$insert("users", list(id = 1, name = "Alice"))
 db$clone_collection("users", "users_backup")
 db$list_collections()
 unlink("database.json")
+
+## ------------------------------------------------
+## Method `rlowdb$sample_records`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$insert("users", list(id = 2, name = "Bob"))
+db$insert("users", list(id = 3, name = "Charlie"))
+
+# Sample 2 records without replacement
+db$sample_records("users", n = 2)
+
+# Sample with replacement
+db$sample_records("users", n = 5, replace = TRUE)
+
+# Reproducible sampling with seed
+db$sample_records("users", n = 2, seed = 123)
+unlink("database.json")
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -359,6 +378,7 @@ unlink("database.json")
 \item \href{#method-rlowdb-count_values}{\code{rlowdb$count_values()}}
 \item \href{#method-rlowdb-insert_default_values}{\code{rlowdb$insert_default_values()}}
 \item \href{#method-rlowdb-clone_collection}{\code{rlowdb$clone_collection()}}
+\item \href{#method-rlowdb-sample_records}{\code{rlowdb$sample_records()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -1398,6 +1418,53 @@ If TRUE, will overwrite existing target collection.}
 db$insert("users", list(id = 1, name = "Alice"))
 db$clone_collection("users", "users_backup")
 db$list_collections()
+unlink("database.json")
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-sample_records"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-sample_records}{}}}
+\subsection{Method \code{sample_records()}}{
+Randomly sample records from a collection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$sample_records(collection, n = 1, replace = FALSE, seed = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The name of the collection to sample from}
+
+\item{\code{n}}{Number of records to sample. If n > collection size, returns all records with a warning.}
+
+\item{\code{replace}}{Should sampling be with replacement? Default FALSE}
+
+\item{\code{seed}}{Optional random seed for reproducible sampling}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A list of sampled records
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+db$insert("users", list(id = 1, name = "Alice"))
+db$insert("users", list(id = 2, name = "Bob"))
+db$insert("users", list(id = 3, name = "Charlie"))
+
+# Sample 2 records without replacement
+db$sample_records("users", n = 2)
+
+# Sample with replacement
+db$sample_records("users", n = 5, replace = TRUE)
+
+# Reproducible sampling with seed
+db$sample_records("users", n = 2, seed = 123)
 unlink("database.json")
 }
 \if{html}{\out{</div>}}

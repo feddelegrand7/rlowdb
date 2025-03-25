@@ -26,6 +26,32 @@ test_that("Inserting records works correctly", {
   expect_equal(data$posts[[1]]$id, 1)
 })
 
+test_that("Sample records works as expected", {
+
+  expect_error(
+    db$sample_records(collection = "non_existant", n = 1),
+    regexp = "Collection 'non_existant' does not exist"
+  )
+
+  expect_warning(
+    db$sample_records(collection = "posts", n = 3),
+    regexp = "Returning all records"
+  )
+
+  res1 <- db$sample_records(collection = "posts", n = 1, seed = 123)
+  res1_bis <- db$sample_records(collection = "posts", n = 1, seed = 123)
+
+  expect_equal(res1, res1_bis)
+
+  res2 <- db$sample_records(collection = "posts", n = 2, seed = 123)
+  expect_equal(length(res1), 1)
+  expect_equal(length(res2), 2)
+
+  res10 <- db$sample_records(collection = "posts", n = 10, seed = 123, replace = TRUE)
+  expect_equal(length(res10), 10)
+
+})
+
 test_that("get_collection_data works as expected", {
 
   res <- db$get_data_collection("posts")

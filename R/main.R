@@ -974,6 +974,72 @@ rlowdb <- R6::R6Class(
       }
 
       invisible(self)
+    },
+
+    #' @description
+    #' Randomly sample records from a collection
+    #'
+    #' @param collection The name of the collection to sample from
+    #' @param n Number of records to sample. If n > collection size, returns all records with a warning.
+    #' @param replace Should sampling be with replacement? Default FALSE
+    #' @param seed Optional random seed for reproducible sampling
+    #' @return A list of sampled records
+    #'
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #' db$insert("users", list(id = 1, name = "Alice"))
+    #' db$insert("users", list(id = 2, name = "Bob"))
+    #' db$insert("users", list(id = 3, name = "Charlie"))
+    #'
+    #' # Sample 2 records without replacement
+    #' db$sample_records("users", n = 2)
+    #'
+    #' # Sample with replacement
+    #' db$sample_records("users", n = 5, replace = TRUE)
+    #'
+    #' # Reproducible sampling with seed
+    #' db$sample_records("users", n = 2, seed = 123)
+    #' unlink("database.json")
+
+    sample_records = function(collection, n = 1, replace = FALSE, seed = NULL) {
+
+      if (!self$exists_collection(collection)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      if (!is.numeric(n) || n < 1) {
+        rlang::abort("Error: 'n' must be a positive integer.")
+      }
+
+      collection_size <- self$count(collection)
+
+      if (n > collection_size && !replace) {
+        warning(sprintf(
+          "Requested sample size (%d) is larger than collection size (%d) with replace = FALSE. Returning all records.",
+          n, collection_size
+        ))
+        n <- collection_size
+      }
+
+      if (!is.null(seed)) {
+        set.seed(seed)
+      }
+
+      sample_indices <- sample(
+        seq_along(private$.data[[collection]]),
+        size = n,
+        replace = replace
+      )
+
+      sampled_records <- private$.data[[collection]][sample_indices]
+
+      if (private$.verbose) {
+        cli::cli_alert_info(
+          "Sampled {n} record{?s} from '{collection}' (collection size: {collection_size})"
+        )
+      }
+
+      sampled_records
     }
 
   ),
