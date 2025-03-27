@@ -1,5 +1,4 @@
 library(testthat)
-library(jsonlite)
 
 test_that("Object is not created without a json file", {
   test_db_file <- tempfile(fileext = ".csv")
