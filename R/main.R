@@ -747,11 +747,20 @@ rlowdb <- R6::R6Class(
 
       collections <- self$list_collections()
 
+      schema_msg <-  "No schema defined"
+
+      if (length(private$.schemas) > 0) {
+        schema_msg <- paste0(
+          "Schema defined for the collections ",
+          toString(names(private$.schemas)))
+      }
+
       cli::cli_text("{.strong - database path:} {private$.file_path}")
       cli::cli_text("{.strong - database exists:} {db_exists} ")
       cli::cli_text("{.strong - auto_commit:} {private$.auto_commit}")
       cli::cli_text("{.strong - verbose:} {private$.verbose}")
       cli::cli_text("{.strong - collections:} {toString(collections)}")
+      cli::cli_text("{.strong - schemas:} {schema_msg}")
 
     },
 
