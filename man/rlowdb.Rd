@@ -412,7 +412,8 @@ If the file does not exist, an empty database is created.
   file_path,
   default_values = list(),
   auto_commit = TRUE,
-  verbose = FALSE
+  verbose = FALSE,
+  pretty = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -433,6 +434,10 @@ Note that you can use the `commit` method to update the DB manually.}
 
 \item{\code{verbose}}{If TRUE, will print informative messages to the console.
 Defaults to FALSE}
+
+\item{\code{pretty}}{Use pretty = FALSE for compact JSON,
+which is more efficient for data transmission and storage. TRUE for a
+human readable format. Defaults to FALSE.}
 }
 \if{html}{\out{</div>}}
 }

@@ -27,11 +27,15 @@ rlowdb <- R6::R6Class(
     #' Note that you can use the `commit` method to update the DB manually.
     #' @param verbose If TRUE, will print informative messages to the console.
     #' Defaults to FALSE
+    #' @param pretty Use pretty = FALSE for compact JSON,
+    #' which is more efficient for data transmission and storage. TRUE for a
+    #' human readable format. Defaults to FALSE.
     initialize = function(
     file_path,
     default_values = list(),
     auto_commit = TRUE,
-    verbose = FALSE
+    verbose = FALSE,
+    pretty = FALSE
     ) {
 
       if (!auto_commit) {
@@ -53,6 +57,7 @@ rlowdb <- R6::R6Class(
       private$.auto_commit <- auto_commit
       private$.verbose <- verbose
       private$.default_values <- default_values
+      private$.pretty <- pretty
       private$.read_data()
     },
 
@@ -638,7 +643,7 @@ rlowdb <- R6::R6Class(
       yyjsonr::write_json_file(
         private$.data,
         backup_path,
-        list(pretty = TRUE, auto_unbox = TRUE)
+        list(pretty = private$.pretty, auto_unbox = TRUE)
       )
 
       if (private$.verbose) {
@@ -1131,6 +1136,7 @@ rlowdb <- R6::R6Class(
     .file_path = NULL,
     .auto_commit = NULL,
     .verbose = NULL,
+    .pretty = FALSE,
     .schemas = NULL,
     .default_values = NULL,
     .data = NULL,
@@ -1225,7 +1231,7 @@ rlowdb <- R6::R6Class(
       yyjsonr::write_json_file(
         private$.data,
         private$.file_path,
-        list(pretty = TRUE, auto_unbox = TRUE)
+        list(pretty = private$.pretty, auto_unbox = TRUE)
       )
 
      if (private$.verbose) {
