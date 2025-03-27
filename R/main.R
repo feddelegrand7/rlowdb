@@ -957,7 +957,7 @@ rlowdb <- R6::R6Class(
     clone_collection = function(from, to) {
 
       if (from == to) {
-        stop("Both collection names are equal")
+        rlang::abort("Both collections have the same name")
       }
 
       if (!self$exists_collection(from)) {

@@ -419,6 +419,11 @@ test_that("default_values works as expected", {
 
 test_that("clone_collection works as expected", {
 
+  expect_error(
+    db$clone_collection(from = "users", "users"),
+    regexp = "Both collections have the same name"
+  )
+
   db$clone_collection(from = "users", "users_backup")
 
   expect_equal(
