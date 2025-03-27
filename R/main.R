@@ -5,7 +5,7 @@
 #' for storing and managing structured data in R.
 #' It supports CRUD operations (Create, Read, Update, Delete)
 #' and enables querying with custom functions.
-#' @importFrom jsonlite fromJSON write_json
+#' @importFrom yyjsonr read_json_file write_json_file
 #' @importFrom purrr keep safely map
 #' @importFrom R6 R6Class
 #' @importFrom rlang eval_tidy parse_expr abort
@@ -613,7 +613,11 @@ rlowdb <- R6::R6Class(
         rlang::abort("Error: Backup file does not exist.")
       }
 
-      private$.data <- jsonlite::fromJSON(backup_path, simplifyVector = FALSE)
+      private$.data <- yyjsonr::read_json_file(
+        backup_path,
+        opts = list(obj_of_arrs_to_df = FALSE, arr_of_objs_to_df = FALSE, df_missing_list_elem = FALSE)
+      )
+
 
       if (private$.verbose) {
         cli::cli_alert_success("Backup successfully restored from {backup_path}")
@@ -630,7 +634,13 @@ rlowdb <- R6::R6Class(
     #' @param backup_path The path of the backup JSON file
 
     backup = function(backup_path) {
-      jsonlite::write_json(private$.data, backup_path, pretty = TRUE, auto_unbox = TRUE)
+
+      yyjsonr::write_json_file(
+        private$.data,
+        backup_path,
+        list(pretty = TRUE, auto_unbox = TRUE)
+      )
+
       if (private$.verbose) {
         cli::cli_alert_success("Backup successfully created at {backup_path}")
       }
@@ -1187,7 +1197,11 @@ rlowdb <- R6::R6Class(
 
     .read_data = function() {
       if (file.exists(private$.file_path)) {
-        private$.data <- jsonlite::fromJSON(private$.file_path, simplifyVector = FALSE)
+
+        private$.data <- yyjsonr::read_json_file(
+          private$.file_path,
+          opts = list(obj_of_arrs_to_df = FALSE, arr_of_objs_to_df = FALSE, df_missing_list_elem = FALSE)
+        )
 
         if (private$.verbose) {
           cli::cli_alert_info(
@@ -1207,8 +1221,14 @@ rlowdb <- R6::R6Class(
     },
 
     .write_data = function() {
-      jsonlite::write_json(private$.data, private$.file_path, pretty = TRUE, auto_unbox = TRUE)
-      if (private$.verbose) {
+
+      yyjsonr::write_json_file(
+        private$.data,
+        private$.file_path,
+        list(pretty = TRUE, auto_unbox = TRUE)
+      )
+
+     if (private$.verbose) {
         cli::cli_alert_success("{basename(private$.file_path)} successfully updated")
       }
     },
