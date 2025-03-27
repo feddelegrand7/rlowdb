@@ -87,6 +87,8 @@ and enables querying with custom functions.</p>
 <li><p><a href="#method-rlowdb-insert_default_values"><code>rlowdb$insert_default_values()</code></a></p></li>
 <li><p><a href="#method-rlowdb-clone_collection"><code>rlowdb$clone_collection()</code></a></p></li>
 <li><p><a href="#method-rlowdb-sample_records"><code>rlowdb$sample_records()</code></a></p></li>
+<li><p><a href="#method-rlowdb-set_schema"><code>rlowdb$set_schema()</code></a></p></li>
+<li><p><a href="#method-rlowdb-.validate_record"><code>rlowdb$.validate_record()</code></a></p></li>
 <li><p><a href="#method-rlowdb-clone"><code>rlowdb$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-rlowdb-new"></a><div class="section">
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
@@ -1138,15 +1140,81 @@ If TRUE, will overwrite existing target collection.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-rlowdb-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
-<p>The objects of this class are cloneable with this method.</p><div class="section">
+</div><p></p><hr><a id="method-rlowdb-set_schema"></a><div class="section">
+<h3 id="method-set-schema-">Method <code>set_schema()</code><a class="anchor" aria-label="anchor" href="#method-set-schema-"></a></h3>
+<p>Set schema for a collection to validate future inserts/updates</p><div class="section">
 <h4 id="usage-34">Usage<a class="anchor" aria-label="anchor" href="#usage-34"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">set_schema</span><span class="op">(</span><span class="va">collection</span>, <span class="va">schema</span>, strict <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-29">Arguments<a class="anchor" aria-label="anchor" href="#arguments-29"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>collection</code></dt>
+<dd><p>The collection name</p></dd>
+
+
+<dt><code>schema</code></dt>
+<dd><p>A named list where:
+- Names are field names
+- Values can be:
+  * A type string ("character", "numeric", etc.)
+  * A function that returns TRUE/FALSE
+  * A vector of allowed values
+  * NULL to make the field optional</p></dd>
+
+
+<dt><code>strict</code></dt>
+<dd><p>If TRUE, only fields in schema are allowed (default: FALSE)</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="examples-27">Examples<a class="anchor" aria-label="anchor" href="#examples-27"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/rlowdb.html">rlowdb</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Define schema before inserting</span></span>
+<span><span class="va">db</span><span class="op">$</span><span class="fu">set_schema</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="st">"numeric"</span>,</span>
+<span>  name <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">is.character</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
+<span>  age <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">0</span>,</span>
+<span>  email <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Optional</span></span>
+<span><span class="op">)</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># This will fail validation:</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"1"</span>, name <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-rlowdb-.validate_record"></a><div class="section">
+<h3 id="method-validate-record-">Method <code>.validate_record()</code><a class="anchor" aria-label="anchor" href="#method-validate-record-"></a></h3>
+<p>Validate a record against collection's schema</p><div class="section">
+<h4 id="usage-35">Usage<a class="anchor" aria-label="anchor" href="#usage-35"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">.validate_record</span><span class="op">(</span><span class="va">collection</span>, <span class="va">record</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-30">Arguments<a class="anchor" aria-label="anchor" href="#arguments-30"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>collection</code></dt>
+<dd><p>Collection name</p></dd>
+
+
+<dt><code>record</code></dt>
+<dd><p>The record to validate</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-rlowdb-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+<p>The objects of this class are cloneable with this method.</p><div class="section">
+<h4 id="usage-36">Usage<a class="anchor" aria-label="anchor" href="#usage-36"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">rlowdb</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-31">Arguments<a class="anchor" aria-label="anchor" href="#arguments-31"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -1740,6 +1808,24 @@ If TRUE, will overwrite existing target collection.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `rlowdb$set_schema`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">db</span> <span class="op">&lt;-</span> <span class="va">rlowdb</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"database.json"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Define schema before inserting</span></span></span>
+<span class="r-in"><span><span class="va">db</span><span class="op">$</span><span class="fu">set_schema</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  id <span class="op">=</span> <span class="st">"numeric"</span>,</span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">is.character</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>  age <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>  email <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Optional</span></span></span>
+<span class="r-in"><span><span class="op">)</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in db$set_schema("users", list(id = "numeric", name = function(x) is.character(x) &amp;&amp;     nchar(x) &gt; 0, age = function(x) is.numeric(x) &amp;&amp; x &gt;= 0,     email = NULL), strict = TRUE):</span> unused argument (strict = TRUE)</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># This will fail validation:</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="va">db</span><span class="op">$</span><span class="fu">insert</span><span class="op">(</span><span class="st">"users"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"1"</span>, name <span class="op">=</span> <span class="st">""</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
