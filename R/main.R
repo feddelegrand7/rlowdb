@@ -14,7 +14,6 @@
 rlowdb <- R6::R6Class(
   "rlowdb",
   public = list(
-    schemas = NULL,
     #' @description Initialize the database, loading data from a JSON file.
     #' If the file does not exist, an empty database is created.
     #' @param file_path The path to the JSON file that stores the database.
@@ -1077,11 +1076,11 @@ rlowdb <- R6::R6Class(
         rlang::abort("Schema must be a named list")
       }
 
-      if (is.null(self$schemas)) {
-        self$schemas <- list()
+      if (is.null(private$.schemas)) {
+        private$.schemas <- list()
       }
 
-      self$schemas[[collection]] <- schema
+      private$.schemas[[collection]] <- schema
 
       if (private$.verbose) {
         cli::cli_alert_success(
@@ -1092,14 +1091,19 @@ rlowdb <- R6::R6Class(
       invisible(self)
     },
 
+    #' @description
+    #' Retrieve the schema for a specific collection
+    #'
+    #' @param collection The collection name
+    #' @return list
+    #'
+
     get_schema = function(collection) {
 
       if (!self$exists_collection(collection)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
-
-      self$schemas[[collection]]
-
+      private$.schemas[[collection]]
     }
 
   ),
@@ -1108,15 +1112,16 @@ rlowdb <- R6::R6Class(
     .file_path = NULL,
     .auto_commit = NULL,
     .verbose = NULL,
+    .schemas = NULL,
     .default_values = NULL,
     .data = NULL,
     .validate_record = function(collection, record) {
 
-      if (is.null(self$schemas) || is.null(self$schemas[[collection]])) {
+      if (is.null(private$.schemas) || is.null(private$.schemas[[collection]])) {
         return(TRUE)
       }
 
-      schema <- self$schemas[[collection]]
+      schema <- private$.schemas[[collection]]
 
       errors <- list()
 

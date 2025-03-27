@@ -354,12 +354,11 @@ db$set_schema("users", list(
   name = function(x) is.character(x) && nchar(x) > 0,
   age = function(x) is.numeric(x) && x >= 0,
   email = NULL  # Optional
-), strict = TRUE)
+))
 
 # This will fail validation:
 try(db$insert("users", list(id = "1", name = "")))
 }
-\keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -398,7 +397,7 @@ try(db$insert("users", list(id = "1", name = "")))
 \item \href{#method-rlowdb-clone_collection}{\code{rlowdb$clone_collection()}}
 \item \href{#method-rlowdb-sample_records}{\code{rlowdb$sample_records()}}
 \item \href{#method-rlowdb-set_schema}{\code{rlowdb$set_schema()}}
-\item \href{#method-rlowdb-.validate_record}{\code{rlowdb$.validate_record()}}
+\item \href{#method-rlowdb-get_schema}{\code{rlowdb$get_schema()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -1498,7 +1497,7 @@ unlink("database.json")
 \subsection{Method \code{set_schema()}}{
 Set schema for a collection to validate future inserts/updates
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{rlowdb$set_schema(collection, schema, strict = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$set_schema(collection, schema)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -1513,8 +1512,6 @@ Set schema for a collection to validate future inserts/updates
   * A function that returns TRUE/FALSE
   * A vector of allowed values
   * NULL to make the field optional}
-
-\item{\code{strict}}{If TRUE, only fields in schema are allowed (default: FALSE)}
 }
 \if{html}{\out{</div>}}
 }
@@ -1528,7 +1525,7 @@ db$set_schema("users", list(
   name = function(x) is.character(x) && nchar(x) > 0,
   age = function(x) is.numeric(x) && x >= 0,
   email = NULL  # Optional
-), strict = TRUE)
+))
 
 # This will fail validation:
 try(db$insert("users", list(id = "1", name = "")))
@@ -1539,22 +1536,23 @@ try(db$insert("users", list(id = "1", name = "")))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-rlowdb-.validate_record"></a>}}
-\if{latex}{\out{\hypertarget{method-rlowdb-.validate_record}{}}}
-\subsection{Method \code{.validate_record()}}{
-Validate a record against collection's schema
+\if{html}{\out{<a id="method-rlowdb-get_schema"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-get_schema}{}}}
+\subsection{Method \code{get_schema()}}{
+Retrieve the schema for a specific collection
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{rlowdb$.validate_record(collection, record)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$get_schema(collection)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{collection}}{Collection name}
-
-\item{\code{record}}{The record to validate}
+\item{\code{collection}}{The collection name}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+list
 }
 }
 \if{html}{\out{<hr>}}
