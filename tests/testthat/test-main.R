@@ -433,6 +433,123 @@ test_that("clone_collection works as expected", {
 
 })
 
+test_that("set_schema works as expected", {
+
+  db$set_schema("cars", list(
+    brand = function(x) is.character(x) && length(x) == 1,
+    max_speed = function(x) is.integer(x),
+    color = function(x) x %in% colors(),
+    year_of_distribution = NULL
+  ))
+
+  db$insert("cars", list(
+    brand = "VW",
+    max_speed = 160L,
+    color = "grey",
+    year_of_distribution = 2025
+  ))
+
+  res <- db$get_data_collection("cars")
+
+  expect_equal(length(res), 1)
+
+  expect_true(res[[1]]$brand == "VW")
+  expect_type(res[[1]]$brand, "character")
+  expect_true(res[[1]]$max_speed == 160)
+  expect_type(res[[1]]$max_speed, "integer")
+  expect_true(res[[1]]$color == "grey")
+  expect_type(res[[1]]$color, "character")
+  expect_true(res[[1]]$year_of_distribution == 2025)
+
+  db$insert("cars", list(
+    brand = "Ferrari",
+    max_speed = 280L,
+    color = "red"
+  ))
+
+  res <- db$get_data_collection("cars")
+  expect_equal(length(res), 2)
+
+  expect_true(is.null(res[[2]]$year_of_distribution))
+
+  expect_error({
+    db$insert("cars", list(
+      brand = "Ferrari",
+      max_speed = 280L,
+      color = "unknown_color"
+    ))
+  },
+  regexp = "Key 'color' failed validation"
+  )
+
+  expect_error({
+    db$insert("cars", list(
+      brand = "Ferrari",
+      max_speed = "280L",
+      color = "blue"
+    ))
+  },
+  regexp = "Key 'max_speed' failed validation"
+  )
+
+  expect_error({
+    db$insert("cars", list(
+      brand = 200,
+      max_speed = 280L,
+      color = "blue"
+    ))
+  },
+  regexp = "Key 'brand' failed validation"
+  )
+
+  expect_error({
+    db$insert("cars", list(
+      brand = "Ferrari",
+      max_speed = 280L,
+      color = NULL
+    ))
+  },
+  regexp = "Key 'color' failed validation"
+  )
+
+  expect_error({
+    db$insert("cars", list(
+      max_speed = 280L,
+      color = "green"
+    ))
+  },
+  regexp = "Missing required field: 'brand'"
+  )
+
+  expect_error({
+    db$insert("cars", list())
+  },
+  regexp = "'record' must be a named list with valid field names."
+  )
+
+  testthat::expect_equal(
+    names(db$get_schema("cars")),
+    c("brand", "max_speed", "color", "year_of_distribution")
+  )
+
+  db$set_schema("cars", NULL)
+
+  db$insert("cars", list(
+    max_speed = 280L,
+    color = "green"
+  ))
+
+  db$insert("cars", list(
+    max_speed = "200",
+    color = "nonexisting"
+  ))
+
+  res <- db$get_data_collection("cars")
+
+  expect_equal(length(res), 4)
+
+})
+
 test_that("clear works as expected", {
 
   db$insert("readers", list(name = "Fodil", city = "Hamburg"))

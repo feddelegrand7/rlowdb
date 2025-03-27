@@ -341,7 +341,25 @@ db$sample_records("users", n = 5, replace = TRUE)
 # Reproducible sampling with seed
 db$sample_records("users", n = 2, seed = 123)
 unlink("database.json")
+
+## ------------------------------------------------
+## Method `rlowdb$set_schema`
+## ------------------------------------------------
+
+db <- rlowdb$new("database.json")
+
+# Define schema before inserting
+db$set_schema("users", list(
+  id = "numeric",
+  name = function(x) is.character(x) && nchar(x) > 0,
+  age = function(x) is.numeric(x) && x >= 0,
+  email = NULL  # Optional
+), strict = TRUE)
+
+# This will fail validation:
+try(db$insert("users", list(id = "1", name = "")))
 }
+\keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -379,6 +397,8 @@ unlink("database.json")
 \item \href{#method-rlowdb-insert_default_values}{\code{rlowdb$insert_default_values()}}
 \item \href{#method-rlowdb-clone_collection}{\code{rlowdb$clone_collection()}}
 \item \href{#method-rlowdb-sample_records}{\code{rlowdb$sample_records()}}
+\item \href{#method-rlowdb-set_schema}{\code{rlowdb$set_schema()}}
+\item \href{#method-rlowdb-.validate_record}{\code{rlowdb$.validate_record()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -1471,6 +1491,71 @@ unlink("database.json")
 
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-set_schema"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-set_schema}{}}}
+\subsection{Method \code{set_schema()}}{
+Set schema for a collection to validate future inserts/updates
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$set_schema(collection, schema, strict = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{The collection name}
+
+\item{\code{schema}}{A named list where:
+- Names are field names
+- Values can be:
+  * A type string ("character", "numeric", etc.)
+  * A function that returns TRUE/FALSE
+  * A vector of allowed values
+  * NULL to make the field optional}
+
+\item{\code{strict}}{If TRUE, only fields in schema are allowed (default: FALSE)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{db <- rlowdb$new("database.json")
+
+# Define schema before inserting
+db$set_schema("users", list(
+  id = "numeric",
+  name = function(x) is.character(x) && nchar(x) > 0,
+  age = function(x) is.numeric(x) && x >= 0,
+  email = NULL  # Optional
+), strict = TRUE)
+
+# This will fail validation:
+try(db$insert("users", list(id = "1", name = "")))
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-.validate_record"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-.validate_record}{}}}
+\subsection{Method \code{.validate_record()}}{
+Validate a record against collection's schema
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$.validate_record(collection, record)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{collection}}{Collection name}
+
+\item{\code{record}}{The record to validate}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-rlowdb-clone"></a>}}

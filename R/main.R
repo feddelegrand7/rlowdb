@@ -14,7 +14,7 @@
 rlowdb <- R6::R6Class(
   "rlowdb",
   public = list(
-
+    schemas = NULL,
     #' @description Initialize the database, loading data from a JSON file.
     #' If the file does not exist, an empty database is created.
     #' @param file_path The path to the JSON file that stores the database.
@@ -129,10 +129,14 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     #'
     insert = function(collection, record) {
+
       if (!is.list(record) || is.null(names(record)) || !all(nzchar(names(record)))) {
         rlang::abort("Error: 'record' must be a named list with valid field names.")
       }
+
       private$.ensure_key(collection)
+
+      private$.validate_record(collection, record)
 
       default_values <- private$.default_values[[collection]]
 
@@ -1040,6 +1044,62 @@ rlowdb <- R6::R6Class(
       }
 
       sampled_records
+    },
+
+    #' @description
+    #' Set schema for a collection to validate future inserts/updates
+    #'
+    #' @param collection The collection name
+    #' @param schema A named list where:
+    #'   - Names are field names
+    #'   - Values can be:
+    #'     * A type string ("character", "numeric", etc.)
+    #'     * A function that returns TRUE/FALSE
+    #'     * A vector of allowed values
+    #'     * NULL to make the field optional
+    #'
+    #' @examples
+    #' db <- rlowdb$new("database.json")
+    #'
+    #' # Define schema before inserting
+    #' db$set_schema("users", list(
+    #'   id = "numeric",
+    #'   name = function(x) is.character(x) && nchar(x) > 0,
+    #'   age = function(x) is.numeric(x) && x >= 0,
+    #'   email = NULL  # Optional
+    #' ))
+    #'
+    #' # This will fail validation:
+    #' try(db$insert("users", list(id = "1", name = "")))
+    set_schema = function(collection, schema) {
+
+      if ((!is.null(schema) && !is.list(schema)) || (length(schema) > 0 && is.null(names(schema)))) {
+        rlang::abort("Schema must be a named list")
+      }
+
+      if (is.null(self$schemas)) {
+        self$schemas <- list()
+      }
+
+      self$schemas[[collection]] <- schema
+
+      if (private$.verbose) {
+        cli::cli_alert_success(
+          "Schema set for collection '{collection}' with {length(schema)} field{?s}"
+        )
+      }
+
+      invisible(self)
+    },
+
+    get_schema = function(collection) {
+
+      if (!self$exists_collection(collection)) {
+        rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
+      }
+
+      self$schemas[[collection]]
+
     }
 
   ),
@@ -1050,6 +1110,66 @@ rlowdb <- R6::R6Class(
     .verbose = NULL,
     .default_values = NULL,
     .data = NULL,
+    .validate_record = function(collection, record) {
+
+      if (is.null(self$schemas) || is.null(self$schemas[[collection]])) {
+        return(TRUE)
+      }
+
+      schema <- self$schemas[[collection]]
+
+      errors <- list()
+
+      for (field in names(schema)) {
+        rule <- schema[[field]]
+        value <- record[[field]]
+
+        if (is.null(rule) && !field %in% names(record)) next
+
+        if (!field %in% names(record)) {
+          errors <- append(errors, sprintf("Missing required field: '%s'", field))
+          next
+        }
+
+        if (is.character(rule) && length(rule) == 1) {
+          expected_type <- rule
+          if (!class(value)[1] %in% expected_type) {
+            errors <- append(errors, sprintf(
+              "Key '%s' must be type '%s' (got '%s')",
+              field, expected_type, class(value)[1]
+            ))
+          }
+        }
+
+        else if (is.function(rule)) {
+          if (!isTRUE(rule(value))) {
+            errors <- append(errors, sprintf(
+              "Key '%s' failed validation", field
+            ))
+          }
+        }
+
+        else if (is.vector(rule) && length(rule) > 1) {
+          if (!value %in% rule) {
+            errors <- append(errors, sprintf(
+              "Key '%s' must be one of: %s",
+              field, paste(rule, collapse = ", ")
+            ))
+          }
+        }
+      }
+
+      if (length(errors) > 0) {
+        error_msg <- paste(
+          sprintf("Schema validation failed for collection '%s':", collection),
+          paste("-", errors, collapse = "\n"),
+          sep = "\n"
+        )
+        rlang::abort(error_msg)
+      }
+
+      TRUE
+    },
 
     .read_data = function() {
       if (file.exists(private$.file_path)) {
