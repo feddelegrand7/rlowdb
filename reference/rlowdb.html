@@ -99,7 +99,8 @@ If the file does not exist, an empty database is created.</p><div class="section
 <span>  <span class="va">file_path</span>,</span>
 <span>  default_values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  auto_commit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pretty <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -126,6 +127,12 @@ Note that you can use the `commit` method to update the DB manually.</p></dd>
 <dt><code>verbose</code></dt>
 <dd><p>If TRUE, will print informative messages to the console.
 Defaults to FALSE</p></dd>
+
+
+<dt><code>pretty</code></dt>
+<dd><p>Use pretty = FALSE for compact JSON,
+which is more efficient for data transmission and storage. TRUE for a
+human readable format. Defaults to FALSE.</p></dd>
 
 
 </dl><p></p></div>
