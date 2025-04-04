@@ -13,10 +13,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-<a><img src='man/figures/rlowdb_monster.png' align="right" height="200" /></a>
+# rlowdb <a><img src='man/figures/rlowdb_cute.png' align="right" height="200" /></a>
 
-
-# rlowdb
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/feddelegrand7/rlowdb/branch/main/graph/badge.svg)](https://app.codecov.io/gh/feddelegrand7/rlowdb?branch=main)

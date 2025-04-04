@@ -1,9 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<a><img src='man/figures/rlowdb_monster.png' align="right" height="200" /></a>
-
-# rlowdb
+# rlowdb <a><img src='man/figures/rlowdb_cute.png' align="right" height="200" /></a>
 
 <!-- badges: start -->
 
