@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<a><img src='man/figures/rlowdb_monster.png' align="right" height="200" /></a>
+
 # rlowdb
 
 <!-- badges: start -->
@@ -639,6 +641,7 @@ db$status()
 #> - auto_commit: TRUE
 #> - verbose: FALSE
 #> - collections: users
+#> - schemas: No schema defined
 ```
 
 ### Clear, Drop Data
@@ -934,7 +937,7 @@ db$update(
   value = 1, 
   new_data = list(age = 40)
 )  
-#> Error in `private$.find_index_by_key()` at rlowdb/R/main.R:199:7:
+#> Error in `private$.find_index_by_key()` at rlowdb/R/main.R:207:7:
 #> ! Error: Collection 'nonexistant' does not exist.
 ```
 

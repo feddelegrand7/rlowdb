@@ -13,6 +13,9 @@ knitr::opts_chunk$set(
 )
 ```
 
+<a><img src='man/figures/rlowdb_monster.png' align="right" height="200" /></a>
+
+
 # rlowdb
 
 <!-- badges: start -->
