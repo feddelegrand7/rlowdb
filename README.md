@@ -24,6 +24,10 @@ downloads](https://cranlogs.r-pkg.org/badges/grand-total/rlowdb)](https://cran.r
 a simple and efficient way to store, retrieve, update, and delete
 structured data without the need for a full database system.
 
+`rlowdb` relies on the
+[yyjsonr](https://github.com/coolbutuseless/yyjsonr) package, which is
+extremely fast, to `read/write` your `json` database.
+
 ## Features
 
 - **Lightweight & File-Based**: Uses JSON for persistent storage.
@@ -56,7 +60,108 @@ specifying a JSON file:
 
 ``` r
 library(rlowdb)
-db <- rlowdb$new("DB.json")
+db <- rlowdb$new(file_path = "DB.json")
+```
+
+If the `json` file is not available, `rlowdb` will create it
+automatically when inserting data.
+
+### Verbosity
+
+When creating the instance, you can set the the `verbose` parameter to
+`TRUE`, this way you’ll get an informative message each time you operate
+on your `DB`. The default is `FALSE`.
+
+``` r
+db <- rlowdb$new(file_path = "DB.json", verbose = FALSE)
+```
+
+### Auto Commit
+
+By default, when creating a new instance of `rlowdb`, the `auto_commit`
+parameter will be set to `TRUE` meaning that each time you make a
+modification to your `DB`, the underlying `json` file will be
+**immediately** saved and the new state of the file will overwrite the
+previous one.
+
+On the other hand if you set the `auto_commit` parameter to `FALSE`, it
+is possible to make changes to your `DB` but only commit (persist the
+changes) to your underlying file when you decide to. To do that, you can
+use the `commit()` method.
+
+``` r
+db <- rlowdb$new(file_path = "DB.json", auto_commit = FALSE)
+```
+
+### Default Values
+
+You can include default values using the `default_values` parameter
+which takes a named list of lists specifying default key-value pairs to
+be included when inserting new records into the database. The structure
+follows the format:
+
+``` r
+# this is just an example, do not run
+
+default_values <- list(
+  collection_name = list(
+    key_name_1 = value_1,
+    key_name_2 = value_2,
+    key_name_n = value_n
+  )
+)
+
+db <- rlowdb$new(file_path = "DB.json",  default_values = default_values) 
+```
+
+- `collection_name`: The name of the collection (or table) where the
+  default values will apply.
+- `key_name_n`: The name of a field within a record.
+- `value`: The default value to assign to the corresponding field when a
+  new record is inserted.
+
+### Pretty output
+
+``` r
+db <- rlowdb$new(file_path = "DB.json", pretty = FALSE)
+```
+
+When initiating your database, you can set the `pretty` parameter to
+`TRUE`, this way, the `json` output will be `pretty` formatted. By
+default, the `pretty` parameter is set to `FALSE` to enhance
+performance.
+
+### Schema
+
+Using the `set_schema` method, you can defines a validation schema for a
+specific `collection.` Once a schema is set, all future `insert()` and
+`update()` operations on that collection will be validated against the
+specified rules before they are committed to the database.
+
+``` r
+# Define a schema for the 'users' collection
+db$set_schema(collection = "users", list(
+  id    = "numeric",
+  name  = function(x) is.character(x) && nchar(x) > 0,
+  age   = function(x) is.numeric(x) && x >= 0,
+  email = NULL  # Optional field
+))
+
+# Attempt to insert an invalid record (fails validation)
+try(db$insert("users", list(id = "1", name = "")))
+#> Error in private$.validate_record(collection, record) : 
+#>   Schema validation failed for collection 'users':
+#> - Key 'id' must be type 'numeric' (got 'character')
+#> - Key 'name' failed validation
+#> - Missing required field: 'age'
+```
+
+At any time, you can retrieve the defined schema using the
+`get_schema()` method. You can also delete the schema by setting it to
+`NULL`:
+
+``` r
+db$set_schema(collection = "users", NULL)
 ```
 
 ### Inserting Data

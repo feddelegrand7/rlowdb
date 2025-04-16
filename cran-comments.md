@@ -8,6 +8,8 @@ Duration: 8s
 
 # rlowdb 0.2.0
 
+### Adding many new features.
+
 * Adding the `verbose` parameter which when set to `TRUE` will print informative information to the console.
 
 * Adding the `auto_commit` parameter which when set to `FALSE`, the user will have to use the `commit` method in order to reflect the data changes into the `JSON` file.
