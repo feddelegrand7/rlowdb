@@ -50,7 +50,6 @@ db <- rlowdb$new("database.json", default_values = list(
 db$insert("users", list(id = 1, name = "Alice"))
 unlink("database.json")
 
-
 ## ------------------------------------------------
 ## Method `rlowdb$find`
 ## ------------------------------------------------
@@ -69,7 +68,6 @@ db <- rlowdb$new("database.json")
 db$insert("users", list(id = 1, name = "Alice"))
 db$update("users", "id", 1, list(name = "Alice Updated"))
 unlink("database.json")
-
 
 ## ------------------------------------------------
 ## Method `rlowdb$upsert`
@@ -90,7 +88,6 @@ db$insert("users", list(id = 1, name = "Alice"))
 db$delete("users", "id", 1)
 db$get_data()
 unlink("database.json")
-
 
 ## ------------------------------------------------
 ## Method `rlowdb$query`
@@ -154,6 +151,7 @@ db$insert("consumers", list(name = "Teta", age = 22))
 db$clear("users")
 db$get_data()
 unlink("database.json")
+
 
 ## ------------------------------------------------
 ## Method `rlowdb$count`
@@ -221,6 +219,7 @@ db$transaction(function() {
 db$count("users")
 unlink("database.json")
 
+
 ## ------------------------------------------------
 ## Method `rlowdb$search`
 ## ------------------------------------------------
@@ -250,6 +249,7 @@ db$bulk_insert("users", list(
 db$count("users")
 unlink("database.json")
 
+
 ## ------------------------------------------------
 ## Method `rlowdb$rename_collection`
 ## ------------------------------------------------
@@ -264,7 +264,6 @@ db$list_collections()
 db$rename_collection("users", "customers")
 db$list_collections()
 unlink("database.json")
-
 
 ## ------------------------------------------------
 ## Method `rlowdb$list_keys`
@@ -312,6 +311,7 @@ db$insert_default_values("users", list(role = "guest", active = TRUE))
 db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
 
 unlink("database.json")
+
 
 ## ------------------------------------------------
 ## Method `rlowdb$clone_collection`
@@ -364,6 +364,7 @@ try(db$insert("users", list(id = "1", name = "")))
 \itemize{
 \item \href{#method-rlowdb-new}{\code{rlowdb$new()}}
 \item \href{#method-rlowdb-commit}{\code{rlowdb$commit()}}
+\item \href{#method-rlowdb-reload}{\code{rlowdb$reload()}}
 \item \href{#method-rlowdb-get_data}{\code{rlowdb$get_data()}}
 \item \href{#method-rlowdb-get_data_collection}{\code{rlowdb$get_data_collection()}}
 \item \href{#method-rlowdb-get_data_key}{\code{rlowdb$get_data_key()}}
@@ -412,6 +413,7 @@ If the file does not exist, an empty database is created.
   file_path,
   default_values = list(),
   auto_commit = TRUE,
+  auto_reload = FALSE,
   verbose = FALSE,
   pretty = FALSE
 )}\if{html}{\out{</div>}}
@@ -432,6 +434,11 @@ Default is an empty list (`list()`).}
 there's an insertion, an update or a deletion. Defaults to TRUE.s
 Note that you can use the `commit` method to update the DB manually.}
 
+\item{\code{auto_reload}}{if set to TRUE, will always re-read the underlying JSON time before
+running the methods. Useful, if you have many people working simultaneously on the same JSON file.
+FALSE by default for performance purpose. Note that you can manually reload your data to the latest
+stand using the `reload` method.}
+
 \item{\code{verbose}}{If TRUE, will print informative messages to the console.
 Defaults to FALSE}
 
@@ -451,6 +458,19 @@ Update the DB with the operated changes.
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$commit()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-reload"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-reload}{}}}
+\subsection{Method \code{reload()}}{
+Refreshes the in-memory database by reading the current state from the JSON file
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$reload()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-rlowdb-get_data"></a>}}
@@ -559,6 +579,9 @@ Insert a new record into a specified collection.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json", default_values = list(
@@ -567,7 +590,6 @@ Insert a new record into a specified collection.
 )
 db$insert("users", list(id = 1, name = "Alice"))
 unlink("database.json")
-
 }
 \if{html}{\out{</div>}}
 
@@ -632,13 +654,15 @@ Update existing records in a collection.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
 db$insert("users", list(id = 1, name = "Alice"))
 db$update("users", "id", 1, list(name = "Alice Updated"))
 unlink("database.json")
-
 }
 \if{html}{\out{</div>}}
 
@@ -702,6 +726,9 @@ Delete records from a collection that match a given key-value pair.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
@@ -709,7 +736,6 @@ db$insert("users", list(id = 1, name = "Alice"))
 db$delete("users", "id", 1)
 db$get_data()
 unlink("database.json")
-
 }
 \if{html}{\out{</div>}}
 
@@ -821,6 +847,9 @@ Just like DROP TABLE in SQL, drops a complete collection.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
@@ -843,6 +872,9 @@ Drop all the collections available in your JSON file DB
 \if{html}{\out{<div class="r">}}\preformatted{rlowdb$drop_all()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
@@ -873,6 +905,9 @@ Removes all records from a collection without deleting the collection itself
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
@@ -881,6 +916,7 @@ db$insert("consumers", list(name = "Teta", age = 22))
 db$clear("users")
 db$get_data()
 unlink("database.json")
+
 }
 \if{html}{\out{</div>}}
 
@@ -1065,6 +1101,9 @@ If any operation fails, it rolls back all changes to maintain data integrity.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
@@ -1078,6 +1117,7 @@ db$transaction(function() {
 })
 db$count("users")
 unlink("database.json")
+
 }
 \if{html}{\out{</div>}}
 
@@ -1096,10 +1136,13 @@ Load a JSON backup and replace the current database.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{backup_path}}{The path of the backup JSON file.
-Allow users to quickly backup their database.}
+\item{\code{backup_path}}{The path of the backup JSON file.}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+Allow users to quickly backup their database.
 }
 }
 \if{html}{\out{<hr>}}
@@ -1186,6 +1229,9 @@ Each record should be a named list representing an entry in the collection.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
@@ -1196,6 +1242,7 @@ db$bulk_insert("users", list(
 ))
 db$count("users")
 unlink("database.json")
+
 }
 \if{html}{\out{</div>}}
 
@@ -1269,6 +1316,9 @@ It checks if the specified collection exists before attempting to rename it.
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+rlowdb object invisibly for chaining
+}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{db <- rlowdb$new("database.json")
@@ -1281,7 +1331,6 @@ db$list_collections()
 db$rename_collection("users", "customers")
 db$list_collections()
 unlink("database.json")
-
 }
 \if{html}{\out{</div>}}
 
@@ -1390,7 +1439,7 @@ If `FALSE`, only adds missing keys. Defaults to `FALSE`.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Updates the collection in place, ensuring consistency of data.
+rlowdb object invisibly for chaining
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1408,6 +1457,7 @@ db$insert_default_values("users", list(role = "guest", active = TRUE))
 db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
 
 unlink("database.json")
+
 }
 \if{html}{\out{</div>}}
 

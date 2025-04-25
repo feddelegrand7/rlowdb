@@ -25,6 +25,10 @@ rlowdb <- R6::R6Class(
     #' @param auto_commit whether to update the DB automatically each time
     #' there's an insertion, an update or a deletion. Defaults to TRUE.s
     #' Note that you can use the `commit` method to update the DB manually.
+    #' @param auto_reload if set to TRUE, will always re-read the underlying JSON time before
+    #' running the methods. Useful, if you have many people working simultaneously on the same JSON file.
+    #' FALSE by default for performance purpose. Note that you can manually reload your data to the latest
+    #' stand using the `reload` method.
     #' @param verbose If TRUE, will print informative messages to the console.
     #' Defaults to FALSE
     #' @param pretty Use pretty = FALSE for compact JSON,
@@ -34,6 +38,7 @@ rlowdb <- R6::R6Class(
     file_path,
     default_values = list(),
     auto_commit = TRUE,
+    auto_reload = FALSE,
     verbose = FALSE,
     pretty = FALSE
     ) {
@@ -55,6 +60,7 @@ rlowdb <- R6::R6Class(
 
       private$.file_path <- file_path
       private$.auto_commit <- auto_commit
+      private$.auto_reload <- auto_reload
       private$.verbose <- verbose
       private$.default_values <- default_values
       private$.pretty <- pretty
@@ -66,6 +72,18 @@ rlowdb <- R6::R6Class(
       private$.write_data()
     },
 
+    #' @description Refreshes the in-memory database by reading the current state from the JSON file
+    #' @return rlowdb object invisibly for chaining
+    reload = function() {
+      private$.read_data()
+
+      if (private$.verbose) {
+        cli::cli_alert_success("Database reloaded from {private$.file_path}")
+      }
+
+      invisible(self)
+    },
+
     #' @description Retrieve all stored data.
     #' @return A list containing all database records.
     #' @examples
@@ -75,6 +93,11 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     #
     get_data = function() {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       private$.data
     },
 
@@ -88,6 +111,11 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
 
     get_data_collection = function(collection) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -107,6 +135,10 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
 
     get_data_key = function(collection, key) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
@@ -131,8 +163,13 @@ rlowdb <- R6::R6Class(
     #' )
     #' db$insert("users", list(id = 1, name = "Alice"))
     #' unlink("database.json")
+    #' @return rlowdb object invisibly for chaining
     #'
     insert = function(collection, record) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!is.list(record) || is.null(names(record)) || !all(nzchar(names(record)))) {
         rlang::abort("Error: 'record' must be a named list with valid field names.")
@@ -176,6 +213,11 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     #'
     find = function(collection, key, value) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       index <- private$.find_index_by_key(collection, key, value)
       if (length(index) > 0) {
         return(private$.data[[collection]][index])
@@ -197,8 +239,13 @@ rlowdb <- R6::R6Class(
     #' db$insert("users", list(id = 1, name = "Alice"))
     #' db$update("users", "id", 1, list(name = "Alice Updated"))
     #' unlink("database.json")
+    #' @return rlowdb object invisibly for chaining
     #'
     update = function(collection, key, value, new_data) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!is.list(new_data) || is.null(names(new_data)) || !all(nzchar(names(new_data)))) {
         rlang::abort("Error: 'new_data' must be a named list with valid field names.")
@@ -242,6 +289,10 @@ rlowdb <- R6::R6Class(
     #'
     upsert = function(collection, key, value, new_data) {
 
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!is.list(new_data) || is.null(names(new_data)) || !all(nzchar(names(new_data)))) {
         rlang::abort("Error: 'new_data' must be a named list with valid field names.")
       }
@@ -265,8 +316,14 @@ rlowdb <- R6::R6Class(
     #' db$delete("users", "id", 1)
     #' db$get_data()
     #' unlink("database.json")
+    #' @return rlowdb object invisibly for chaining
     #'
     delete = function(collection, key, value) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       index <- private$.find_index_by_key(collection, key, value)
       if (length(index) > 0) {
         private$.data[[collection]] <- private$.data[[collection]][-index]
@@ -320,6 +377,11 @@ rlowdb <- R6::R6Class(
     #'
     #' unlink("database.json")
     query = function(collection, condition = NULL) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -361,6 +423,10 @@ rlowdb <- R6::R6Class(
 
     filter = function(collection, filter_fn) {
 
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!is.function(filter_fn)) {
         rlang::abort("Error: 'filter_fn' must be a function.")
       }
@@ -386,7 +452,13 @@ rlowdb <- R6::R6Class(
     #' db$drop("users")
     #' db$get_data()
     #' unlink("database.json")
+    #' @return rlowdb object invisibly for chaining
+    #'
     drop = function(collection) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
@@ -414,6 +486,8 @@ rlowdb <- R6::R6Class(
     #' db$drop_all()
     #' db$get_data()
     #' unlink("database.json")
+    #' @return rlowdb object invisibly for chaining
+    #'
     drop_all = function() {
 
       for (collection in names(private$.data)) {
@@ -441,8 +515,16 @@ rlowdb <- R6::R6Class(
     #' db$clear("users")
     #' db$get_data()
     #' unlink("database.json")
+    #'
+    #' @return rlowdb object invisibly for chaining
+    #'
 
     clear = function(collection) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -470,6 +552,10 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     count = function(collection) {
 
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -490,6 +576,10 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     list_collections = function() {
 
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       collection_names <- names(private$.data)
 
       collection_names
@@ -506,6 +596,10 @@ rlowdb <- R6::R6Class(
     #' db$exists_collection("users")
     #' unlink("database.json")
     exists_collection = function(collection) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       exists_collection <- FALSE
 
@@ -528,6 +622,10 @@ rlowdb <- R6::R6Class(
     #' db$exists_key("users", "name")
     #' unlink("database.json")
     exists_key = function(collection, key) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
@@ -555,6 +653,10 @@ rlowdb <- R6::R6Class(
     #' db$exists_value("users", "name", "Delta")
     #' unlink("database.json")
     exists_value = function(collection, key, value) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       exists_val <- FALSE
       index <- private$.find_index_by_key(collection, key, value)
@@ -584,8 +686,16 @@ rlowdb <- R6::R6Class(
     #' })
     #' db$count("users")
     #' unlink("database.json")
+    #'
+    #' @return rlowdb object invisibly for chaining
+    #'
 
     transaction = function(transaction_fn) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!is.function(transaction_fn)) {
         rlang::abort("Error: 'transaction_fn' must be a function.")
       }
@@ -611,6 +721,7 @@ rlowdb <- R6::R6Class(
 
     #' @description Load a JSON backup and replace the current database.
     #' @param backup_path The path of the backup JSON file.
+    #' @return rlowdb object invisibly for chaining
 
     restore = function(backup_path) {
 
@@ -677,6 +788,11 @@ rlowdb <- R6::R6Class(
     #' db$search("users", "name", "alice", ignore.case = TRUE)
     #' unlink("database.json")
     search = function(collection, key, term, ignore.case = FALSE) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!self$exists_collection(collection)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -715,7 +831,14 @@ rlowdb <- R6::R6Class(
     #' ))
     #' db$count("users")
     #' unlink("database.json")
+    #'
+    #' @return rlowdb object invisibly for chaining
+    #'
     bulk_insert = function(collection, records) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!is.list(records) || length(records) == 0) {
         rlang::abort("Error: 'records' must be a non-empty list of named lists.")
@@ -753,6 +876,10 @@ rlowdb <- R6::R6Class(
     #' Provides some useful information about the database
     #'
     status = function() {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       db_exists <- FALSE
 
@@ -814,8 +941,14 @@ rlowdb <- R6::R6Class(
     #' db$rename_collection("users", "customers")
     #' db$list_collections()
     #' unlink("database.json")
+    #' @return rlowdb object invisibly for chaining
     #'
     rename_collection = function(collection_name, new_collection_name) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!collection_name %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection_name))
       }
@@ -856,6 +989,11 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
     #'
     list_keys = function(collection) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!collection %in% names(private$.data)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -885,6 +1023,10 @@ rlowdb <- R6::R6Class(
     #' db$count_values("users", "name")
     #' unlink("database.json")
     count_values = function(collection, key) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!self$exists_collection(collection)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
@@ -918,8 +1060,6 @@ rlowdb <- R6::R6Class(
     #' @param replace_existing Logical; if `TRUE`, replaces existing values with defaults.
     #'   If `FALSE`, only adds missing keys. Defaults to `FALSE`.
     #'
-    #' @return Updates the collection in place, ensuring consistency of data.
-    #'
     #' @examples
     #' db <- rlowdb$new("database.json")
     #' db$bulk_insert("users", list(
@@ -935,7 +1075,16 @@ rlowdb <- R6::R6Class(
     #' db$insert_default_values("users", list(role = "guest", active = TRUE), replace_existing = TRUE)
     #'
     #' unlink("database.json")
+    #'
+    #' @return rlowdb object invisibly for chaining
+    #'
+
     insert_default_values = function(collection, defaults, replace_existing = FALSE) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!self$exists_collection(collection)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -979,6 +1128,10 @@ rlowdb <- R6::R6Class(
     #' db$list_collections()
     #' unlink("database.json")
     clone_collection = function(from, to) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (from == to) {
         rlang::abort("Both collections have the same name")
@@ -1029,6 +1182,10 @@ rlowdb <- R6::R6Class(
     #' unlink("database.json")
 
     sample_records = function(collection, n = 1, replace = FALSE, seed = NULL) {
+
+      if (private$.auto_reload) {
+        self$reload()
+      }
 
       if (!self$exists_collection(collection)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
@@ -1096,6 +1253,10 @@ rlowdb <- R6::R6Class(
     #' try(db$insert("users", list(id = "1", name = "")))
     set_schema = function(collection, schema) {
 
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if ((!is.null(schema) && !is.list(schema)) || (length(schema) > 0 && is.null(names(schema)))) {
         rlang::abort("Schema must be a named list")
       }
@@ -1124,6 +1285,10 @@ rlowdb <- R6::R6Class(
 
     get_schema = function(collection) {
 
+      if (private$.auto_reload) {
+        self$reload()
+      }
+
       if (!self$exists_collection(collection)) {
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
@@ -1135,6 +1300,7 @@ rlowdb <- R6::R6Class(
   private = list(
     .file_path = NULL,
     .auto_commit = NULL,
+    .auto_reload = NULL,
     .verbose = NULL,
     .pretty = FALSE,
     .schemas = NULL,
