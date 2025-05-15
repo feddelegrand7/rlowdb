@@ -1128,6 +1128,19 @@ rlowdb <- R6::R6Class(
         rlang::abort(sprintf("Error: Collection '%s' does not exist.", collection))
       }
       private$.schemas[[collection]]
+    },
+
+    #' @description Refreshes the in-memory database by re-reading the current state from the JSON file
+    #' be aware that if \code{auto_commit} is set to FALSE, when reloading, you will lose
+    #' the modifications operated on your DB.
+    #' @return rlowdb object invisibly for chaining
+    reload = function() {
+      private$.read_data()
+
+      if (private$.verbose) {
+        cli::cli_alert_success("Database reloaded from {private$.file_path}")
+      }
+      invisible(self)
     }
 
   ),

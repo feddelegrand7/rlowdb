@@ -398,6 +398,7 @@ try(db$insert("users", list(id = "1", name = "")))
 \item \href{#method-rlowdb-sample_records}{\code{rlowdb$sample_records()}}
 \item \href{#method-rlowdb-set_schema}{\code{rlowdb$set_schema()}}
 \item \href{#method-rlowdb-get_schema}{\code{rlowdb$get_schema()}}
+\item \href{#method-rlowdb-reload}{\code{rlowdb$reload()}}
 \item \href{#method-rlowdb-clone}{\code{rlowdb$clone()}}
 }
 }
@@ -1558,6 +1559,21 @@ Retrieve the schema for a specific collection
 }
 \subsection{Returns}{
 list
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rlowdb-reload"></a>}}
+\if{latex}{\out{\hypertarget{method-rlowdb-reload}{}}}
+\subsection{Method \code{reload()}}{
+Refreshes the in-memory database by re-reading the current state from the JSON file
+be aware that if \code{auto_commit} is set to FALSE, when reloading, you will lose
+the modifications operated on your DB.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{rlowdb$reload()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+rlowdb object invisibly for chaining
 }
 }
 \if{html}{\out{<hr>}}
